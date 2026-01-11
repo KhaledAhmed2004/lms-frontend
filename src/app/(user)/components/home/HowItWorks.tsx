@@ -11,36 +11,17 @@ interface Card {
   bgColor: string;
 }
 
-const heading = {
-  title: "How it works",
-  subtitle: "Define your learning needs - we'll match you with the right tutor.",
-};
+interface Heading {
+  title: string;
+  subtitle: string;
+}
 
-const cards: Card[] = [
-  {
-    step: "1.",
-    title: "Send your Request",
-    description: "Tell us the subject you need help with and when you're available.",
-    image: "/boy1.png",
-    bgColor: "bg-[#8396DE]",
-  },
-  {
-    step: "2.",
-    title: "Meet your Tutor",
-    description: "We connect you with a suitable tutor based on your goals.",
-    image: "/girl1.png",
-    bgColor: "bg-[#83C1DE]",
-  },
-  {
-    step: "3.",
-    title: "Start Learning",
-    description: "Improve your grades and build confidence.",
-    image: "/girl2.png",
-    bgColor: "bg-[#6490F8]",
-  },
-];
+interface HowItWorksProps {
+  heading: Heading;
+  cards: Card[];
+}
 
-export default function HowItWorks() {
+export default function HowItWorks({ heading, cards }: HowItWorksProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,

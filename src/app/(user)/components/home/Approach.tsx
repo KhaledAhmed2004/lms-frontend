@@ -1,14 +1,17 @@
 "use client";
 import PrimaryButton from "@/components/button/PrimaryButton";
 
-const approach = {
-  tag: "Our Approach",
-  description:
-    "We match you with a tutor who listens, understands your goals, and adapts to your learning style. With a personalized learning plan, grades improve faster and confidence grows with every lesson.",
-  image: "/boy2.png",
-};
+interface ApproachData {
+  tag: string;
+  description: string;
+  image: string;
+}
 
-export default function Approach() {
+interface ApproachProps {
+  approach: ApproachData;
+}
+
+export default function Approach({ approach }: ApproachProps) {
   return (
     <section className="bg-[#F7F7F7] py-1 lg:py-4">
       <div className="max-w-7xl mx-auto px-4 my-20 flex items-center">
