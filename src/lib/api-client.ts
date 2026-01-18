@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
+  // process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api/v1';
+  process.env.NEXT_PUBLIC_API_URL || 'http://195.35.6.13:5005/api/v1';
 
 // ============ Custom API Error ============
 export interface IErrorMessage {
