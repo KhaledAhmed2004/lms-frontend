@@ -6,6 +6,7 @@ import {
   useState,
   useCallback,
   useEffect,
+  useRef,
   ReactNode,
 } from 'react';
 import { useSocket } from './socket-provider';
@@ -77,16 +78,37 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
   const [incomingCall, setIncomingCall] = useState<IncomingCallInfo | null>(null);
   const [pendingToken, setPendingToken] = useState<{ token: string; uid: number; channelName: string } | null>(null);
 
+  // Store callId in a ref so the onLocalJoined callback always has the latest value
+  const currentCallRef = useRef<CallInfo | null>(null);
+  // Store pending join uid if onLocalJoined fires before callId is available
+  const pendingJoinUidRef = useRef<number | null>(null);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    currentCallRef.current = currentCall;
+  }, [currentCall]);
+
   const agora = useAgora({
+    onLocalJoined: (uid) => {
+      console.log('Local user joined channel with uid:', uid);
+      // Notify socket that LOCAL user joined - this is critical for attendance tracking!
+      const call = currentCallRef.current;
+      if (socket && call && call.callId) {
+        console.log('Emitting CALL_USER_JOINED_CHANNEL with callId:', call.callId);
+        socket.emit('CALL_USER_JOINED_CHANNEL', {
+          callId: call.callId,
+          agoraUid: uid,
+        });
+      } else {
+        console.warn('Cannot emit CALL_USER_JOINED_CHANNEL - callId not yet available, will retry');
+        // Store uid for later emission when callId becomes available
+        pendingJoinUidRef.current = uid;
+      }
+    },
     onUserJoined: (user) => {
       console.log('Remote user joined:', user.uid);
-      // Notify socket that user joined channel
-      if (socket && currentCall) {
-        socket.emit('CALL_USER_JOINED_CHANNEL', {
-          callId: currentCall.callId,
-          agoraUid: user.uid,
-        });
-      }
+      // Note: We don't emit CALL_USER_JOINED_CHANNEL for remote users here
+      // because their own client will emit it when they join
     },
     onUserLeft: (user) => {
       console.log('Remote user left:', user.uid);
@@ -184,14 +206,33 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
     // Session-based call joined successfully
     socket.on('SESSION_CALL_JOINED', ({ callId, channelName, token, uid, callType, isNew }) => {
       console.log('Session call joined:', { callId, channelName, callType, isNew });
-      setCurrentCall((prev) => prev ? { ...prev, callId, channelName } : {
+
+      // Update currentCall with the real callId
+      const updatedCall = {
         callId,
         channelName,
         callType,
         otherUser: { id: '', name: '' },
-      });
+      };
+      setCurrentCall((prev) => prev ? { ...prev, callId, channelName } : updatedCall);
+
+      // Also update ref immediately so pending join can use it
+      currentCallRef.current = currentCallRef.current
+        ? { ...currentCallRef.current, callId, channelName }
+        : updatedCall as CallInfo;
+
       // Join Agora channel with the token
       agora.join(channelName, token, uid);
+
+      // If there's a pending join uid (onLocalJoined fired before callId was ready), emit now
+      if (pendingJoinUidRef.current !== null) {
+        console.log('Emitting delayed CALL_USER_JOINED_CHANNEL with callId:', callId, 'uid:', pendingJoinUidRef.current);
+        socket.emit('CALL_USER_JOINED_CHANNEL', {
+          callId,
+          agoraUid: pendingJoinUidRef.current,
+        });
+        pendingJoinUidRef.current = null;
+      }
     });
 
     // Session call is ready (notifies the other user)

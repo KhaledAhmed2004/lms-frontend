@@ -170,14 +170,16 @@ export function useLogout() {
   const router = useRouter();
 
   const clearAllAuthData = () => {
-    // Clear React Query cache
+    // 1. Clear Zustand store FIRST (this also clears localStorage and cookies)
+    useAuthStore.getState().logout();
+
+    // 2. Clear React Query cache completely
     queryClient.clear();
+    queryClient.removeQueries();
 
+    // 3. Double-check localStorage is cleared (belt and suspenders approach)
     if (typeof window !== 'undefined') {
-      // Clear localStorage FIRST (before zustand can re-persist)
       localStorage.removeItem('auth-storage');
-
-      // Clear sessionStorage
       sessionStorage.clear();
 
       // Clear all cookies from frontend (non-httpOnly ones)
@@ -185,14 +187,6 @@ export function useLogout() {
         const name = cookie.split('=')[0].trim();
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
       });
-    }
-
-    // Clear Zustand store AFTER localStorage removal
-    useAuthStore.getState().logout();
-
-    // Force clear localStorage again to ensure it's gone
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('auth-storage');
     }
   };
 

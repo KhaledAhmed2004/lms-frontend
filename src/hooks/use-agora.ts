@@ -16,6 +16,7 @@ export type CallState = 'idle' | 'connecting' | 'connected' | 'disconnecting' | 
 interface UseAgoraOptions {
   onUserJoined?: (user: IAgoraRTCRemoteUser) => void;
   onUserLeft?: (user: IAgoraRTCRemoteUser) => void;
+  onLocalJoined?: (uid: number) => void;  // Called when local user successfully joins
   onError?: (error: Error) => void;
 }
 
@@ -158,6 +159,9 @@ export function useAgora(options: UseAgoraOptions = {}) {
       }));
 
       console.log('Successfully joined channel:', channelName);
+
+      // Notify that local user has joined (for attendance tracking)
+      options.onLocalJoined?.(uid);
     } catch (error) {
       console.error('Error joining channel:', error);
       const err = error instanceof Error ? error : new Error('Failed to join channel');

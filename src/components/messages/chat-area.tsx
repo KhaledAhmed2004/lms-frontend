@@ -4,6 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { Paperclip, Calendar, ArrowUp, ArrowLeft, Loader2, Headphones, X, FileText, Image as ImageIcon, Film } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import ScheduleModal from "./schedule-modal";
 import SessionProposal from "./session-proposal";
 import { Textarea } from "../ui/textarea";
@@ -84,6 +90,20 @@ export default function ChatArea({
 
   // Schedule button should only appear if tutor is chatting with a student
   const canShowScheduleButton = isTutor && isOtherParticipantStudent;
+
+  // Check if there's a pending proposal in current messages (status: PROPOSED)
+  const hasPendingProposal = messages?.some(
+    (msg) => msg.type === 'session_proposal' &&
+             (msg.sessionProposal as any)?.status === 'PROPOSED'
+  );
+
+  // Check if there's an active session in current messages (ACCEPTED status with sessionId)
+  // Active session = proposal accepted and session not yet completed
+  const hasActiveSession = messages?.some(
+    (msg) => msg.type === 'session_proposal' &&
+             (msg.sessionProposal as any)?.status === 'ACCEPTED' &&
+             (msg.sessionProposal as any)?.sessionId
+  );
 
   // Get initials from name
   const getInitials = (name: string) => {
@@ -489,6 +509,7 @@ export default function ChatArea({
                         startTimeRaw={(msg.sessionProposal as any).startTime || msg.sessionProposal.scheduledAt}
                         endTimeRaw={(msg.sessionProposal as any).endTime}
                         status={(msg.sessionProposal as any).status}
+                        noShowBy={(msg.sessionProposal as any).noShowBy}
                         isOwn={isOwn}
                         isLoading={isAccepting || isRejecting || isCounterProposing || isCancelling}
                         userRole={user?.role}
@@ -662,19 +683,34 @@ export default function ChatArea({
               </Button>
 
               {canShowScheduleButton && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 text-foreground bg-transparent"
-                  onClick={() => setIsScheduleOpen(true)}
-                  disabled={isProposing}
-                >
-                  {isProposing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Calendar className="w-4 h-4 text-blue-500" />
-                  )}
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className={`gap-2 text-foreground bg-transparent ${(hasPendingProposal || hasActiveSession) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        onClick={() => !(hasPendingProposal || hasActiveSession) && setIsScheduleOpen(true)}
+                        disabled={isProposing || hasPendingProposal || hasActiveSession}
+                      >
+                        {isProposing ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Calendar className={`w-4 h-4 ${(hasPendingProposal || hasActiveSession) ? 'text-gray-400' : 'text-blue-500'}`} />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>
+                        {hasPendingProposal
+                          ? 'Pending proposal exists - wait for response'
+                          : hasActiveSession
+                            ? 'Active session in progress - wait for completion'
+                            : 'Session Proposal'}
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               <div className="flex-1" />

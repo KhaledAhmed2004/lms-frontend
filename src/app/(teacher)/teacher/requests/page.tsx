@@ -305,9 +305,9 @@ export default function RequestsPage() {
 
           <ScrollArea className="max-h-[calc(90vh-100px)]">
             <div className="px-6 pb-6">
-          <div className="space-y-6 py-4">
+          <div className="space-y-4">
             {/* Student Info Grid */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               <div>
                 <p className="text-xs text-gray-500 mb-1">Name</p>
                 <p className="text-sm text-gray-900">{selectedRequest ? getStudentName(selectedRequest) : "Unknown"}</p>

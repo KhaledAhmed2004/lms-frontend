@@ -3,6 +3,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ScheduleModalProps {
@@ -36,13 +43,42 @@ const generateTimeOptions = () => {
   return options;
 };
 
+// Get the next available time slot (current time + 5 minutes, rounded to next interval)
+const getDefaultTime = () => {
+  const now = new Date();
+  const interval = TEST_MODE ? 5 : 60;
+
+  // Add 5 minutes to current time
+  now.setMinutes(now.getMinutes() + 5);
+
+  // Round up to next interval
+  const minutes = now.getMinutes();
+  const roundedMinutes = Math.ceil(minutes / interval) * interval;
+  now.setMinutes(roundedMinutes);
+
+  // Handle overflow (e.g., 60 minutes -> next hour)
+  let hour = now.getHours();
+  let minute = now.getMinutes();
+  if (minute >= 60) {
+    minute = 0;
+    hour = (hour + 1) % 24;
+  }
+
+  const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const period = hour < 12 ? 'AM' : 'PM';
+  const hourStr = hour12.toString().padStart(2, '0');
+  const minStr = minute.toString().padStart(2, '0');
+
+  return `${hourStr}:${minStr} ${period}`;
+};
+
 export default function ScheduleModal({
   isOpen,
   onClose,
   onSchedule,
 }: ScheduleModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedTime, setSelectedTime] = useState("10:00 AM");
+  const [selectedTime, setSelectedTime] = useState(() => TEST_MODE ? getDefaultTime() : "10:00 AM");
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const timeOptions = generateTimeOptions();
@@ -103,6 +139,11 @@ export default function ScheduleModal({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-card rounded-xl shadow-lg w-full max-w-md p-6 border border-border">
+        {/* Modal Title */}
+        <h2 className="text-lg font-semibold text-foreground mb-6">
+          Session Proposal
+        </h2>
+
         {/* Select Date */}
         <h3 className="text-sm font-semibold text-foreground mb-4">
           Select Date
@@ -171,17 +212,18 @@ export default function ScheduleModal({
         <h3 className="text-sm font-semibold text-foreground mb-3">
           Select Time
         </h3>
-        <select
-          value={selectedTime}
-          onChange={(e) => setSelectedTime(e.target.value)}
-          className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-accent mb-4"
-        >
-          {timeOptions.map((time) => (
-            <option key={time} value={time}>
-              {time}
-            </option>
-          ))}
-        </select>
+        <Select value={selectedTime} onValueChange={setSelectedTime}>
+          <SelectTrigger className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground mb-4">
+            <SelectValue placeholder="Select time" />
+          </SelectTrigger>
+          <SelectContent className="max-h-60">
+            {timeOptions.map((time) => (
+              <SelectItem key={time} value={time}>
+                {time}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         {/* Selected Schedule Summary */}
         {selectedDate && (

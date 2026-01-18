@@ -185,7 +185,7 @@ const Page2 = ({ trialRequest }: Page2Props) => {
           toast.success('Session accepted! Check your upcoming sessions.');
         },
         onError: (error: any) => {
-          toast.error(error?.response?.data?.message || 'Failed to accept session');
+          toast.error(error?.message || 'Failed to accept session');
         },
       });
     } else if (action === 'declined') {
@@ -194,7 +194,7 @@ const Page2 = ({ trialRequest }: Page2Props) => {
           toast.info('Session proposal declined');
         },
         onError: (error: any) => {
-          toast.error(error?.response?.data?.message || 'Failed to decline session');
+          toast.error(error?.message || 'Failed to decline session');
         },
       });
     }
@@ -327,8 +327,10 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                           startTimeRaw={(msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt}
                           endTimeRaw={(msg as any).sessionProposal.endTime}
                           status={(msg as any).sessionProposal.status}
+                          noShowBy={(msg as any).sessionProposal.noShowBy}
                           isOwn={isStudent}
                           isLoading={isAccepting || isRejecting}
+                          userRole="STUDENT"
                           onAccept={() => handleSessionAction(msg._id, "accepted")}
                           onReschedule={() => setIsScheduleOpen(true)}
                           onDecline={() => handleSessionAction(msg._id, "declined")}

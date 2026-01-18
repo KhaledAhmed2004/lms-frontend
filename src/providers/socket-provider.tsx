@@ -152,6 +152,13 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['trial-requests', 'available'] });
     });
 
+    // Listen for session proposal status updates (accept, reject, counter, cancel)
+    socketInstance.on('PROPOSAL_UPDATED', (data: { messageId: string; chatId: string; status: string }) => {
+      console.log('Proposal updated via socket:', data);
+      // Invalidate messages query to refetch updated proposal status
+      queryClient.invalidateQueries({ queryKey: ['messages', data.chatId] });
+    });
+
     setSocket(socketInstance);
 
     return () => {
@@ -159,6 +166,7 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       socketInstance.off('TRIAL_REQUEST_CREATED');
       socketInstance.off('TRIAL_REQUEST_ACCEPTED');
       socketInstance.off('TRIAL_REQUEST_TAKEN');
+      socketInstance.off('PROPOSAL_UPDATED');
       socketInstance.disconnect();
     };
   }, [token, user, queryClient]);

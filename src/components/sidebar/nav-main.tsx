@@ -34,7 +34,7 @@ export function NavMain({
                 isActive={pathname.startsWith(item.url)}
                 tooltip={item.title}
                 size="lg"
-                className="transition-all duration-300 ease-in-out text-base sm:text-lg font-medium data-[active=true]:bg-[#002AC8] data-[active=true]:text-white"
+                className="transition-all duration-200 text-base font-medium rounded-xl py-3 px-4 hover:bg-[#002AC8]/10 data-[active=true]:bg-[#002AC8] data-[active=true]:text-white data-[active=true]:shadow-md data-[active=true]:shadow-[#002AC8]/25"
               >
                 <Link href={item.url}>
                   {item.icon && <item.icon className="!size-5" />}

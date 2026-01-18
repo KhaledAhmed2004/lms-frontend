@@ -136,6 +136,9 @@ export function useMySubscription() {
     },
     // Only fetch if user is a STUDENT
     enabled: isAuthenticated && isStudent,
+    // Always fetch fresh data on mount to ensure accurate subscription status for routing
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 

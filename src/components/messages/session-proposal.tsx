@@ -10,7 +10,8 @@ interface SessionProposalProps {
   startTimeRaw?: Date | string;
   endTimeRaw?: Date | string;
   meetLink?: string;
-  status?: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'COUNTER_PROPOSED' | 'CANCELLED' | 'COMPLETED';
+  status?: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'COUNTER_PROPOSED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+  noShowBy?: 'tutor' | 'student';
   isOwn?: boolean;
   isLoading?: boolean;
   userRole?: string;
@@ -33,6 +34,7 @@ export default function SessionProposal({
   endTimeRaw,
   meetLink,
   status = 'PROPOSED',
+  noShowBy,
   isOwn = false,
   isLoading = false,
   userRole,
@@ -144,6 +146,12 @@ export default function SessionProposal({
             Review required
           </span>
         );
+      case 'NO_SHOW':
+        return (
+          <span className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full font-medium">
+            No-show
+          </span>
+        );
       default:
         return (
           <span className="text-xs text-orange-500 font-medium">
@@ -219,6 +227,52 @@ export default function SessionProposal({
           <div>
             <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
             <p className="text-sm font-medium text-gray-400 whitespace-nowrap">
+              {time}{endTime ? ` – ${endTime}` : ''}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // No-show session - show no-show card with info about who didn't join
+  if (status === 'NO_SHOW') {
+    const getNoShowMessage = () => {
+      if (!noShowBy) return 'Session no-show';
+
+      const isTutor = userRole === 'TUTOR';
+      if (noShowBy === 'tutor') {
+        return isTutor ? "You didn't join" : "Tutor didn't join";
+      } else {
+        return isTutor ? "Student didn't join" : "You didn't join";
+      }
+    };
+
+    return (
+      <div className="bg-white border border-red-100 rounded-xl p-6 w-72 shadow-sm">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-base font-medium text-gray-600">{getNoShowMessage()}</h3>
+          {getStatusBadge()}
+        </div>
+
+        {/* Date Section */}
+        <div className="flex items-center gap-3 mb-4">
+          <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
+          <div>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-sm font-medium text-gray-500 whitespace-nowrap">
+              {getDateDisplay(date)}
+            </p>
+          </div>
+        </div>
+
+        {/* Time Section */}
+        <div className="flex items-center gap-3">
+          <Clock className="w-5 h-5 text-gray-300 shrink-0" />
+          <div>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+            <p className="text-sm font-medium text-gray-500 whitespace-nowrap">
               {time}{endTime ? ` – ${endTime}` : ''}
             </p>
           </div>

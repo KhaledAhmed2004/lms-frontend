@@ -25,6 +25,12 @@ export const PAYMENT_STATUS = {
   REFUNDED: 'REFUNDED',
 } as const;
 
+// Completion Status Enum (separate for student and teacher)
+export const COMPLETION_STATUS = {
+  NOT_APPLICABLE: 'NOT_APPLICABLE',  // Session not yet eligible for completion
+  COMPLETED: 'COMPLETED',             // Completed for this party
+} as const;
+
 // Types
 export interface Session {
   _id: string;
@@ -56,6 +62,18 @@ export interface Session {
   isTrial?: boolean;
   reviewId?: string | object;
   tutorFeedbackId?: string | object;
+
+  // Student completion tracking
+  studentCompletionStatus?: keyof typeof COMPLETION_STATUS;
+  studentCompletedAt?: string;
+  studentJoined?: boolean;  // Did student join the call?
+
+  // Teacher completion tracking
+  teacherCompletionStatus?: keyof typeof COMPLETION_STATUS;
+  teacherCompletedAt?: string;
+  teacherJoined?: boolean;  // Did teacher join the call?
+  teacherFeedbackRequired?: boolean;  // Is feedback pending?
+
   createdAt: string;
   updatedAt: string;
 }

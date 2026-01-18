@@ -40,6 +40,12 @@ export interface TutorSessionFeedback {
   submittedAt?: string;
   isLate: boolean;
   status: FEEDBACK_STATUS;
+
+  // Payment forfeit tracking (deadline missed)
+  paymentForfeited?: boolean;   // True if tutor missed feedback deadline
+  forfeitedAmount?: number;     // Amount forfeited
+  forfeitedAt?: string;         // When it was forfeited
+
   createdAt: string;
   updatedAt: string;
 }
@@ -87,7 +93,7 @@ export function useSubmitTutorFeedback() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-feedbacks'] });
       queryClient.invalidateQueries({ queryKey: ['tutor-feedbacks'] });
-      queryClient.invalidateQueries({ queryKey: ['completed-sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['sessions', 'completed'] });
       queryClient.invalidateQueries({ queryKey: ['tutor-statistics'] });
     },
   });

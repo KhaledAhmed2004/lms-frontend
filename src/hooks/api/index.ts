@@ -66,6 +66,7 @@ export {
   useUnifiedSessions,
   SESSION_STATUS,
   PAYMENT_STATUS,
+  COMPLETION_STATUS,
 } from './use-sessions';
 
 // Student Hooks

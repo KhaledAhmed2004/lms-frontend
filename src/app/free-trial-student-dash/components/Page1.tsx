@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMyRequests, TRIAL_REQUEST_STATUS } from "@/hooks/api";
 import { useTrialSession, SESSION_STATUS } from "@/hooks/api/use-sessions";
+import { useMySubscription } from "@/hooks/api/use-subscription";
 import { useAuthStore } from "@/store/auth-store";
 import Page2 from "./Page2";
 import Page3 from "./Page3";
@@ -43,7 +44,10 @@ const Page1 = () => {
     trialRequest?._id
   );
 
-  const isLoading = isLoadingRequests || isLoadingSession;
+  // Fetch subscription to check if student already has active subscription
+  const { data: subscription, isLoading: isLoadingSubscription } = useMySubscription();
+
+  const isLoading = isLoadingRequests || isLoadingSession || isLoadingSubscription;
 
   // Determine step based on status
   const getStep = () => {
@@ -72,6 +76,13 @@ const Page1 = () => {
       router.push("/login?redirect=/free-trial-student-dash");
     }
   }, [mounted, isAuthenticated, router]);
+
+  // Redirect to student dashboard if subscription is active
+  useEffect(() => {
+    if (mounted && !isLoadingSubscription && subscription?.status === 'ACTIVE') {
+      router.replace("/student/session");
+    }
+  }, [mounted, isLoadingSubscription, subscription, router]);
 
   useEffect(() => {
     const computeWidth = () => {

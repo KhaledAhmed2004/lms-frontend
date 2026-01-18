@@ -21,7 +21,7 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
       }
     >
       <AppSidebar variant="inset" />
-      <SidebarInset className="flex flex-col overflow-hidden">
+      <SidebarInset className="flex flex-col overflow-hidden bg-white">
         <SiteHeader />
         <div className="flex-1 overflow-y-auto">
           <div

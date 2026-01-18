@@ -98,7 +98,7 @@ export function SiteHeader() {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <header className="flex h-(--header-height) shrink-0 items-center justify-between gap-2 border-b bg-background px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
+    <header className="border rounded-t-2xl flex h-(--header-height) shrink-0 items-center justify-between gap-2  border-gray-200 bg-white px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)">
       <div className="flex items-center gap-1">
         <SidebarTrigger />
         <Separator

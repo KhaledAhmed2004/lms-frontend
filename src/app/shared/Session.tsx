@@ -6,9 +6,9 @@ import { Calendar, Clock, Star, Mic, Square, Check, Loader2 } from "lucide-react
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { useUpcomingSessions, useCompletedSessions, Session as SessionType } from "@/hooks/api/use-sessions";
+import { useUpcomingSessions, useCompletedSessions, Session as SessionType, COMPLETION_STATUS } from "@/hooks/api/use-sessions";
 import { useSubmitTutorFeedback, FEEDBACK_TYPE } from "@/hooks/api/use-tutor-feedback";
-import { format } from "date-fns";
+import { format, differenceInDays, isBefore } from "date-fns";
 
 type FeedbackStep = "audio" | "text" | "success";
 
@@ -318,9 +318,30 @@ export default function Session() {
   const sessions = activeTab === "upcoming" ? upcomingSessions : completedSessions;
   const isLoading = activeTab === "upcoming" ? upcomingLoading : completedLoading;
 
+  // Calculate feedback deadline (3rd of next month from session date)
+  const getFeedbackDeadline = (sessionEndTime: string) => {
+    const sessionDate = new Date(sessionEndTime);
+    const nextMonth = new Date(sessionDate.getFullYear(), sessionDate.getMonth() + 1, 3, 23, 59, 59);
+    return nextMonth;
+  };
+
+  // Check if feedback deadline has passed
+  const isDeadlinePassed = (session: SessionType) => {
+    const deadline = getFeedbackDeadline(session.endTime);
+    return isBefore(deadline, new Date());
+  };
+
+  // Get days until deadline
+  const getDaysUntilDeadline = (session: SessionType) => {
+    const deadline = getFeedbackDeadline(session.endTime);
+    return differenceInDays(deadline, new Date());
+  };
+
   const handleGiveFeedback = (session: SessionType) => {
     // Don't open modal if feedback already given
     if (session.tutorFeedbackId) return;
+    // Don't allow feedback after deadline
+    if (isDeadlinePassed(session)) return;
     setSelectedSession(session);
     setShowAudioFeedbackModal(true);
   };
@@ -405,6 +426,22 @@ export default function Session() {
                         Feedback Given
                       </span>
                     )}
+                    {activeTab === "completed" && !session.tutorFeedbackId && session.teacherFeedbackRequired && (
+                      isDeadlinePassed(session) ? (
+                        <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-0.5 sm:py-1 rounded-3xl">
+                          Deadline Missed
+                        </span>
+                      ) : getDaysUntilDeadline(session) <= 3 ? (
+                        <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-0.5 sm:py-1 rounded-3xl">
+                          {getDaysUntilDeadline(session)} days left
+                        </span>
+                      ) : null
+                    )}
+                    {activeTab === "completed" && session.teacherCompletionStatus === COMPLETION_STATUS.COMPLETED && (
+                      <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-0.5 sm:py-1 rounded-3xl">
+                        Completed
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
@@ -427,20 +464,24 @@ export default function Session() {
                   onClick={() =>
                     activeTab === "completed" && handleGiveFeedback(session)
                   }
-                  disabled={activeTab === "completed" && !!session.tutorFeedbackId}
+                  disabled={activeTab === "completed" && (!!session.tutorFeedbackId || isDeadlinePassed(session))}
                   className={`sm:ml-4 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm transition-colors w-full sm:w-auto ${
                     activeTab === "upcoming"
                       ? "bg-gray-500 text-white hover:bg-gray-600"
                       : session.tutorFeedbackId
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                        : "bg-[#002AC8] text-white hover:bg-[#3052D2]"
+                        : isDeadlinePassed(session)
+                          ? "bg-red-100 text-red-500 cursor-not-allowed"
+                          : "bg-[#002AC8] text-white hover:bg-[#3052D2]"
                   }`}
                 >
                   {activeTab === "upcoming"
                     ? "Start Session"
                     : session.tutorFeedbackId
                       ? "Feedback Given"
-                      : "Give Feedback"}
+                      : isDeadlinePassed(session)
+                        ? "Deadline Passed"
+                        : "Give Feedback"}
                 </button>
               </div>
             ))

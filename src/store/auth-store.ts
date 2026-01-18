@@ -37,6 +37,15 @@ const setAuthCookie = (token: string) => {
 const clearAuthCookie = () => {
   if (typeof document !== 'undefined') {
     document.cookie = 'accessToken=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    document.cookie = 'refreshToken=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  }
+};
+
+// Helper to clear persisted storage
+const clearPersistedStorage = () => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('auth-storage');
+    sessionStorage.clear();
   }
 };
 
@@ -63,7 +72,11 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        clearAuthCookie(); // Clear cookie on logout
+        // Clear persisted storage FIRST to prevent re-persistence
+        clearPersistedStorage();
+        // Clear cookies
+        clearAuthCookie();
+        // Reset state
         set({ user: null, accessToken: null, isAuthenticated: false });
       },
     }),
