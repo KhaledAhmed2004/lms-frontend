@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import {
   IconCreditCard,
   IconDotsVertical,
@@ -42,6 +43,12 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const { mutate: logout, isPending: isLoggingOut } = useLogout()
+  // Prevent hydration mismatch by only rendering dropdown after mount
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const getInitials = (name: string) => {
     return name
@@ -50,6 +57,30 @@ export function NavUser({
       .join("")
       .toUpperCase()
       .slice(0, 2)
+  }
+
+  // Show a simple button during SSR to avoid hydration mismatch
+  if (!isMounted) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg">
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarFallback className="rounded-lg">
+                {getInitials(user.name)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {user.email}
+              </span>
+            </div>
+            <IconDotsVertical className="ml-auto size-4" />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    )
   }
 
   return (

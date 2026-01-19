@@ -11,7 +11,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ScheduleModal from "./schedule-modal";
-import SessionProposal from "./session-proposal";
+import SessionProposalWithFeedback from "./SessionProposalWithFeedback";
+import TutorFeedbackModal from "@/components/modals/TutorFeedbackModal";
 import { Textarea } from "../ui/textarea";
 import { useMessages, useSendMessage, useMarkChatAsRead, useChats, Chat, useSendMessageWithAttachment, Attachment } from "@/hooks/api/use-chats";
 import { useAuthStore } from "@/store/auth-store";
@@ -33,6 +34,8 @@ export default function ChatArea({
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [counterProposalMessageId, setCounterProposalMessageId] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+  const [selectedSessionForFeedback, setSelectedSessionForFeedback] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
@@ -502,7 +505,7 @@ export default function ChatArea({
                   )}
                   <div className={isOwn && !msg.sessionProposal ? "text-right" : ""}>
                     {msg.sessionProposal ? (
-                      <SessionProposal
+                      <SessionProposalWithFeedback
                         date={new Date((msg.sessionProposal as any).startTime || msg.sessionProposal.scheduledAt).toLocaleDateString()}
                         time={new Date((msg.sessionProposal as any).startTime || msg.sessionProposal.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         endTime={(msg.sessionProposal as any).endTime ? new Date((msg.sessionProposal as any).endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
@@ -513,6 +516,7 @@ export default function ChatArea({
                         isOwn={isOwn}
                         isLoading={isAccepting || isRejecting || isCounterProposing || isCancelling}
                         userRole={user?.role}
+                        sessionId={(msg.sessionProposal as any).sessionId}
                         onAccept={() => handleSessionAction(msg._id, "accepted")}
                         onReschedule={() => {
                           // Counter-proposing alternative time
@@ -525,12 +529,18 @@ export default function ChatArea({
                           // Join session-based video call with the other participant
                           // Both users will join the same channel based on sessionId
                           if (otherParticipant && (msg.sessionProposal as any)?.sessionId) {
+                            const endTimeRaw = (msg.sessionProposal as any).endTime;
                             joinSessionCall(
                               (msg.sessionProposal as any).sessionId,
                               otherParticipant._id,
-                              otherParticipant.name || 'User'
+                              otherParticipant.name || 'User',
+                              endTimeRaw ? new Date(endTimeRaw) : undefined  // Pass endTime for countdown
                             );
                           }
+                        }}
+                        onLeaveReview={(sessionId) => {
+                          setSelectedSessionForFeedback(sessionId);
+                          setIsFeedbackModalOpen(true);
                         }}
                       />
                     ) : (
@@ -741,6 +751,18 @@ export default function ChatArea({
           setCounterProposalMessageId(null);
         }}
         onSchedule={handleSchedule}
+      />
+
+      {/* Tutor Feedback Modal */}
+      <TutorFeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => {
+          setIsFeedbackModalOpen(false);
+          setSelectedSessionForFeedback(null);
+        }}
+        sessionId={selectedSessionForFeedback}
+        studentName={otherParticipant?.name}
+        chatId={actualChatId}
       />
     </div>
   );

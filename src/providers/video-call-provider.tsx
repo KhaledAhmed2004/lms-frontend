@@ -10,8 +10,9 @@ import {
   ReactNode,
 } from 'react';
 import { useSocket } from './socket-provider';
-import { useAgora } from '@/hooks/use-agora';
+import { useAgora, DeviceErrorType } from '@/hooks/use-agora';
 import { useAuthStore } from '@/store/auth-store';
+import { toast } from 'sonner';
 
 export interface CallInfo {
   callId: string;
@@ -23,6 +24,7 @@ export interface CallInfo {
     profilePicture?: string;
   };
   sessionId?: string;
+  endTime?: Date;  // Session end time for countdown warning
 }
 
 export interface IncomingCallInfo extends CallInfo {
@@ -48,6 +50,8 @@ interface VideoCallContextType {
   remoteUsers: any[];
   isAudioMuted: boolean;
   isVideoMuted: boolean;
+  isAudioOnly: boolean;
+  deviceError: DeviceErrorType | null;
 
   // Actions
   initiateCall: (receiverId: string, callType: 'video' | 'audio', chatId?: string, sessionId?: string) => void;
@@ -58,7 +62,7 @@ interface VideoCallContextType {
   toggleVideo: () => void;
 
   // Session-based call (for tutoring sessions)
-  joinSessionCall: (sessionId: string, otherUserId: string, otherUserName: string) => void;
+  joinSessionCall: (sessionId: string, otherUserId: string, otherUserName: string, endTime?: Date) => void;
 }
 
 const VideoCallContext = createContext<VideoCallContextType | null>(null);
@@ -115,6 +119,26 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
     },
     onError: (error) => {
       console.error('Agora error:', error);
+    },
+    onDeviceError: (errorType, message) => {
+      console.warn('Device error:', errorType, message);
+      // Show user-friendly toast based on error type
+      if (errorType === 'NOT_READABLE') {
+        toast.warning('Camera/Mic in use', {
+          description: 'Your camera or microphone is being used by another app. Joining with audio only.',
+          duration: 6000,
+        });
+      } else if (errorType === 'NOT_FOUND') {
+        toast.error('No device found', {
+          description: message,
+          duration: 6000,
+        });
+      } else if (errorType === 'NOT_ALLOWED') {
+        toast.error('Permission denied', {
+          description: 'Please allow camera/microphone access in your browser settings.',
+          duration: 6000,
+        });
+      }
     },
   });
 
@@ -325,7 +349,8 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
   const joinSessionCall = useCallback((
     sessionId: string,
     otherUserId: string,
-    otherUserName: string
+    otherUserName: string,
+    endTime?: Date
   ) => {
     if (!socket || !isConnected) {
       console.error('Socket not connected');
@@ -338,6 +363,7 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
       callType: 'video',
       otherUser: { id: otherUserId, name: otherUserName },
       sessionId,
+      endTime,  // Store end time for countdown warning
     });
 
     // Emit session-based call join - both users will get same channel
@@ -361,6 +387,8 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
     remoteUsers: agora.remoteUsers,
     isAudioMuted: agora.isAudioMuted,
     isVideoMuted: agora.isVideoMuted,
+    isAudioOnly: agora.isAudioOnly,
+    deviceError: agora.deviceError,
 
     initiateCall,
     acceptCall,

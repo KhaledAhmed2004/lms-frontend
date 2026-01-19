@@ -92,6 +92,7 @@ const Page3 = () => {
       const tier = PLAN_TO_TIER[selectedPlan];
       const result = await createPaymentIntent.mutateAsync(tier);
 
+      // All tiers now return a clientSecret (PaymentIntent for REGULAR/LONG_TERM, SetupIntent for FLEXIBLE)
       setClientSecret(result.clientSecret);
       setSubscriptionId(result.subscriptionId);
       setPaymentAmount(result.amount);
@@ -269,6 +270,7 @@ const Page3 = () => {
               onSuccess={handlePaymentSuccess}
               onCancel={handleCancelPayment}
               isConfirming={confirmPayment.isPending}
+              isSetupIntent={selectedPlan === 'flexible'}
             />
           </StripeProvider>
         ) : (
@@ -303,8 +305,12 @@ const Page3 = () => {
                 <span className="font-semibold text-gray-900">{selectedPlanDetails?.courseDuration}</span>
               </div>
               <div className="flex justify-between items-center py-3 mt-2">
-                <span className="text-lg font-semibold text-gray-800">Total Amount</span>
-                <span className="text-2xl font-bold text-[#0B31BD]">{paymentAmount}€</span>
+                <span className="text-lg font-semibold text-gray-800">
+                  {selectedPlan === 'flexible' ? 'Payment' : 'Total Amount'}
+                </span>
+                <span className="text-2xl font-bold text-[#0B31BD]">
+                  {selectedPlan === 'flexible' ? 'Pay per session' : `${paymentAmount}€`}
+                </span>
               </div>
             </div>
 
@@ -331,10 +337,10 @@ const Page3 = () => {
               {createPaymentIntent.isPending ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Initializing Payment...
+                  {selectedPlan === 'flexible' ? 'Activating...' : 'Initializing Payment...'}
                 </>
               ) : (
-                'Proceed to Payment'
+                selectedPlan === 'flexible' ? 'Activate Plan' : 'Proceed to Payment'
               )}
             </button>
           </>

@@ -13,11 +13,15 @@ const APP_ID = process.env.NEXT_PUBLIC_AGORA_APP_ID || '';
 
 export type CallState = 'idle' | 'connecting' | 'connected' | 'disconnecting' | 'error';
 
+// Device error types for better user messaging
+export type DeviceErrorType = 'NOT_READABLE' | 'NOT_FOUND' | 'NOT_ALLOWED' | 'UNKNOWN';
+
 interface UseAgoraOptions {
   onUserJoined?: (user: IAgoraRTCRemoteUser) => void;
   onUserLeft?: (user: IAgoraRTCRemoteUser) => void;
   onLocalJoined?: (uid: number) => void;  // Called when local user successfully joins
   onError?: (error: Error) => void;
+  onDeviceError?: (errorType: DeviceErrorType, message: string) => void;  // Called for device-specific errors
 }
 
 interface AgoraState {
@@ -28,6 +32,39 @@ interface AgoraState {
   isAudioMuted: boolean;
   isVideoMuted: boolean;
   error: string | null;
+  deviceError: DeviceErrorType | null;
+  isAudioOnly: boolean;  // True if joined with audio only due to camera issues
+}
+
+// Helper to parse Agora device errors
+function parseDeviceError(error: unknown): { type: DeviceErrorType; message: string } {
+  const errorString = String(error);
+
+  if (errorString.includes('NOT_READABLE') || errorString.includes('Device in use')) {
+    return {
+      type: 'NOT_READABLE',
+      message: 'Camera or microphone is being used by another application. Please close other apps using your camera/mic and try again.',
+    };
+  }
+
+  if (errorString.includes('NOT_FOUND') || errorString.includes('Requested device not found')) {
+    return {
+      type: 'NOT_FOUND',
+      message: 'No camera or microphone found. Please connect a device and try again.',
+    };
+  }
+
+  if (errorString.includes('NOT_ALLOWED') || errorString.includes('Permission denied')) {
+    return {
+      type: 'NOT_ALLOWED',
+      message: 'Camera/microphone access denied. Please allow access in your browser settings.',
+    };
+  }
+
+  return {
+    type: 'UNKNOWN',
+    message: 'Failed to access camera or microphone. Please check your device settings.',
+  };
 }
 
 export function useAgora(options: UseAgoraOptions = {}) {
@@ -41,6 +78,8 @@ export function useAgora(options: UseAgoraOptions = {}) {
     isAudioMuted: false,
     isVideoMuted: false,
     error: null,
+    deviceError: null,
+    isAudioOnly: false,
   });
 
   // Initialize client on mount
@@ -146,19 +185,50 @@ export function useAgora(options: UseAgoraOptions = {}) {
       // Join the channel
       await client.join(APP_ID, channelName, token, uid);
 
-      // Create and publish local tracks
-      const [audioTrack, videoTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+      // Try to create and publish local tracks
+      let audioTrack: IMicrophoneAudioTrack | null = null;
+      let videoTrack: ICameraVideoTrack | null = null;
+      let isAudioOnly = false;
 
-      await client.publish([audioTrack, videoTrack]);
+      try {
+        // First try to get both audio and video
+        const [audio, video] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        audioTrack = audio;
+        videoTrack = video;
+      } catch (deviceError) {
+        console.warn('Failed to get camera and mic, trying audio only:', deviceError);
+        const parsedError = parseDeviceError(deviceError);
+        options.onDeviceError?.(parsedError.type, parsedError.message);
+
+        // Try audio only as fallback
+        try {
+          audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+          isAudioOnly = true;
+          console.log('Joined with audio only due to camera issues');
+        } catch (audioError) {
+          console.error('Failed to get audio track:', audioError);
+          const audioErrorParsed = parseDeviceError(audioError);
+          options.onDeviceError?.(audioErrorParsed.type, audioErrorParsed.message);
+          // Continue without any media - user can still see/hear remote users
+        }
+      }
+
+      // Publish whatever tracks we have
+      const tracksToPublish = [audioTrack, videoTrack].filter(Boolean) as (IMicrophoneAudioTrack | ICameraVideoTrack)[];
+      if (tracksToPublish.length > 0) {
+        await client.publish(tracksToPublish);
+      }
 
       setState(prev => ({
         ...prev,
         localAudioTrack: audioTrack,
         localVideoTrack: videoTrack,
         callState: 'connected',
+        isAudioOnly,
+        deviceError: isAudioOnly ? 'NOT_READABLE' : null,
       }));
 
-      console.log('Successfully joined channel:', channelName);
+      console.log('Successfully joined channel:', channelName, isAudioOnly ? '(audio only)' : '(with video)');
 
       // Notify that local user has joined (for attendance tracking)
       options.onLocalJoined?.(uid);
@@ -195,6 +265,8 @@ export function useAgora(options: UseAgoraOptions = {}) {
         isAudioMuted: false,
         isVideoMuted: false,
         error: null,
+        deviceError: null,
+        isAudioOnly: false,
       });
 
       console.log('Left channel');
@@ -206,6 +278,8 @@ export function useAgora(options: UseAgoraOptions = {}) {
         localVideoTrack: null,
         localAudioTrack: null,
         remoteUsers: [],
+        deviceError: null,
+        isAudioOnly: false,
       }));
     }
   }, [state.localAudioTrack, state.localVideoTrack]);

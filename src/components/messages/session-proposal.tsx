@@ -127,20 +127,31 @@ export default function SessionProposal({
           </span>
         );
       case 'COMPLETED':
+        // Teacher view: show "Feedback Given" if they submitted feedback
+        if (userRole === 'TUTOR' && hasReview) {
+          return (
+            <span className="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full font-medium">
+              Feedback Given
+            </span>
+          );
+        }
+        // Student view: show "Completed" if teacher gave feedback with text
         if (hasReview && reviewText) {
           return (
-            <span className="text-xs text-green-600 font-medium">
+            <span className="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full font-medium">
               Completed
             </span>
           );
         }
+        // Student view: show "Completed" if teacher gave feedback (even without text)
         if (hasReview) {
           return (
-            <span className="text-xs text-green-600 font-medium">
-              Review Submitted
+            <span className="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full font-medium">
+              Completed
             </span>
           );
         }
+        // No review yet: show "Review required"
         return (
           <span className="text-xs text-orange-500 font-medium">
             Review required
@@ -313,8 +324,8 @@ export default function SessionProposal({
           </div>
         </div>
 
-        {/* Teacher Review Section - shown when review is submitted with text */}
-        {hasReview && reviewText && (
+        {/* Teacher Review Section - shown to STUDENT when teacher has submitted feedback */}
+        {hasReview && reviewText && userRole === 'STUDENT' && (
           <div className="bg-blue-50 rounded-lg p-4">
             <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-wide mb-2">TEACHER REVIEW</p>
             <p className="text-sm text-gray-700">"{reviewText}"</p>

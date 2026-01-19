@@ -29,9 +29,15 @@ import { useLogout } from "@/hooks/api/use-auth";
 export function SiteHeader() {
   const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
   const [userName, setUserName] = useState("Teacher");
+  const [isMounted, setIsMounted] = useState(false);
   const notificationMenuRef = useRef<HTMLDivElement>(null);
   const { user } = useAuthStore();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Get user name after hydration
   useEffect(() => {
@@ -187,68 +193,84 @@ export function SiteHeader() {
           )}
         </div>
 
-        {/* User Profile Dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-auto p-1.5 gap-2">
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
-                <AvatarFallback className="rounded-lg">
-                  {getInitials(user?.name || "T")}
-                </AvatarFallback>
-              </Avatar>
-              <div className="hidden sm:grid text-left text-sm leading-tight">
-                <span className="truncate font-medium">
-                  {user?.name || "Teacher"}
-                </span>
-                <span className="text-muted-foreground truncate text-xs">
-                  Tutor
-                </span>
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-56 rounded-lg"
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+        {/* User Profile Dropdown - Only render after mount to prevent hydration mismatch */}
+        {isMounted ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-auto p-1.5 gap-2">
+                <Avatar className="h-8 w-8 rounded-lg grayscale">
                   <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
                   <AvatarFallback className="rounded-lg">
                     {getInitials(user?.name || "T")}
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="hidden sm:grid text-left text-sm leading-tight">
                   <span className="truncate font-medium">
                     {user?.name || "Teacher"}
                   </span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {user?.email || ""}
+                    Tutor
                   </span>
                 </div>
-              </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link href="/teacher/profile">
-                  <IconUserCircle />
-                  Account
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuItem
-              onClick={() => logout()}
-              disabled={isLoggingOut}
-              className="cursor-pointer"
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              className="w-56 rounded-lg"
+              align="end"
+              sideOffset={4}
             >
-              <IconLogout />
-              {isLoggingOut ? "Logging out..." : "Log out"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user?.avatar} alt={user?.name || "User"} />
+                    <AvatarFallback className="rounded-lg">
+                      {getInitials(user?.name || "T")}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">
+                      {user?.name || "Teacher"}
+                    </span>
+                    <span className="text-muted-foreground truncate text-xs">
+                      {user?.email || ""}
+                    </span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <Link href="/teacher/profile">
+                    <IconUserCircle />
+                    Account
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuItem
+                onClick={() => logout()}
+                disabled={isLoggingOut}
+                className="cursor-pointer"
+              >
+                <IconLogout />
+                {isLoggingOut ? "Logging out..." : "Log out"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button variant="ghost" className="h-auto p-1.5 gap-2">
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarFallback className="rounded-lg">
+                {getInitials(user?.name || "T")}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden sm:grid text-left text-sm leading-tight">
+              <span className="truncate font-medium">Teacher</span>
+              <span className="text-muted-foreground truncate text-xs">
+                Tutor
+              </span>
+            </div>
+          </Button>
+        )}
       </div>
     </header>
   );

@@ -7,8 +7,9 @@ import { TrialRequest, AcceptedTutor } from '@/hooks/api/use-trial-requests';
 import { Loader2, Send, Paperclip, X, FileText, Image as ImageIcon, Film } from 'lucide-react';
 import { useSocket } from '@/providers/socket-provider';
 import { useAcceptSessionProposal, useRejectSessionProposal } from '@/hooks/api/use-sessions';
-import SessionProposal from '@/components/messages/session-proposal';
+import SessionProposalWithFeedback from '@/components/messages/SessionProposalWithFeedback';
 import ScheduleModal from '@/components/messages/schedule-modal';
+import StudentReviewModal from '@/components/modals/StudentReviewModal';
 import { useVideoCall } from '@/providers/video-call-provider';
 import { toast } from 'sonner';
 
@@ -22,6 +23,8 @@ const Page2 = ({ trialRequest }: Page2Props) => {
   const [progressWidth, setProgressWidth] = useState("55%");
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedSessionForReview, setSelectedSessionForReview] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
@@ -320,7 +323,7 @@ const Page2 = ({ trialRequest }: Page2Props) => {
 
                       {/* Check if message has session proposal */}
                       {(msg as any).sessionProposal ? (
-                        <SessionProposal
+                        <SessionProposalWithFeedback
                           date={new Date((msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt).toLocaleDateString()}
                           time={new Date((msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           endTime={(msg as any).sessionProposal.endTime ? new Date((msg as any).sessionProposal.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
@@ -331,6 +334,7 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                           isOwn={isStudent}
                           isLoading={isAccepting || isRejecting}
                           userRole="STUDENT"
+                          sessionId={(msg as any).sessionProposal.sessionId}
                           onAccept={() => handleSessionAction(msg._id, "accepted")}
                           onReschedule={() => setIsScheduleOpen(true)}
                           onDecline={() => handleSessionAction(msg._id, "declined")}
@@ -338,12 +342,18 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                             // Join session-based video call with the tutor
                             // Both users will join the same channel based on sessionId
                             if (tutor?._id && (msg as any).sessionProposal?.sessionId) {
+                              const endTimeRaw = (msg as any).sessionProposal.endTime;
                               joinSessionCall(
                                 (msg as any).sessionProposal.sessionId,
                                 tutor._id,
-                                tutor.name || 'Tutor'
+                                tutor.name || 'Tutor',
+                                endTimeRaw ? new Date(endTimeRaw) : undefined  // Pass endTime for countdown
                               );
                             }
+                          }}
+                          onLeaveReview={(sessionId) => {
+                            setSelectedSessionForReview(sessionId);
+                            setIsReviewModalOpen(true);
                           }}
                         />
                       ) : (
@@ -513,6 +523,17 @@ const Page2 = ({ trialRequest }: Page2Props) => {
           setIsScheduleOpen(false);
           toast.info('Reschedule request noted. Please discuss with your tutor.');
         }}
+      />
+
+      {/* Student Review Modal */}
+      <StudentReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => {
+          setIsReviewModalOpen(false);
+          setSelectedSessionForReview(null);
+        }}
+        sessionId={selectedSessionForReview}
+        tutorName={tutor?.name}
       />
     </div>
   );

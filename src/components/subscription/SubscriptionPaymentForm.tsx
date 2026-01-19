@@ -17,6 +17,7 @@ interface SubscriptionPaymentFormProps {
   onCancel?: () => void;
   onError?: (error: string) => void;
   isConfirming?: boolean;
+  isSetupIntent?: boolean;  // True for FLEXIBLE tier (save card only, no charge)
 }
 
 export function SubscriptionPaymentForm({
@@ -27,6 +28,7 @@ export function SubscriptionPaymentForm({
   onCancel,
   onError,
   isConfirming = false,
+  isSetupIntent = false,
 }: SubscriptionPaymentFormProps) {
   const stripe = useStripe();
   const elements = useElements();
@@ -47,22 +49,42 @@ export function SubscriptionPaymentForm({
     setErrorMessage(null);
 
     try {
-      // Confirm the payment with Stripe
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${window.location.origin}/student/subscription?payment=success`,
-        },
-        redirect: 'if_required',
-      });
+      if (isSetupIntent) {
+        // For FLEXIBLE tier - confirm SetupIntent (save card, no charge)
+        const { error, setupIntent } = await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/student/subscription?setup=success`,
+          },
+          redirect: 'if_required',
+        });
 
-      if (error) {
-        setErrorMessage(error.message || 'Payment failed');
-        onError?.(error.message || 'Payment failed');
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        // Payment successful - call onSuccess with paymentIntentId
-        setIsSuccess(true);
-        onSuccess?.(paymentIntent.id);
+        if (error) {
+          setErrorMessage(error.message || 'Card setup failed');
+          onError?.(error.message || 'Card setup failed');
+        } else if (setupIntent && setupIntent.status === 'succeeded') {
+          // Setup successful - call onSuccess with setupIntentId
+          setIsSuccess(true);
+          onSuccess?.(setupIntent.id);
+        }
+      } else {
+        // For REGULAR/LONG_TERM tiers - confirm PaymentIntent (charge card)
+        const { error, paymentIntent } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${window.location.origin}/student/subscription?payment=success`,
+          },
+          redirect: 'if_required',
+        });
+
+        if (error) {
+          setErrorMessage(error.message || 'Payment failed');
+          onError?.(error.message || 'Payment failed');
+        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+          // Payment successful - call onSuccess with paymentIntentId
+          setIsSuccess(true);
+          onSuccess?.(paymentIntent.id);
+        }
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'An unexpected error occurred');
@@ -139,6 +161,8 @@ export function SubscriptionPaymentForm({
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               {isConfirming ? 'Confirming...' : 'Processing...'}
             </>
+          ) : isSetupIntent ? (
+            'Save Card & Activate'
           ) : (
             `Pay ${currency}${amount}`
           )}

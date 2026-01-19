@@ -10,6 +10,7 @@ import {
   PhoneOff,
   Maximize2,
   Minimize2,
+  Clock,
 } from 'lucide-react';
 
 interface VideoCallProps {
@@ -34,6 +35,16 @@ export default function VideoCall({ onClose }: VideoCallProps) {
   const remoteVideoRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
+  const [remainingTime, setRemainingTime] = useState<number | null>(null);
+  const [showWarning, setShowWarning] = useState(false);
+
+  // ============================================
+  // 🧪 TEST MODE: Set to true for 5 min test sessions
+  // Set to false for production (60 min sessions)
+  // ============================================
+  const TEST_MODE = true;
+  // Warning threshold: 1 minute before end in TEST_MODE, 15 minutes in production
+  const WARNING_THRESHOLD_MS = TEST_MODE ? 1 * 60 * 1000 : 15 * 60 * 1000;
 
   // Play local video
   useEffect(() => {
@@ -65,6 +76,43 @@ export default function VideoCall({ onClose }: VideoCallProps) {
 
     return () => clearInterval(interval);
   }, [callState]);
+
+  // Session ending countdown timer
+  useEffect(() => {
+    if (!currentCall?.endTime || callState !== 'connected') {
+      setRemainingTime(null);
+      setShowWarning(false);
+      return;
+    }
+
+    const endTimeMs = new Date(currentCall.endTime).getTime();
+
+    const updateCountdown = () => {
+      const now = Date.now();
+      const remaining = endTimeMs - now;
+
+      setRemainingTime(remaining);
+      setShowWarning(remaining > 0 && remaining <= WARNING_THRESHOLD_MS);
+    };
+
+    // Initial update
+    updateCountdown();
+
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentCall?.endTime, callState, WARNING_THRESHOLD_MS]);
+
+  // Format remaining time for display
+  const formatRemainingTime = (ms: number) => {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const mins = Math.floor(totalSeconds / 60);
+    const secs = totalSeconds % 60;
+    if (mins > 0) {
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+    return `${secs}s`;
+  };
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -121,6 +169,18 @@ export default function VideoCall({ onClose }: VideoCallProps) {
           </button>
         </div>
       </div>
+
+      {/* Session Ending Warning Banner */}
+      {showWarning && remainingTime !== null && (
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20">
+          <div className="bg-orange-500/90 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-pulse">
+            <Clock className="w-5 h-5" />
+            <span className="font-medium">
+              {formatRemainingTime(remainingTime)} remaining
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Video Area */}
       <div className="flex-1 relative">

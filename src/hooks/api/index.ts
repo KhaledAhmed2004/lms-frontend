@@ -350,3 +350,13 @@ export type {
   TicketsResponse,
   TicketStats,
 } from './use-support-tickets';
+
+// Pricing Hooks (Public + Admin)
+export {
+  usePricingPlans,
+  useAdminPricingConfig,
+  useUpdatePricingConfig,
+  useUpdateSinglePlan,
+  useResetPricing,
+} from './use-pricing';
+export type { PricingPlan, PricingConfig } from './use-pricing';

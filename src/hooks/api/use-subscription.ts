@@ -131,14 +131,30 @@ export function useMySubscription() {
   return useQuery({
     queryKey: ['my-subscription'],
     queryFn: async () => {
-      const { data } = await apiClient.get('/subscriptions/my-subscription');
-      return data.data as Subscription | null;
+      try {
+        const { data } = await apiClient.get('/subscriptions/my-subscription');
+        return data.data as Subscription | null;
+      } catch (error: unknown) {
+        // 404 means no subscription - this is expected for free trial students
+        // Return null instead of throwing to avoid console errors
+        if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+          return null;
+        }
+        throw error;
+      }
     },
     // Only fetch if user is a STUDENT
     enabled: isAuthenticated && isStudent,
     // Always fetch fresh data on mount to ensure accurate subscription status for routing
     staleTime: 0,
     refetchOnMount: 'always',
+    // Don't retry on 404 - no subscription is a valid state
+    retry: (failureCount, error: unknown) => {
+      if (error && typeof error === 'object' && 'status' in error && error.status === 404) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 }
 
