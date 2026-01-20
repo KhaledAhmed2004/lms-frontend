@@ -10,7 +10,7 @@ interface SessionProposalProps {
   startTimeRaw?: Date | string;
   endTimeRaw?: Date | string;
   meetLink?: string;
-  status?: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'COUNTER_PROPOSED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
+  status?: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'COUNTER_PROPOSED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW' | 'STARTING_SOON' | 'IN_PROGRESS';
   noShowBy?: 'tutor' | 'student';
   isOwn?: boolean;
   isLoading?: boolean;
