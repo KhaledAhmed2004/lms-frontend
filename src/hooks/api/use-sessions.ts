@@ -427,6 +427,8 @@ export function useCounterProposeSession() {
 }
 
 // Get Trial Session by Trial Request ID (Protected)
+// Note: Uses refetchInterval for active sessions as a fallback when socket events
+// don't reach the client (e.g., when browser tab is in background)
 export function useTrialSession(trialRequestId: string | undefined) {
   const { isAuthenticated } = useAuthStore();
 
@@ -443,5 +445,17 @@ export function useTrialSession(trialRequestId: string | undefined) {
       return data.data?.[0] ?? null;
     },
     enabled: isAuthenticated && !!trialRequestId,
+    // Refetch every 30 seconds for active sessions as fallback for socket issues
+    // This ensures UI updates even if socket events are missed
+    refetchInterval: (query) => {
+      const session = query.state.data;
+      // Only poll for active sessions (not completed/cancelled/expired)
+      if (session && ['SCHEDULED', 'STARTING_SOON', 'IN_PROGRESS', 'ACCEPTED'].includes(session.status)) {
+        return 30000; // 30 seconds
+      }
+      return false; // Don't poll for completed/cancelled sessions
+    },
+    // Also refetch when window regains focus
+    refetchOnWindowFocus: true,
   });
 }

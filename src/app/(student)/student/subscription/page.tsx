@@ -303,10 +303,19 @@ export default function StudentSubscriptionPage() {
                         {record.amount.toFixed(2)} {record.currency}
                       </td>
                       <td className={`px-6 py-4 whitespace-nowrap text-sm text-center ${index !== paymentHistoryData.data.length - 1 ? 'border-b border-gray-200' : ''}`}>
-                        <button className="bg-[#002AC8] text-white px-6 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center gap-2">
-                          <Download className="w-4 h-4" />
-                          Download
-                        </button>
+                        {record.invoiceUrl ? (
+                          <a
+                            href={record.invoiceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#002AC8] text-white px-6 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center gap-2"
+                          >
+                            <Download className="w-4 h-4" />
+                            Download
+                          </a>
+                        ) : (
+                          <span className="text-gray-400 text-sm">No invoice</span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -332,10 +341,19 @@ export default function StudentSubscriptionPage() {
                       <p className="text-base font-bold text-gray-900">{record.amount.toFixed(2)} {record.currency}</p>
                     </div>
                   </div>
-                  <button className="w-full bg-[#002AC8] text-white px-4 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center justify-center gap-2">
-                    <Download className="w-4 h-4" />
-                    Download
-                  </button>
+                  {record.invoiceUrl ? (
+                    <a
+                      href={record.invoiceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-[#002AC8] text-white px-4 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center justify-center gap-2"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download
+                    </a>
+                  ) : (
+                    <span className="text-gray-400 text-sm block text-center">No invoice available</span>
+                  )}
                 </div>
               ))}
             </div>

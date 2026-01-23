@@ -98,20 +98,32 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
         token,
       },
       transports: ['websocket'],
+      // Enable reconnection with reasonable intervals
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
     });
 
     socketInstance.on('connect', () => {
-      console.log('Socket connected:', socketInstance.id);
+      console.log('🔌 Socket connected:', socketInstance.id);
+      console.log('🔌 User ID for socket room:', user?._id);
       setIsConnected(true);
+
+      // Refetch active queries on reconnect to catch any missed updates
+      // This ensures UI is up-to-date after a reconnection
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.invalidateQueries({ queryKey: ['trial-request'] });
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     });
 
-    socketInstance.on('disconnect', () => {
-      console.log('Socket disconnected');
+    socketInstance.on('disconnect', (reason) => {
+      console.log('🔌 Socket disconnected, reason:', reason);
       setIsConnected(false);
     });
 
     socketInstance.on('connect_error', (error) => {
-      console.error('Socket connection error:', error);
+      console.error('🔌 Socket connection error:', error.message);
       setIsConnected(false);
     });
 
@@ -152,11 +164,101 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['trial-requests', 'available'] });
     });
 
-    // Listen for session proposal status updates (accept, reject, counter, cancel)
-    socketInstance.on('PROPOSAL_UPDATED', (data: { messageId: string; chatId: string; status: string }) => {
-      console.log('Proposal updated via socket:', data);
-      // Invalidate messages query to refetch updated proposal status
+    // Listen for session proposal status updates (accept, reject, counter, cancel, status transitions)
+    socketInstance.on('PROPOSAL_UPDATED', (data: { messageId: string; chatId: string; status: string; sessionId?: string }) => {
+      console.log('🔔 PROPOSAL_UPDATED received via socket:', data);
+      console.log('🔔 Status:', data.status, '| ChatId:', data.chatId);
+
+      // IMPORTANT: First invalidate to mark queries as stale, then refetch
+      // This ensures React Query actually fetches fresh data from the server
+
+      // Invalidate and refetch messages for this chat
       queryClient.invalidateQueries({ queryKey: ['messages', data.chatId] });
+      queryClient.refetchQueries({
+        queryKey: ['messages', data.chatId],
+        type: 'all'  // Refetch both active and inactive queries
+      });
+
+      // Invalidate and refetch trial-request for student dashboard
+      queryClient.invalidateQueries({ queryKey: ['trial-request'] });
+      queryClient.refetchQueries({
+        queryKey: ['trial-request'],
+        type: 'all'
+      });
+
+      // Also invalidate sessions queries (used by useTrialSession)
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+      queryClient.refetchQueries({
+        queryKey: ['sessions'],
+        type: 'all'
+      });
+
+      // IMPORTANT: Also invalidate the specific trial session query
+      // useTrialSession uses ['sessions', 'trial', trialRequestId] which may not get
+      // invalidated by the generic ['sessions'] invalidation due to React Query's behavior
+      queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return Array.isArray(key) && key[0] === 'sessions' && key[1] === 'trial';
+        }
+      });
+      queryClient.refetchQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return Array.isArray(key) && key[0] === 'sessions' && key[1] === 'trial';
+        },
+        type: 'all'
+      });
+
+      // Invalidate chats list to update any status indicators
+      queryClient.invalidateQueries({ queryKey: ['chats'] });
+
+      console.log('🔔 Queries invalidated and refetched for chatId:', data.chatId);
+    });
+
+    // Listen for feedback submitted (real-time update when tutor submits feedback)
+    socketInstance.on('FEEDBACK_SUBMITTED', (data: { sessionId: string; chatId: string; feedbackId: string }) => {
+      console.log('🔔 FEEDBACK_SUBMITTED received via socket:', data);
+
+      // Invalidate and refetch session feedback for this session
+      queryClient.invalidateQueries({ queryKey: ['session-feedback', data.sessionId] });
+      queryClient.refetchQueries({
+        queryKey: ['session-feedback', data.sessionId],
+        type: 'all'
+      });
+
+      // Invalidate messages for this chat (feedback shown in chat)
+      queryClient.invalidateQueries({ queryKey: ['messages', data.chatId] });
+      queryClient.refetchQueries({
+        queryKey: ['messages', data.chatId],
+        type: 'all'
+      });
+
+      // Invalidate sessions queries
+      queryClient.invalidateQueries({ queryKey: ['sessions'] });
+
+      console.log('🔔 Feedback queries invalidated for sessionId:', data.sessionId);
+    });
+
+    // Listen for student review submitted (real-time update when student submits review)
+    socketInstance.on('STUDENT_REVIEW_SUBMITTED', (data: { sessionId: string; chatId: string; reviewId: string }) => {
+      console.log('🔔 STUDENT_REVIEW_SUBMITTED received via socket:', data);
+
+      // Invalidate and refetch student review for this session
+      queryClient.invalidateQueries({ queryKey: ['review', 'session', data.sessionId] });
+      queryClient.refetchQueries({
+        queryKey: ['review', 'session', data.sessionId],
+        type: 'all'
+      });
+
+      // Invalidate messages for this chat
+      queryClient.invalidateQueries({ queryKey: ['messages', data.chatId] });
+      queryClient.refetchQueries({
+        queryKey: ['messages', data.chatId],
+        type: 'all'
+      });
+
+      console.log('🔔 Student review queries invalidated for sessionId:', data.sessionId);
     });
 
     setSocket(socketInstance);
@@ -167,6 +269,8 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       socketInstance.off('TRIAL_REQUEST_ACCEPTED');
       socketInstance.off('TRIAL_REQUEST_TAKEN');
       socketInstance.off('PROPOSAL_UPDATED');
+      socketInstance.off('FEEDBACK_SUBMITTED');
+      socketInstance.off('STUDENT_REVIEW_SUBMITTED');
       socketInstance.disconnect();
     };
   }, [token, user, queryClient]);

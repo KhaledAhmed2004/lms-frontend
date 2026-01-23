@@ -2,6 +2,7 @@
 
 import SessionProposal from "./session-proposal";
 import { useFeedbackBySession } from "@/hooks/api/use-tutor-feedback";
+import { useReviewBySession } from "@/hooks/api/use-reviews";
 
 interface SessionProposalWithFeedbackProps {
   date: string;
@@ -35,13 +36,30 @@ export default function SessionProposalWithFeedback({
   // Only fetch feedback when session is COMPLETED and has a sessionId
   const shouldFetchFeedback = status === 'COMPLETED' && !!sessionId;
 
-  const { data: feedback, isLoading: isFeedbackLoading } = useFeedbackBySession(
+  // Fetch tutor feedback (teacher's feedback to student)
+  const { data: tutorFeedback, isLoading: isFeedbackLoading } = useFeedbackBySession(
     shouldFetchFeedback ? sessionId : ''
   );
 
-  // Determine hasReview and reviewText based on user role
-  const hasReview = !!feedback;
-  const reviewText = feedback?.feedbackText;
+  // Fetch student review (student's review of teacher)
+  const { data: studentReview, isLoading: isReviewLoading } = useReviewBySession(
+    shouldFetchFeedback ? sessionId : ''
+  );
+
+  // Teacher view: hasReview = tutor submitted feedback
+  // Student view: hasReview = student submitted review
+  const hasTutorFeedback = !!tutorFeedback;
+  const hasStudentReview = !!studentReview;
+
+  // For status badge and UI:
+  // - Teacher sees "Feedback Given" if they submitted feedback
+  // - Student sees "Completed" if teacher gave feedback
+  const hasReview = userRole === 'TUTOR' ? hasTutorFeedback : hasTutorFeedback;
+
+  // Review texts
+  const tutorReviewText = tutorFeedback?.feedbackText;
+  const studentReviewText = studentReview?.comment;
+  const studentReviewRating = studentReview?.overallRating;
 
   // Handle leave review click
   const handleLeaveReview = () => {
@@ -50,15 +68,26 @@ export default function SessionProposalWithFeedback({
     }
   };
 
+  // Show "Leave a review" button:
+  // - Teacher: if they haven't submitted feedback yet
+  // - Student: if they haven't submitted review yet (AND teacher has given feedback)
+  const shouldShowReviewButton = shouldFetchFeedback && (
+    (userRole === 'TUTOR' && !hasTutorFeedback) ||
+    (userRole === 'STUDENT' && hasTutorFeedback && !hasStudentReview)
+  );
+
   return (
     <SessionProposal
       {...props}
       status={status}
       userRole={userRole}
-      isLoading={isLoading || isFeedbackLoading}
+      isLoading={isLoading || isFeedbackLoading || isReviewLoading}
       hasReview={hasReview}
-      reviewText={reviewText}
-      onLeaveReview={shouldFetchFeedback && !hasReview ? handleLeaveReview : undefined}
+      hasStudentReview={hasStudentReview}
+      reviewText={tutorReviewText}
+      studentReviewText={studentReviewText}
+      studentReviewRating={studentReviewRating}
+      onLeaveReview={shouldShowReviewButton ? handleLeaveReview : undefined}
     />
   );
 }

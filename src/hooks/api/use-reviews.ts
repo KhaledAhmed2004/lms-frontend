@@ -83,6 +83,20 @@ export interface ReviewsResponse {
 
 // Student Hooks
 
+// Get Review by Session ID
+export function useReviewBySession(sessionId: string) {
+  const { isAuthenticated } = useAuthStore();
+
+  return useQuery({
+    queryKey: ['review', 'session', sessionId],
+    queryFn: async () => {
+      const { data } = await apiClient.get(`/reviews/session/${sessionId}`);
+      return data.data as SessionReview | null;
+    },
+    enabled: isAuthenticated && !!sessionId,
+  });
+}
+
 // Create Review
 export function useCreateReview() {
   const queryClient = useQueryClient();

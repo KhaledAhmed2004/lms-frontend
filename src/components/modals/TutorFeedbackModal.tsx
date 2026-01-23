@@ -115,12 +115,12 @@ export default function TutorFeedbackModal({
         feedbackText,
       });
       toast.success("Feedback submitted successfully!");
-      setCurrentStep("success");
       // Invalidate session feedback query for this session
       if (chatId) {
         queryClient.invalidateQueries({ queryKey: ['messages', chatId] });
       }
       queryClient.invalidateQueries({ queryKey: ['session-feedback', sessionId] });
+      handleClose();
     } catch (error) {
       console.error('Failed to submit text feedback:', error);
       toast.error("Failed to submit feedback. Please try again.");

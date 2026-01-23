@@ -13,6 +13,7 @@ import {
 import ScheduleModal from "./schedule-modal";
 import SessionProposalWithFeedback from "./SessionProposalWithFeedback";
 import TutorFeedbackModal from "@/components/modals/TutorFeedbackModal";
+import StudentReviewModal from "@/components/modals/StudentReviewModal";
 import { Textarea } from "../ui/textarea";
 import { useMessages, useSendMessage, useMarkChatAsRead, useChats, Chat, useSendMessageWithAttachment, Attachment } from "@/hooks/api/use-chats";
 import { useAuthStore } from "@/store/auth-store";
@@ -36,6 +37,8 @@ export default function ChatArea({
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [selectedSessionForFeedback, setSelectedSessionForFeedback] = useState<string | null>(null);
+  const [isStudentReviewModalOpen, setIsStudentReviewModalOpen] = useState(false);
+  const [selectedSessionForStudentReview, setSelectedSessionForStudentReview] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
@@ -258,8 +261,11 @@ export default function ChatArea({
     // ============================================
     const TEST_MODE = true;
     const SESSION_DURATION_MS = TEST_MODE ? 5 * 60 * 1000 : 60 * 60 * 1000; // 5 min or 1 hour
+    // Extra time added to session for warning period (warning shows during this extra time)
+    // TEST_MODE: 1 min extra warning, Production: 5 min extra warning
+    const WARNING_EXTRA_TIME_MS = TEST_MODE ? 1 * 60 * 1000 : 5 * 60 * 1000;
 
-    const endTime = new Date(startTime.getTime() + SESSION_DURATION_MS);
+    const endTime = new Date(startTime.getTime() + SESSION_DURATION_MS + WARNING_EXTRA_TIME_MS);
 
     // Check if this is a counter-proposal (student suggesting alternative time)
     if (counterProposalMessageId) {
@@ -539,8 +545,14 @@ export default function ChatArea({
                           }
                         }}
                         onLeaveReview={(sessionId) => {
-                          setSelectedSessionForFeedback(sessionId);
-                          setIsFeedbackModalOpen(true);
+                          // Tutor opens TutorFeedbackModal, Student opens StudentReviewModal
+                          if (user?.role === 'TUTOR') {
+                            setSelectedSessionForFeedback(sessionId);
+                            setIsFeedbackModalOpen(true);
+                          } else {
+                            setSelectedSessionForStudentReview(sessionId);
+                            setIsStudentReviewModalOpen(true);
+                          }
                         }}
                       />
                     ) : (
@@ -763,6 +775,17 @@ export default function ChatArea({
         sessionId={selectedSessionForFeedback}
         studentName={otherParticipant?.name}
         chatId={actualChatId}
+      />
+
+      {/* Student Review Modal */}
+      <StudentReviewModal
+        isOpen={isStudentReviewModalOpen}
+        onClose={() => {
+          setIsStudentReviewModalOpen(false);
+          setSelectedSessionForStudentReview(null);
+        }}
+        sessionId={selectedSessionForStudentReview}
+        tutorName={otherParticipant?.name}
       />
     </div>
   );

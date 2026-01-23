@@ -59,9 +59,10 @@ export interface Message {
     duration: number;
     price: number;
     description?: string;
-    status: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+    status: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW' | 'STARTING_SOON' | 'IN_PROGRESS' | 'COUNTER_PROPOSED' | 'SCHEDULED';
     sessionId?: string;
     expiresAt: string;
+    noShowBy?: 'tutor' | 'student';
     // Legacy field alias
     scheduledAt?: string;
   };
@@ -102,6 +103,7 @@ export function useCreateChat() {
 }
 
 // Get Messages for a Chat (Protected - STUDENT, TUTOR, or ADMIN only)
+// Note: Uses refetchOnWindowFocus to catch missed socket updates
 export function useMessages(chatId: string) {
   const { isAuthenticated, user } = useAuthStore();
   const hasAccess = user?.role === 'STUDENT' || user?.role === 'TUTOR' || user?.role === 'SUPER_ADMIN';
@@ -114,6 +116,10 @@ export function useMessages(chatId: string) {
     },
     // Only fetch if user has proper role
     enabled: isAuthenticated && hasAccess && !!chatId,
+    // Refetch when window regains focus to catch missed socket updates
+    refetchOnWindowFocus: true,
+    // Refetch every 30 seconds as fallback for socket issues during active sessions
+    refetchInterval: 30000,
   });
 }
 

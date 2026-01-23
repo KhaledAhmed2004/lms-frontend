@@ -43,8 +43,11 @@ export default function VideoCall({ onClose }: VideoCallProps) {
   // Set to false for production (60 min sessions)
   // ============================================
   const TEST_MODE = true;
-  // Warning threshold: 1 minute before end in TEST_MODE, 15 minutes in production
-  const WARNING_THRESHOLD_MS = TEST_MODE ? 1 * 60 * 1000 : 15 * 60 * 1000;
+  // Warning threshold - shows warning banner during the extra time added to session
+  // Session structure: actual_duration + warning_extra_time = total_endTime
+  // TEST_MODE: 5 min session + 1 min warning = 6 min total
+  // Production: 60 min session + 5 min warning = 65 min total
+  const WARNING_THRESHOLD_MS = TEST_MODE ? 1 * 60 * 1000 : 5 * 60 * 1000;
 
   // Play local video
   useEffect(() => {
@@ -93,6 +96,13 @@ export default function VideoCall({ onClose }: VideoCallProps) {
 
       setRemainingTime(remaining);
       setShowWarning(remaining > 0 && remaining <= WARNING_THRESHOLD_MS);
+
+      // Auto-disconnect when session time is up
+      if (remaining <= 0) {
+        console.log('⏰ Session time ended - auto-disconnecting');
+        endCall();
+        onClose?.();
+      }
     };
 
     // Initial update
@@ -101,7 +111,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
     const interval = setInterval(updateCountdown, 1000);
 
     return () => clearInterval(interval);
-  }, [currentCall?.endTime, callState, WARNING_THRESHOLD_MS]);
+  }, [currentCall?.endTime, callState, WARNING_THRESHOLD_MS, endCall, onClose]);
 
   // Format remaining time for display
   const formatRemainingTime = (ms: number) => {

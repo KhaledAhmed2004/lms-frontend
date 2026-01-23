@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Loader2, Video } from "lucide-react";
+import { Calendar, Clock, Loader2, Video, Star } from "lucide-react";
 
 interface SessionProposalProps {
   date: string;
@@ -16,8 +16,11 @@ interface SessionProposalProps {
   isLoading?: boolean;
   userRole?: string;
   // Review related props
-  hasReview?: boolean;
-  reviewText?: string;
+  hasReview?: boolean;           // Tutor feedback exists
+  hasStudentReview?: boolean;    // Student review exists
+  reviewText?: string;           // Tutor's feedback text (shown to student)
+  studentReviewText?: string;    // Student's review text (shown to teacher)
+  studentReviewRating?: number;  // Student's rating (shown to teacher)
   onAccept: () => void;
   onReschedule: () => void;
   onDecline: () => void;
@@ -39,7 +42,10 @@ export default function SessionProposal({
   isLoading = false,
   userRole,
   hasReview = false,
+  hasStudentReview = false,
   reviewText,
+  studentReviewText,
+  studentReviewRating,
   onAccept,
   onReschedule,
   onDecline,
@@ -161,6 +167,18 @@ export default function SessionProposal({
         return (
           <span className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full font-medium">
             No-show
+          </span>
+        );
+      case 'STARTING_SOON':
+        return (
+          <span className="text-xs text-blue-600 font-medium">
+            Starting soon
+          </span>
+        );
+      case 'IN_PROGRESS':
+        return (
+          <span className="text-xs text-blue-600 font-medium">
+            In progress
           </span>
         );
       default:
@@ -326,14 +344,38 @@ export default function SessionProposal({
 
         {/* Teacher Review Section - shown to STUDENT when teacher has submitted feedback */}
         {hasReview && reviewText && userRole === 'STUDENT' && (
-          <div className="bg-blue-50 rounded-lg p-4">
+          <div className="bg-blue-50 rounded-lg p-4 mb-4">
             <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-wide mb-2">TEACHER REVIEW</p>
             <p className="text-sm text-gray-700">"{reviewText}"</p>
           </div>
         )}
 
-        {/* Leave a review button - shown when review is required */}
-        {!hasReview && onLeaveReview && (
+        {/* Student Review Section - shown to TUTOR when student has submitted review */}
+        {hasStudentReview && userRole === 'TUTOR' && (
+          <div className="bg-green-50 rounded-lg p-4 mb-4">
+            <p className="text-[11px] text-green-600 font-semibold uppercase tracking-wide mb-2">STUDENT REVIEW</p>
+            {studentReviewRating && (
+              <div className="flex items-center gap-1 mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-4 h-4 ${
+                      star <= studentReviewRating
+                        ? "fill-yellow-400 text-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+            {studentReviewText && (
+              <p className="text-sm text-gray-700">"{studentReviewText}"</p>
+            )}
+          </div>
+        )}
+
+        {/* Leave a review button for TUTOR - shown when tutor hasn't submitted feedback */}
+        {userRole === 'TUTOR' && !hasReview && onLeaveReview && (
           <Button
             onClick={onLeaveReview}
             disabled={isLoading}
@@ -342,14 +384,33 @@ export default function SessionProposal({
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Leave a review'}
           </Button>
         )}
+
+        {/* Leave a review button for STUDENT - shown when teacher has given feedback but student hasn't reviewed */}
+        {userRole === 'STUDENT' && hasReview && !hasStudentReview && onLeaveReview && (
+          <Button
+            onClick={onLeaveReview}
+            disabled={isLoading}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-11 text-sm font-medium"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Rate your tutor'}
+          </Button>
+        )}
+
+        {/* Show "Review submitted" badge for student if they already reviewed */}
+        {userRole === 'STUDENT' && hasStudentReview && (
+          <div className="text-center">
+            <span className="text-xs text-green-600 font-medium">You have reviewed this session</span>
+          </div>
+        )}
       </div>
     );
   }
 
-  // Accepted session - Upcoming session card design
-  if (status === 'ACCEPTED') {
-    // Session is currently in progress (between start and end time)
-    if (inProgress) {
+  // Accepted/Scheduled/In Progress session - Upcoming session card design
+  // Handle ACCEPTED, STARTING_SOON, and IN_PROGRESS statuses
+  if (status === 'ACCEPTED' || status === 'STARTING_SOON' || status === 'IN_PROGRESS') {
+    // Session is currently in progress (backend status OR client-side time check)
+    if (status === 'IN_PROGRESS' || inProgress) {
       return (
         <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
           {/* Header */}
@@ -394,8 +455,8 @@ export default function SessionProposal({
       );
     }
 
-    // Starting soon (within 15 minutes) - no buttons, just info
-    if (startingSoon) {
+    // Starting soon (backend status OR within 15 minutes client-side)
+    if (status === 'STARTING_SOON' || startingSoon) {
       return (
         <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
           {/* Header */}
