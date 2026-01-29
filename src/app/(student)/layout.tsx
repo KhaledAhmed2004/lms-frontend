@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "./components/Sidebar";
 import TopNavbar from "./components/TopNavbar";
 import { useMySubscription } from "@/hooks/api/use-subscription";
@@ -12,8 +12,10 @@ interface StudentLayoutProps {
 
 export default function StudentLayout({ children }: StudentLayoutProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const { data: subscription, isLoading } = useMySubscription();
   const [isChecking, setIsChecking] = useState(true);
+  const isMessagesPage = pathname?.startsWith("/student/messages");
 
   useEffect(() => {
     if (!isLoading) {
@@ -49,8 +51,10 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
       </div>
 
       {/* Main Content */}
-      <main className="pt-24 lg:pl-[328px] min-h-screen bg-[#F8F8F8]">
-        <div className="mx-auto px-4 py-5">{children}</div>
+      <main className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}>
+        <div className={isMessagesPage ? "h-full" : "mx-auto px-4 py-5"}>
+          {children}
+        </div>
       </main>
     </div>
   );

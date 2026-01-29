@@ -8,7 +8,7 @@ export default function MessagesPage() {
 
 
   return (
-    <div>
+    <div className="h-full">
       <Messages />
     </div>
   );

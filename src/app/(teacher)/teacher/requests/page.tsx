@@ -73,8 +73,8 @@ export default function RequestsPage() {
   const openRequests = openRequestsData?.data || [];
   const acceptedRequests = acceptedRequestsData?.data || [];
   const totalPages = activeTab === "open"
-    ? (openRequestsData?.meta?.totalPage || 1)
-    : (acceptedRequestsData?.meta?.totalPage || 1);
+    ? (openRequestsData?.meta?.totalPage || openRequestsData?.pagination?.totalPage || 1)
+    : (acceptedRequestsData?.meta?.totalPage || acceptedRequestsData?.pagination?.totalPage || 1);
 
   const handleTabChange = (tab: "open" | "accepted") => {
     setActiveTab(tab);

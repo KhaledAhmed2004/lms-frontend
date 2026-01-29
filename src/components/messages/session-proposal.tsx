@@ -385,8 +385,8 @@ export default function SessionProposal({
           </Button>
         )}
 
-        {/* Leave a review button for STUDENT - shown when teacher has given feedback but student hasn't reviewed */}
-        {userRole === 'STUDENT' && hasReview && !hasStudentReview && onLeaveReview && (
+        {/* Leave a review button for STUDENT - shown when student hasn't reviewed yet */}
+        {userRole === 'STUDENT' && !hasStudentReview && onLeaveReview && (
           <Button
             onClick={onLeaveReview}
             disabled={isLoading}

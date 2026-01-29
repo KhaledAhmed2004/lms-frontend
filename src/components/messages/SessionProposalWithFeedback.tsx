@@ -70,10 +70,10 @@ export default function SessionProposalWithFeedback({
 
   // Show "Leave a review" button:
   // - Teacher: if they haven't submitted feedback yet
-  // - Student: if they haven't submitted review yet (AND teacher has given feedback)
+  // - Student: if they haven't submitted review yet (independent of teacher feedback)
   const shouldShowReviewButton = shouldFetchFeedback && (
     (userRole === 'TUTOR' && !hasTutorFeedback) ||
-    (userRole === 'STUDENT' && hasTutorFeedback && !hasStudentReview)
+    (userRole === 'STUDENT' && !hasStudentReview)
   );
 
   return (

@@ -270,8 +270,8 @@ export function useAvailableTrialRequests(filters?: {
 }
 
 /**
- * Get tutor's accepted trial requests
- * GET /api/v1/trial-requests/my-accepted
+ * Get tutor's accepted requests (unified: trial + session)
+ * GET /api/v1/session-requests/my-accepted
  */
 export function useMyAcceptedTrialRequests(filters?: {
   page?: number;
@@ -281,12 +281,26 @@ export function useMyAcceptedTrialRequests(filters?: {
   const isTutor = user?.role === 'TUTOR';
 
   return useQuery({
-    queryKey: ['trial-requests', 'my-accepted', filters],
+    queryKey: ['accepted-requests', 'my-accepted', filters],
     queryFn: async () => {
-      const { data } = await apiClient.get('/trial-requests/my-accepted', {
+      const { data } = await apiClient.get('/session-requests/my-accepted', {
         params: filters,
       });
-      return data;
+      return data as {
+        data: UnifiedRequest[];
+        meta: {
+          total: number;
+          page: number;
+          limit: number;
+          totalPage: number;
+        };
+        pagination: {
+          total: number;
+          page: number;
+          limit: number;
+          totalPage: number;
+        };
+      };
     },
     // Only fetch if user is authenticated and is a TUTOR
     enabled: isAuthenticated && isTutor,
@@ -315,6 +329,7 @@ export function useAcceptTrialRequest() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trial-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['accepted-requests'] });
       queryClient.invalidateQueries({ queryKey: ['chats'] });
     },
   });
@@ -407,6 +422,7 @@ export function useAcceptSessionRequest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['matching-requests'] });
       queryClient.invalidateQueries({ queryKey: ['session-requests'] });
+      queryClient.invalidateQueries({ queryKey: ['accepted-requests'] });
       queryClient.invalidateQueries({ queryKey: ['chats'] });
     },
   });
