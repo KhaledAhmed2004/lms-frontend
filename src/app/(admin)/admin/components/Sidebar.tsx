@@ -15,6 +15,7 @@ const menuItems = [
   { label: "School Type",  href: "/admin/school-type" },
   { label: "Pricing",  href: "/admin/pricing" },
   { label: "Transaction",  href: "/admin/transaction" },
+  { label: "Forfeited Payments",  href: "/admin/forfeit" },
   { label: "Meeting List",  href: "/admin/meeting-list" },
   { label: "Available Slot",  href: "/admin/available-slot" },
   { label: "Legal Policies",  href: "/admin/terms-conditions" },

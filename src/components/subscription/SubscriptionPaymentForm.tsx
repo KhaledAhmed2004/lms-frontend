@@ -13,7 +13,7 @@ interface SubscriptionPaymentFormProps {
   amount: number;
   currency?: string;
   planName: string;
-  onSuccess?: (paymentIntentId: string) => void;
+  onSuccess?: (paymentIntentId: string) => void | Promise<void>;
   onCancel?: () => void;
   onError?: (error: string) => void;
   isConfirming?: boolean;
@@ -64,8 +64,12 @@ export function SubscriptionPaymentForm({
           onError?.(error.message || 'Card setup failed');
         } else if (setupIntent && setupIntent.status === 'succeeded') {
           // Setup successful - call onSuccess with setupIntentId
-          setIsSuccess(true);
-          onSuccess?.(setupIntent.id);
+          try {
+            await onSuccess?.(setupIntent.id);
+            setIsSuccess(true);
+          } catch {
+            setErrorMessage('Card was saved but activation failed. Please contact support.');
+          }
         }
       } else {
         // For REGULAR/LONG_TERM tiers - confirm PaymentIntent (charge card)
@@ -82,8 +86,13 @@ export function SubscriptionPaymentForm({
           onError?.(error.message || 'Payment failed');
         } else if (paymentIntent && paymentIntent.status === 'succeeded') {
           // Payment successful - call onSuccess with paymentIntentId
-          setIsSuccess(true);
-          onSuccess?.(paymentIntent.id);
+          // Don't set isSuccess here; let the parent handle confirmation first
+          try {
+            await onSuccess?.(paymentIntent.id);
+            setIsSuccess(true);
+          } catch {
+            setErrorMessage('Payment was processed but activation failed. Please contact support.');
+          }
         }
       }
     } catch (err: any) {

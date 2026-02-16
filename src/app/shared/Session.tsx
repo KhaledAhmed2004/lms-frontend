@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Calendar, Clock, Star, Mic, Square, Check, Loader2 } from "lucide-react";
 
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -29,7 +29,10 @@ function AudioFeedbackModal({
   const [recordingInterval, setRecordingInterval] =
     useState<NodeJS.Timeout | null>(null);
   const [feedbackText, setFeedbackText] = useState("");
+  const [micError, setMicError] = useState<string | null>(null);
 
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   const submitFeedback = useSubmitTutorFeedback();
 
   React.useEffect(() => {
@@ -37,25 +40,65 @@ function AudioFeedbackModal({
       setCurrentStep("audio");
       setRecordingTime(0);
       setIsRecording(false);
+      setMicError(null);
       if (recordingInterval) {
         clearInterval(recordingInterval);
       }
+      // Stop any active recording
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+        mediaRecorderRef.current.stop();
+      }
+      mediaRecorderRef.current = null;
+      audioChunksRef.current = [];
     }
   }, [isOpen]);
 
-  const startRecording = () => {
-    setIsRecording(true);
-    setRecordingTime(0);
-    const interval = setInterval(() => {
-      setRecordingTime((prev) => {
-        if (prev >= 59) {
-          clearInterval(interval);
-          return 59;
-        }
-        return prev + 1;
+  const startRecording = async () => {
+    setMicError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+          ? "audio/webm;codecs=opus"
+          : "audio/webm",
       });
-    }, 1000);
-    setRecordingInterval(interval);
+
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = () => {
+        // Stop all tracks to release microphone
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      mediaRecorder.start(1000); // Collect data every second
+      mediaRecorderRef.current = mediaRecorder;
+
+      setIsRecording(true);
+      setRecordingTime(0);
+      const interval = setInterval(() => {
+        setRecordingTime((prev) => {
+          if (prev >= 59) {
+            clearInterval(interval);
+            // Auto-stop at 59 seconds
+            if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+              mediaRecorderRef.current.stop();
+            }
+            return 59;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+      setRecordingInterval(interval);
+    } catch (error: any) {
+      console.error("Microphone access denied:", error);
+      setMicError("Microphone access denied. Please allow microphone access and try again.");
+    }
   };
 
   const stopRecording = async () => {
@@ -66,19 +109,36 @@ function AudioFeedbackModal({
 
     if (!session || rating === 0) return;
 
+    // Stop MediaRecorder and wait for data
+    const recorder = mediaRecorderRef.current;
+    if (recorder && recorder.state !== "inactive") {
+      await new Promise<void>((resolve) => {
+        recorder.onstop = () => {
+          // Stop all tracks
+          recorder.stream.getTracks().forEach((track) => track.stop());
+          resolve();
+        };
+        recorder.stop();
+      });
+    }
+
+    const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+    if (audioBlob.size === 0) {
+      setMicError("No audio recorded. Please try again.");
+      return;
+    }
+
     try {
-      // TODO: Implement actual audio upload and get URL
-      // For now, we'll skip to text if no audio URL
       await submitFeedback.mutateAsync({
         sessionId: session._id,
         rating,
         feedbackType: FEEDBACK_TYPE.AUDIO,
-        feedbackAudioUrl: '', // TODO: Replace with actual uploaded audio URL
+        audioBlob,
         audioDuration: recordingTime,
       });
       setCurrentStep("success");
     } catch (error) {
-      console.error('Failed to submit audio feedback:', error);
+      console.error("Failed to submit audio feedback:", error);
     }
   };
 
@@ -86,6 +146,11 @@ function AudioFeedbackModal({
     setIsRecording(false);
     if (recordingInterval) {
       clearInterval(recordingInterval);
+    }
+    // Stop any active recording
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current.stop();
     }
     setCurrentStep("text");
   };
@@ -106,7 +171,7 @@ function AudioFeedbackModal({
       });
       setCurrentStep("success");
     } catch (error) {
-      console.error('Failed to submit text feedback:', error);
+      console.error("Failed to submit text feedback:", error);
     }
   };
 
@@ -115,11 +180,19 @@ function AudioFeedbackModal({
     if (recordingInterval) {
       clearInterval(recordingInterval);
     }
+    // Stop any active recording
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      mediaRecorderRef.current.stream.getTracks().forEach((track) => track.stop());
+      mediaRecorderRef.current.stop();
+    }
+    mediaRecorderRef.current = null;
+    audioChunksRef.current = [];
     setCurrentStep("audio");
     setRecordingTime(0);
     setRating(0);
     setHoverRating(0);
     setFeedbackText("");
+    setMicError(null);
     onClose();
   };
 
@@ -177,6 +250,11 @@ function AudioFeedbackModal({
               <p className="text-xl sm:text-2xl font-bold text-gray-900">
                 {formatTime(recordingTime)}
               </p>
+            )}
+
+            {/* Mic Error */}
+            {micError && (
+              <p className="text-sm text-red-600 px-4">{micError}</p>
             )}
 
             {/* Skip Link */}
@@ -419,11 +497,6 @@ export default function Session() {
                     {session.isTrial && (
                       <span className="text-xs font-semibold text-[#FF8A00] bg-orange-100 px-2 py-0.5 sm:py-1 rounded-3xl">
                         Trial Session
-                      </span>
-                    )}
-                    {activeTab === "completed" && session.tutorFeedbackId && (
-                      <span className="text-xs font-semibold text-green-600 bg-green-100 px-2 py-0.5 sm:py-1 rounded-3xl">
-                        Feedback Given
                       </span>
                     )}
                     {activeTab === "completed" && !session.tutorFeedbackId && session.teacherFeedbackRequired && (

@@ -319,10 +319,9 @@ interface FreeTrialFormData {
 export default function FreeTrialStudent() {
   const router = useRouter();
   const [step, setStep] = useState<number>(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
- 
-  // Trial request mutation
-  const { mutate: createTrialRequest } = useCreateTrialRequest();
+
+  // Trial request mutation - isPending is synchronously true after mutate(), prevents double-submit
+  const { mutate: createTrialRequest, isPending: isSubmitting } = useCreateTrialRequest();
  
   const [formData, setFormData] = useState<FreeTrialFormData>({
     subject: "",
@@ -440,16 +439,12 @@ export default function FreeTrialStudent() {
         ...(formData.documents ? { documents: [formData.documents] } : {}),
       };
  
-      setIsSubmitting(true);
- 
       createTrialRequest(payload, {
         onSuccess: () => {
-          setIsSubmitting(false);
           toast.success("Your request has been sent successfully!");
           router.push("/free-trial-student-dash");
         },
         onError: (error: any) => {
-          setIsSubmitting(false);
           const message =
             error?.getFullMessage?.() ||
             error?.message ||

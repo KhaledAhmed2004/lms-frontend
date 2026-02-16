@@ -30,22 +30,34 @@ export class ApiError extends Error {
   }
 }
 
+// Endpoints where 404 is expected (not an error)
+const EXPECTED_404_ENDPOINTS = [
+  '/subscriptions/my-subscription', // Free trial students don't have subscriptions
+];
+
+// Check if this 404 is expected (should not be logged as error)
+const isExpected404 = (status: number, url: string): boolean => {
+  if (status !== 404) return false;
+  return EXPECTED_404_ENDPOINTS.some((endpoint) => url?.includes(endpoint));
+};
+
 // Extract error from backend response
 const extractApiError = (error: any): ApiError => {
   const response = error?.response?.data;
   const status = error?.response?.status || 500;
+  const url = error?.config?.url || '';
 
   // Backend sends: { success: false, message: "...", errorMessages: [...] }
   const message = response?.message || error?.message || 'Something went wrong';
   const errorMessages: IErrorMessage[] = response?.errorMessages || [];
 
-  // Debug log for development
-  if (process.env.NODE_ENV === 'development') {
+  // Debug log for development (skip expected 404s)
+  if (process.env.NODE_ENV === 'development' && !isExpected404(status, url)) {
     console.error('🚨 API Error:', {
       status,
       message,
       errorMessages,
-      url: error?.config?.url,
+      url,
       fullResponse: response,
     });
   }

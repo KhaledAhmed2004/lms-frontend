@@ -113,8 +113,14 @@ const Page2 = ({ trialRequest }: Page2Props) => {
           chatId,
           content: message.trim(),
           type: 'TEXT',
+        }, {
+          onSuccess: () => {
+            setMessage('');
+          },
+          onError: (error: any) => {
+            toast.error(error?.response?.data?.message || 'Failed to send message');
+          },
         });
-        setMessage('');
       }
     }
   };

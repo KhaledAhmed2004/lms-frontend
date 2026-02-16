@@ -109,17 +109,13 @@ const Page3 = () => {
       return;
     }
 
-    try {
-      await confirmPayment.mutateAsync({
-        subscriptionId,
-        paymentIntentId,
-      });
+    await confirmPayment.mutateAsync({
+      subscriptionId,
+      paymentIntentId,
+    });
 
-      toast.success('Subscription activated successfully!');
-      router.push('/student/subscription');
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to activate subscription');
-    }
+    toast.success('Subscription activated successfully!');
+    router.push('/student/subscription');
   };
 
   // Handle cancel payment

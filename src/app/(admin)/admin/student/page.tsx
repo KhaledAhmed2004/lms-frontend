@@ -112,6 +112,9 @@ const StudentManagement = () => {
             <Skeleton className="h-4 w-16" />
           </td>
           <td className="py-3 px-4">
+            <Skeleton className="h-5 w-24 rounded-full" />
+          </td>
+          <td className="py-3 px-4">
             <Skeleton className="h-8 w-8 rounded" />
           </td>
         </tr>
@@ -206,6 +209,9 @@ const StudentManagement = () => {
                           Sessions
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
+                          Trial Status
+                        </th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
                           Action
                         </th>
                       </tr>
@@ -215,7 +221,7 @@ const StudentManagement = () => {
                         <TableSkeleton />
                       ) : students.length === 0 ? (
                         <tr>
-                          <td colSpan={5} className="py-8 text-center text-gray-500">
+                          <td colSpan={6} className="py-8 text-center text-gray-500">
                             No students found
                           </td>
                         </tr>
@@ -236,6 +242,17 @@ const StudentManagement = () => {
                             </td>
                             <td className="py-3 px-4 text-gray-600 text-sm">
                               {student.studentProfile?.sessionRequestsCount || 0}
+                            </td>
+                            <td className="py-3 px-4 text-sm">
+                              {student.studentProfile?.hasCompletedTrial ? (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                  Trial Done
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
+                                  Trial Pending
+                                </span>
+                              )}
                             </td>
                             <td className="py-3 px-4">
                               <DropdownMenu>

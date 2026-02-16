@@ -162,7 +162,7 @@ export default function RequestsPage() {
                       <span
                         className={`text-sm font-medium ${daysAgo <= 2 ? "text-orange-500" : "text-green-600"}`}
                       >
-                        {daysAgo} days Ago
+                        {daysAgo} {daysAgo === 1 ? 'day' : 'days'} ago
                       </span>
                     </div>
                     <div className="space-y-2 mb-6">

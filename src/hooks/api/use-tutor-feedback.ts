@@ -56,6 +56,7 @@ export interface SubmitFeedbackData {
   feedbackType: FEEDBACK_TYPE;
   feedbackText?: string;
   feedbackAudioUrl?: string;
+  audioBlob?: Blob;
   audioDuration?: number;
 }
 
@@ -87,8 +88,28 @@ export function useSubmitTutorFeedback() {
 
   return useMutation({
     mutationFn: async (data: SubmitFeedbackData) => {
-      const { data: response } = await apiClient.post('/tutor-feedback', data);
-      return response.data as TutorSessionFeedback;
+      let response;
+
+      if (data.audioBlob) {
+        // Audio feedback: use FormData for file upload
+        const formData = new FormData();
+        formData.append('feedbackAudioUrl', data.audioBlob, 'feedback-audio.webm');
+        formData.append('data', JSON.stringify({
+          sessionId: data.sessionId,
+          rating: data.rating,
+          feedbackType: data.feedbackType,
+          audioDuration: data.audioDuration,
+        }));
+        response = await apiClient.post('/tutor-feedback', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+      } else {
+        // Text feedback: use JSON
+        const { audioBlob, ...jsonData } = data;
+        response = await apiClient.post('/tutor-feedback', jsonData);
+      }
+
+      return response.data.data as TutorSessionFeedback;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pending-feedbacks'] });
