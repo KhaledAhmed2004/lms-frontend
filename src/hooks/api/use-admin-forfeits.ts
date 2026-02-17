@@ -45,7 +45,7 @@ export interface ForfeitSummary {
 // Hooks
 export function useForfeitedPaymentsSummary(month?: number, year?: number) {
   const { isAuthenticated, user } = useAuthStore();
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+  const isAdmin = user?.role === 'SUPER_ADMIN';
 
   return useQuery({
     queryKey: ['forfeited-summary', month, year],
@@ -62,7 +62,7 @@ export function useForfeitedPaymentsSummary(month?: number, year?: number) {
 
 export function useForfeitedFeedbacksList(page = 1, limit = 10) {
   const { isAuthenticated, user } = useAuthStore();
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
+  const isAdmin = user?.role === 'SUPER_ADMIN';
 
   return useQuery({
     queryKey: ['forfeited-list', page, limit],
