@@ -10,7 +10,7 @@ export const ProgressBar = ({ step, totalSteps }: ProgressBarProps) => {
   return (
     <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
       <div
-        className="h-full bg-[#062183] transition-all duration-300"
+        className="h-full bg-[#0B31BD] transition-all duration-300"
         style={{ width: `${progress}%` }}
       />
     </div>

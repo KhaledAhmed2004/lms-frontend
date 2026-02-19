@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
-import { Upload, X, Loader2, CalendarIcon } from "lucide-react";
+import { Upload, X, Loader2, CalendarIcon, Eye, EyeOff } from "lucide-react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -14,7 +16,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useSubmitApplication, useActiveSubjects, useMyApplication } from "@/hooks/api";
+import {
+  useSubmitApplication,
+  useActiveSubjects,
+  useMyApplication,
+} from "@/hooks/api";
 import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -34,6 +40,7 @@ interface FormData {
   phoneNumber: string;
   email: string;
   password: string;
+  repeatPassword: string; // <-- add this line
   agreeToPolicy: boolean;
 }
 
@@ -46,17 +53,33 @@ const FreeTrialTeacher = () => {
   const router = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [step, setStep] = useState<number>(1);
-  const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubject[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<SelectedSubject[]>(
+    [],
+  );
   const [showSubjectDropdown, setShowSubjectDropdown] =
     useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   // Check if user already has an application (only for APPLICANT role)
   // Only fetch if user is authenticated AND has APPLICANT role
   const shouldCheckApplication = isAuthenticated && user?.role === "APPLICANT";
-  const { data: existingApplication, isLoading: isCheckingApplication } = useMyApplication({
-    enabled: shouldCheckApplication,
-  });
+  const { data: existingApplication, isLoading: isCheckingApplication } =
+    useMyApplication({
+      enabled: shouldCheckApplication,
+    });
+
+  // Browser back button → previous step instead of leaving page
+  useEffect(() => {
+    window.history.replaceState({ step: 1 }, "");
+
+    const handlePopState = () => {
+      setStep((prev) => (prev > 1 ? prev - 1 : prev));
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   // Redirect existing tutors/applicants
   useEffect(() => {
@@ -74,7 +97,8 @@ const FreeTrialTeacher = () => {
   }, [isAuthenticated, user, existingApplication, router]);
 
   // Fetch subjects from API
-  const { data: availableSubjects = [], isLoading: subjectsLoading } = useActiveSubjects();
+  const { data: availableSubjects = [], isLoading: subjectsLoading } =
+    useActiveSubjects();
 
   const [formData, setFormData] = useState<FormData>({
     subjects: [],
@@ -91,6 +115,7 @@ const FreeTrialTeacher = () => {
     phoneNumber: "",
     email: "",
     password: "",
+    repeatPassword: "", // <-- Add this
     agreeToPolicy: false,
   });
 
@@ -106,7 +131,7 @@ const FreeTrialTeacher = () => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    fieldName: "cv" | "abiturCertificate" | "officialId"
+    fieldName: "cv" | "abiturCertificate" | "officialId",
   ) => {
     setFormData((prev) => ({
       ...prev,
@@ -135,7 +160,7 @@ const FreeTrialTeacher = () => {
   };
 
   const filteredSubjects = availableSubjects.filter((subject) =>
-    subject.name.toLowerCase().includes(searchTerm.toLowerCase())
+    subject.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const validateStep1 = () => {
@@ -165,11 +190,18 @@ const FreeTrialTeacher = () => {
       !formData.city ||
       !formData.phoneNumber ||
       !formData.email ||
-      !formData.password
+      !formData.password ||
+      !formData.repeatPassword
     ) {
       toast.error("Please fill in all required fields to continue.");
       return false;
     }
+
+    if (formData.password !== formData.repeatPassword) {
+      toast.error("Passwords do not match.");
+      return false;
+    }
+
     return true;
   };
 
@@ -180,6 +212,7 @@ const FreeTrialTeacher = () => {
     if (step === 2 && !validateStep2()) {
       return;
     }
+    window.history.pushState({ step: step + 1 }, "");
     setStep((prev) => prev + 1);
   };
 
@@ -217,20 +250,27 @@ const FreeTrialTeacher = () => {
     submitApplication(applicationData, {
       onSuccess: () => {
         toast.success(
-          "Your teacher application has been sent. We will get back to you shortly!"
+          "Your teacher application has been sent. We will get back to you shortly!",
         );
         router.push("/free-trial-teacher-dash");
       },
       onError: (error: any) => {
         // ApiError has getFullMessage() method for detailed errors
-        const message = error?.getFullMessage?.() || error?.message || "Something went wrong. Please try again.";
+        const message =
+          error?.getFullMessage?.() ||
+          error?.message ||
+          "Something went wrong. Please try again.";
         toast.error(message);
       },
     });
   };
 
   // Show loading while checking for existing application
-  if (isAuthenticated && (user?.role === "TUTOR" || user?.role === "APPLICANT") && isCheckingApplication) {
+  if (
+    isAuthenticated &&
+    (user?.role === "TUTOR" || user?.role === "APPLICANT") &&
+    isCheckingApplication
+  ) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -245,12 +285,12 @@ const FreeTrialTeacher = () => {
     <>
       <div className="min-h-screen -mb-20">
         {/* Navbar */}
-        <nav className="bg-[#FBFCFC] h-20 shadow-sm">
+        <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
           <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
             <div className="flex items-center justify-center w-full">
-              <h1 className="text-3xl font-bold text-[#0B31BD]">
+              <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
                 Schäfer Tutoring
-              </h1>
+              </Link>
             </div>
           </div>
         </nav>
@@ -282,9 +322,6 @@ const FreeTrialTeacher = () => {
                       <label className="block text-base font-semibold text-[#0B31BD] mb-2">
                         What subjects you wanna teach?
                       </label>
-                      <p className="text-sm text-gray-600 mb-3">
-                        Select Subjects
-                      </p>
 
                       {/* Selected Subjects Display */}
                       <div
@@ -329,31 +366,6 @@ const FreeTrialTeacher = () => {
                       {/* Dropdown */}
                       {showSubjectDropdown && (
                         <div className="mt-2 border border-gray-300 rounded-md bg-white shadow-lg max-h-64 overflow-y-auto">
-                          {/* Search Input */}
-                          <div className="p-3 border-b border-gray-200">
-                            <div className="flex items-center gap-2 px-3 border border-gray-300 rounded-md">
-                              <svg
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <circle cx="11" cy="11" r="8" />
-                                <path d="m21 21-4.35-4.35" />
-                              </svg>
-                              <Input
-                                type="text"
-                                placeholder="Search"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="!border-none !shadow-none !outline-none !ring-0 !focus:ring-0 !focus:ring-offset-0 text-sm w-full"
-                                style={{ boxShadow: "none" }}
-                              />
-                            </div>
-                          </div>
-
                           {/* Subject List */}
                           <div className="p-2">
                             {subjectsLoading ? (
@@ -368,16 +380,44 @@ const FreeTrialTeacher = () => {
                               filteredSubjects.map((subject) => (
                                 <div
                                   key={subject._id}
-                                  className="flex items-center justify-between px-3 py-2 hover:bg-gray-50 cursor-pointer rounded"
-                                  onClick={() => handleSubjectToggle(subject._id, subject.name)}
+                                  className={cn(
+                                    "flex items-center justify-between px-3 py-2 cursor-pointer rounded transition-colors",
+                                    isSubjectSelected(subject._id)
+                                      ? "bg-blue-50"
+                                      : "hover:bg-gray-50",
+                                  )}
+                                  onClick={() =>
+                                    handleSubjectToggle(
+                                      subject._id,
+                                      subject.name,
+                                    )
+                                  }
                                 >
-                                  <span className="text-sm text-gray-700">
+                                  <span
+                                    className={cn(
+                                      "text-sm transition-colors",
+                                      isSubjectSelected(subject._id)
+                                        ? "text-[#0B31BD] font-semibold"
+                                        : "text-gray-700",
+                                    )}
+                                  >
                                     {subject.name}
                                   </span>
                                   <Checkbox
                                     checked={isSubjectSelected(subject._id)}
-                                    onCheckedChange={() => handleSubjectToggle(subject._id, subject.name)}
+                                    onCheckedChange={() =>
+                                      handleSubjectToggle(
+                                        subject._id,
+                                        subject.name,
+                                      )
+                                    }
                                     onClick={(e) => e.stopPropagation()}
+                                    className={cn(
+                                      "size-5 rounded border-2 transition-all",
+                                      isSubjectSelected(subject._id)
+                                        ? "border-[#0B31BD] bg-[#0B31BD] text-white shadow-md"
+                                        : "border-gray-300",
+                                    )}
                                   />
                                 </div>
                               ))
@@ -388,16 +428,18 @@ const FreeTrialTeacher = () => {
                     </div>
 
                     <div className="flex gap-4">
-                      <button
-                        onClick={handlePrevStep}
-                        disabled={step === 1}
-                        className="w-full max-w-md mx-auto bg-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Back
-                      </button>
+                      {step !== 1 && (
+                        <button
+                          onClick={handlePrevStep}
+                          className="w-full bg-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-400 transition-colors"
+                        >
+                          Back
+                        </button>
+                      )}
+
                       <button
                         onClick={handleNextStep}
-                        className="w-full max-w-md mx-auto bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2"
+                        className="w-full bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2"
                       >
                         Next
                       </button>
@@ -408,6 +450,9 @@ const FreeTrialTeacher = () => {
                 {/* Step 2 - Document Upload */}
                 {step === 2 && (
                   <div className="space-y-6">
+                    <label className="block text-base font-semibold text-[#0B31BD] mb-4">
+                      Submit qualification and identification!
+                    </label>
                     {/* CV Upload */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -537,6 +582,9 @@ const FreeTrialTeacher = () => {
                 {/* Step 3 - Personal Information */}
                 {step === 3 && (
                   <div className="space-y-6">
+                    <label className="block text-base font-semibold text-[#0B31BD] mb-4">
+                      Submit personal information and login credentials!
+                    </label>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -578,7 +626,7 @@ const FreeTrialTeacher = () => {
                             variant="outline"
                             className={cn(
                               "flex h-10 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-normal hover:bg-white",
-                              !formData.birthDate && "text-gray-400"
+                              !formData.birthDate && "text-gray-400",
                             )}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -594,7 +642,10 @@ const FreeTrialTeacher = () => {
                             mode="single"
                             selected={formData.birthDate}
                             onSelect={(date) =>
-                              setFormData((prev) => ({ ...prev, birthDate: date }))
+                              setFormData((prev) => ({
+                                ...prev,
+                                birthDate: date,
+                              }))
                             }
                             disabled={(date) =>
                               date > new Date() || date < new Date("1950-01-01")
@@ -673,14 +724,18 @@ const FreeTrialTeacher = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number <span className="text-red-500">*</span>
                       </label>
-                      <Input
-                        type="tel"
-                        name="phoneNumber"
+                      <PhoneInput
+                        defaultCountry="de"
                         value={formData.phoneNumber}
-                        onChange={handleInputChange}
+                        onChange={(phone) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            phoneNumber: phone,
+                          }))
+                        }
+                        inputClassName="!h-10 !border-0 !bg-transparent !text-sm !outline-none !shadow-none focus:!outline-none focus:!ring-0 focus:!border-0 focus:!shadow-none"
+                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white text-sm [&_.react-international-phone-country-selector-button]:!border-0 [&_.react-international-phone-country-selector-button]:!bg-transparent [&_.react-international-phone-country-selector-button]:!h-full [&_.react-international-phone-input-container]:!border-0 [&_.react-international-phone-input-container]:!m-0 [&_.react-international-phone-country-selector-dropdown]:!z-50"
                         placeholder="Enter your phone number"
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
                       />
                     </div>
 
@@ -699,19 +754,64 @@ const FreeTrialTeacher = () => {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Password <span className="text-red-500">*</span>
-                      </label>
-                      <Input
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        placeholder="Enter your Password"
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        required
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Password <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Enter your Password"
+                            className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword((prev) => !prev)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showPassword ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Repeat Password{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative">
+                          <Input
+                            type={showRepeatPassword ? "text" : "password"}
+                            name="repeatPassword"
+                            value={formData.repeatPassword}
+                            onChange={handleInputChange}
+                            placeholder="Repeat your password"
+                            className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setShowRepeatPassword((prev) => !prev)
+                            }
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                          >
+                            {showRepeatPassword ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="flex items-start">
@@ -757,7 +857,7 @@ const FreeTrialTeacher = () => {
                             Submitting...
                           </>
                         ) : (
-                          "Send the request"
+                          "Send Application"
                         )}
                       </button>
                     </div>

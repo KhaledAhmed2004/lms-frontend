@@ -1,18 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { FormEvent } from 'react';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
-import Link from 'next/link';
-import { useLogin } from '@/hooks/api';
-import { toast } from 'sonner';
-import { Loader2 } from 'lucide-react';
+import { useState } from "react";
+import { FormEvent } from "react";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
+import { useLogin } from "@/hooks/api";
+import { toast } from "sonner";
+import { Loader2, Eye, EyeOff, HelpCircle } from "lucide-react";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberPassword, setRememberPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { mutate: login, isPending } = useLogin();
 
@@ -20,7 +21,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error('Please enter email and password');
+      toast.error("Please enter email and password");
       return;
     }
 
@@ -28,13 +29,16 @@ const LoginPage = () => {
       { email, password },
       {
         onSuccess: () => {
-          toast.success('Login successful!');
+          toast.success("Login successful!");
         },
         onError: (error: any) => {
-          const message = error?.getFullMessage?.() || error?.message || 'Login failed. Please try again.';
+          const message =
+            error?.getFullMessage?.() ||
+            error?.message ||
+            "Login failed. Please try again.";
           toast.error(message);
         },
-      }
+      },
     );
   };
 
@@ -44,9 +48,9 @@ const LoginPage = () => {
       <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
         <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
           <div className="flex items-center justify-center w-full">
-            <h1 className="text-3xl font-bold text-[#0B31BD]">
+            <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
               Schäfer Tutoring
-            </h1>
+            </Link>
           </div>
         </div>
       </nav>
@@ -56,12 +60,19 @@ const LoginPage = () => {
         <div className="w-full max-w-[696px] space-y-8">
           {/* Heading Section */}
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Hello Again!</h2>
-            <p className="text-gray-600 text-sm sm:text-base">Please login to continue</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Hello Again!
+            </h2>
+            <p className="text-gray-600 text-sm sm:text-base">
+              Please login to continue
+            </p>
           </div>
 
           {/* Form Section */}
-          <form onSubmit={handleLogin} className="space-y-6 flex flex-col items-stretch">
+          <form
+            onSubmit={handleLogin}
+            className="space-y-6 flex flex-col items-stretch"
+          >
             {/* Email Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 block">
@@ -82,14 +93,30 @@ const LoginPage = () => {
               <label className="text-sm font-medium text-gray-900 block">
                 Password
               </label>
-              <Input
-                type="password"
-                placeholder="Enter your Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
-                required
-              />
+
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-5 pr-12 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
+                  required
+                />
+
+                {/* Eye Toggle Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Remember Password & Forgot Password */}
@@ -98,7 +125,9 @@ const LoginPage = () => {
                 <Checkbox
                   id="remember"
                   checked={rememberPassword}
-                  onCheckedChange={(checked) => setRememberPassword(checked === true)}
+                  onCheckedChange={(checked) =>
+                    setRememberPassword(checked === true)
+                  }
                   className="border-gray-300"
                 />
                 <label
@@ -109,9 +138,12 @@ const LoginPage = () => {
                 </label>
               </div>
               <div>
-                <Link href="/reset" className="text-sm text-[#0B31BD] hover:text-[#0B31BD] hover:underline font-medium">
-                Forgot Password
-              </Link>
+                <Link
+                  href="/reset"
+                  className="text-sm text-[#0B31BD] hover:text-[#0B31BD] hover:underline font-medium"
+                >
+                  Forgot Password?
+                </Link>
               </div>
             </div>
 
@@ -127,7 +159,7 @@ const LoginPage = () => {
                   Logging in...
                 </>
               ) : (
-                'Login'
+                "Login"
               )}
             </button>
           </form>
@@ -135,10 +167,13 @@ const LoginPage = () => {
           {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-gray-700 text-sm">
-              Don't have an account?{' '}
-              <a href="#" className="text-[#0B31BD] hover:text-blue-700 font-semibold">
-                 Sign Up
-              </a>
+              Want to teach with us?{" "}
+              <Link
+                href="/free-trial-teacher"
+                className="text-[#0B31BD] hover:text-blue-700 font-semibold"
+              >
+                Become a tutor
+              </Link>
             </p>
           </div>
         </div>

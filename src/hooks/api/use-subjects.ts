@@ -124,7 +124,7 @@ export function useUpdateSubject() {
   });
 }
 
-// Delete Subject - Admin Only (Soft delete)
+// Delete Subject - Admin Only (Hard delete, blocked if active requests exist)
 export function useDeleteSubject() {
   const queryClient = useQueryClient();
 
