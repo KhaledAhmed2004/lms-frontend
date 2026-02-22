@@ -205,6 +205,35 @@ const FreeTrialTeacher = () => {
     return true;
   };
 
+  const isStepComplete = (): boolean => {
+    if (step === 1) {
+      return selectedSubjects.length > 0;
+    }
+    if (step === 2) {
+      return !!(formData.cv && formData.abiturCertificate && formData.officialId);
+    }
+    if (step === 3) {
+      return !!(
+        formData.firstName &&
+        formData.lastName &&
+        formData.birthDate &&
+        formData.street &&
+        formData.houseNumber &&
+        formData.zip &&
+        formData.city &&
+        formData.phoneNumber &&
+        formData.email &&
+        formData.password &&
+        formData.repeatPassword &&
+        formData.password === formData.repeatPassword &&
+        formData.agreeToPolicy
+      );
+    }
+    return true;
+  };
+
+  const stepComplete = isStepComplete();
+
   const handleNextStep = () => {
     if (step === 1 && !validateStep1()) {
       return;
@@ -308,7 +337,7 @@ const FreeTrialTeacher = () => {
               <div>
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-[#062183] transition-all duration-300"
+                    className="h-full bg-[#0B31BD] transition-all duration-300"
                     style={{ width: `${(step / 3) * 100}%` }}
                   />
                 </div>
@@ -431,7 +460,7 @@ const FreeTrialTeacher = () => {
                       {step !== 1 && (
                         <button
                           onClick={handlePrevStep}
-                          className="w-full bg-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-400 transition-colors"
+                          className="w-full border border-[#0B31BD] text-[#0B31BD] py-3 rounded-md font-medium hover:bg-[#0B31BD]/5 transition-colors"
                         >
                           Back
                         </button>
@@ -439,7 +468,12 @@ const FreeTrialTeacher = () => {
 
                       <button
                         onClick={handleNextStep}
-                        className="w-full bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2"
+                        disabled={!stepComplete}
+                        className={`w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
+                          stepComplete
+                            ? "bg-[#0B31BD] text-white hover:bg-[#062183]"
+                            : "bg-gray-300 text-gray-500"
+                        }`}
                       >
                         Next
                       </button>
@@ -453,125 +487,132 @@ const FreeTrialTeacher = () => {
                     <label className="block text-base font-semibold text-[#0B31BD] mb-4">
                       Submit qualification and identification!
                     </label>
-                    {/* CV Upload */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        CV <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors bg-white">
-                        <input
-                          type="file"
-                          id="cv-upload"
-                          onChange={(e) => handleFileChange(e, "cv")}
-                          className="hidden"
-                          accept=".png,.jpg,.jpeg,.pdf"
-                        />
-                        <label
-                          htmlFor="cv-upload"
-                          className="cursor-pointer flex flex-col items-center"
-                        >
-                          <div className="w-16 h-16 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-4">
-                            <Upload className="text-[#0B31BD]" size={32} />
-                          </div>
-                          <p className="text-gray-700 font-medium mb-1">
-                            Drag & drop files here or click to browse
-                          </p>
-                          <p className="text-gray-500 text-sm">
-                            png, jpg up to 10MB
-                          </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* CV Upload */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          CV <span className="text-red-500">*</span>
                         </label>
-                        {formData.cv && (
-                          <p className="mt-4 text-sm text-green-600">
-                            File selected: {formData.cv.name}
-                          </p>
-                        )}
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors bg-white h-full">
+                          <input
+                            type="file"
+                            id="cv-upload"
+                            onChange={(e) => handleFileChange(e, "cv")}
+                            className="hidden"
+                            accept=".png,.jpg,.jpeg,.pdf"
+                          />
+                          <label
+                            htmlFor="cv-upload"
+                            className="cursor-pointer flex flex-col items-center"
+                          >
+                            <div className="w-14 h-14 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-3">
+                              <Upload className="text-[#0B31BD]" size={26} />
+                            </div>
+                            <p className="text-gray-700 font-medium text-sm mb-1">
+                              Drag & Drop or Click
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              Up to 10 MB
+                            </p>
+                          </label>
+                          {formData.cv && (
+                            <p className="mt-3 text-xs text-green-600 truncate">
+                              {formData.cv.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Abitur Certificate Upload */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Abitur Certificate{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors bg-white h-full">
+                          <input
+                            type="file"
+                            id="abitur-upload"
+                            onChange={(e) =>
+                              handleFileChange(e, "abiturCertificate")
+                            }
+                            className="hidden"
+                            accept=".png,.jpg,.jpeg,.pdf"
+                          />
+                          <label
+                            htmlFor="abitur-upload"
+                            className="cursor-pointer flex flex-col items-center"
+                          >
+                            <div className="w-14 h-14 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-3">
+                              <Upload className="text-[#0B31BD]" size={26} />
+                            </div>
+                            <p className="text-gray-700 font-medium text-sm mb-1">
+                              Drag & Drop or Click
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              Up to 10 MB
+                            </p>
+                          </label>
+                          {formData.abiturCertificate && (
+                            <p className="mt-3 text-xs text-green-600 truncate">
+                              {formData.abiturCertificate.name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Official ID Upload */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Official ID-Document{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors bg-white h-full">
+                          <input
+                            type="file"
+                            id="id-upload"
+                            onChange={(e) => handleFileChange(e, "officialId")}
+                            className="hidden"
+                            accept=".png,.jpg,.jpeg,.pdf"
+                          />
+                          <label
+                            htmlFor="id-upload"
+                            className="cursor-pointer flex flex-col items-center"
+                          >
+                            <div className="w-14 h-14 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-3">
+                              <Upload className="text-[#0B31BD]" size={26} />
+                            </div>
+                            <p className="text-gray-700 font-medium text-sm mb-1">
+                              Drag & Drop or Click
+                            </p>
+                            <p className="text-gray-500 text-xs">
+                              Up to 10 MB
+                            </p>
+                          </label>
+                          {formData.officialId && (
+                            <p className="mt-3 text-xs text-green-600 truncate">
+                              {formData.officialId.name}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Abitur Certificate Upload */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Abitur Certificate{" "}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors bg-white">
-                        <input
-                          type="file"
-                          id="abitur-upload"
-                          onChange={(e) =>
-                            handleFileChange(e, "abiturCertificate")
-                          }
-                          className="hidden"
-                          accept=".png,.jpg,.jpeg,.pdf"
-                        />
-                        <label
-                          htmlFor="abitur-upload"
-                          className="cursor-pointer flex flex-col items-center"
-                        >
-                          <div className="w-16 h-16 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-4">
-                            <Upload className="text-[#0B31BD]" size={32} />
-                          </div>
-                          <p className="text-gray-700 font-medium mb-1">
-                            Drag & drop files here or click to browse
-                          </p>
-                          <p className="text-gray-500 text-sm">
-                            png, jpg up to 10MB
-                          </p>
-                        </label>
-                        {formData.abiturCertificate && (
-                          <p className="mt-4 text-sm text-green-600">
-                            File selected: {formData.abiturCertificate.name}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Official ID Upload */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Official ID-Document{" "}
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors bg-white">
-                        <input
-                          type="file"
-                          id="id-upload"
-                          onChange={(e) => handleFileChange(e, "officialId")}
-                          className="hidden"
-                          accept=".png,.jpg,.jpeg,.pdf"
-                        />
-                        <label
-                          htmlFor="id-upload"
-                          className="cursor-pointer flex flex-col items-center"
-                        >
-                          <div className="w-16 h-16 bg-[#D8E3FC] rounded-full flex items-center justify-center mb-4">
-                            <Upload className="text-[#0B31BD]" size={32} />
-                          </div>
-                          <p className="text-gray-700 font-medium mb-1">
-                            Drag & drop files here or click to browse
-                          </p>
-                          <p className="text-gray-500 text-sm">
-                            png, jpg up to 10MB
-                          </p>
-                        </label>
-                        {formData.officialId && (
-                          <p className="mt-4 text-sm text-green-600">
-                            File selected: {formData.officialId.name}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 !mt-10">
                       <button
                         onClick={handlePrevStep}
-                        className="w-full max-w-md mx-auto bg-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-400 transition-colors"
+                        className="w-full max-w-md mx-auto border border-[#0B31BD] text-[#0B31BD] py-3 rounded-md font-medium hover:bg-[#0B31BD]/5 transition-colors"
                       >
                         Back
                       </button>
                       <button
                         onClick={handleNextStep}
-                        className="w-full max-w-md mx-auto bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2"
+                        disabled={!stepComplete}
+                        className={`w-full max-w-md mx-auto py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
+                          stepComplete
+                            ? "bg-[#0B31BD] text-white hover:bg-[#062183]"
+                            : "bg-gray-300 text-gray-500"
+                        }`}
                       >
                         Next
                       </button>
@@ -724,19 +765,21 @@ const FreeTrialTeacher = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Phone Number <span className="text-red-500">*</span>
                       </label>
-                      <PhoneInput
-                        defaultCountry="de"
-                        value={formData.phoneNumber}
-                        onChange={(phone) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            phoneNumber: phone,
-                          }))
-                        }
-                        inputClassName="!h-10 !border-0 !bg-transparent !text-sm !outline-none !shadow-none focus:!outline-none focus:!ring-0 focus:!border-0 focus:!shadow-none"
-                        className="flex h-10 w-full rounded-md border border-gray-300 bg-white text-sm [&_.react-international-phone-country-selector-button]:!border-0 [&_.react-international-phone-country-selector-button]:!bg-transparent [&_.react-international-phone-country-selector-button]:!h-full [&_.react-international-phone-input-container]:!border-0 [&_.react-international-phone-input-container]:!m-0 [&_.react-international-phone-country-selector-dropdown]:!z-50"
-                        placeholder="Enter your phone number"
-                      />
+                      <div className="relative">
+                        <PhoneInput
+                          defaultCountry="de"
+                          value={formData.phoneNumber}
+                          onChange={(phone) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              phoneNumber: phone,
+                            }))
+                          }
+                          inputClassName="!h-10 !border-0 !bg-transparent !text-sm !outline-none !shadow-none focus:!outline-none focus:!ring-0 focus:!border-0 focus:!shadow-none"
+                          className="flex h-10 w-full rounded-md border border-gray-300 bg-white text-sm [&_.react-international-phone-country-selector-button]:!border-0 [&_.react-international-phone-country-selector-button]:!bg-transparent [&_.react-international-phone-country-selector-button]:!h-full [&_.react-international-phone-country-selector-button]:!pl-2 [&_.react-international-phone-country-selector-button]:!pr-1 [&_.react-international-phone-input-container]:!border-0 [&_.react-international-phone-input-container]:!m-0 [&_.react-international-phone-country-selector-dropdown]:!z-50"
+                          placeholder="Enter your phone number"
+                        />
+                      </div>
                     </div>
 
                     <div>
@@ -842,14 +885,18 @@ const FreeTrialTeacher = () => {
                       <button
                         onClick={handlePrevStep}
                         disabled={isPending}
-                        className="w-full max-w-md mx-auto bg-gray-300 text-gray-700 py-3 rounded-md font-medium hover:bg-gray-400 transition-colors disabled:opacity-50"
+                        className="w-full max-w-md mx-auto border border-[#0B31BD] text-[#0B31BD] py-3 rounded-md font-medium hover:bg-[#0B31BD]/5 transition-colors disabled:opacity-50"
                       >
                         Back
                       </button>
                       <button
                         onClick={handleSubmit}
-                        disabled={isPending}
-                        className="w-full max-w-md mx-auto bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                        disabled={isPending || !stepComplete}
+                        className={`w-full max-w-md mx-auto py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
+                          stepComplete && !isPending
+                            ? "bg-[#0B31BD] text-white hover:bg-[#062183]"
+                            : "bg-gray-300 text-gray-500"
+                        }`}
                       >
                         {isPending ? (
                           <>

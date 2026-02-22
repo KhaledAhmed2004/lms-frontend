@@ -2,16 +2,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
+import Link from "next/link";
 import { ProgressBar } from "./components/ProgressBar";
 import { Step1SubjectInfo } from "./components/Step1SubjectInfo";
 import { Step2GoalsDocuments } from "./components/Step2GoalsDocuments";
 import { Step3PersonalInfo } from "./components/Step3PersonalInfo";
 import { FormNavigationButtons } from "./components/FormNavigationButtons";
-import { useCreateTrialRequest, type CreateTrialRequestData } from "@/hooks/api";
+import { useCreateTrialRequest, useActiveSubjects, type CreateTrialRequestData } from "@/hooks/api";
 
 /* =========================
    Types
@@ -34,6 +35,7 @@ interface FreeTrialFormData {
 
   email: string;
   password: string;
+  repeatPassword: string;
   agreeToPolicy: boolean;
 }
 
@@ -41,12 +43,23 @@ interface FreeTrialFormData {
    Component
 ========================= */
 
-export default function FreeTrialStudent() {
+export default function FreeTrialStudentPage() {
+  return (
+    <Suspense>
+      <FreeTrialStudent />
+    </Suspense>
+  );
+}
+
+function FreeTrialStudent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const subjectFromUrl = searchParams.get("subject");
   const [step, setStep] = useState<number>(1);
 
   // Trial request mutation - isPending is synchronously true after mutate(), prevents double-submit
   const { mutate: createTrialRequest, isPending: isSubmitting } = useCreateTrialRequest();
+  const { data: subjects = [] } = useActiveSubjects();
 
   const [formData, setFormData] = useState<FreeTrialFormData>({
     subject: "",
@@ -65,8 +78,21 @@ export default function FreeTrialStudent() {
 
     email: "",
     password: "",
+    repeatPassword: "",
     agreeToPolicy: false,
   });
+
+  // Auto-fill subject from URL query param (landing page hero selection)
+  useEffect(() => {
+    if (subjectFromUrl && subjects.length > 0 && !formData.subject) {
+      const match = subjects.find(
+        (s) => s.name.toLowerCase() === subjectFromUrl.toLowerCase()
+      );
+      if (match) {
+        setFormData((prev) => ({ ...prev, subject: match._id }));
+      }
+    }
+  }, [subjectFromUrl, subjects]);
 
   /* =========================
      Helpers
@@ -100,9 +126,15 @@ export default function FreeTrialStudent() {
       !formData.studentFirstName ||
       !formData.studentLastName ||
       !formData.email ||
-      !formData.password
+      !formData.password ||
+      !formData.repeatPassword
     ) {
       toast.error("Please fill in all required personal information.");
+      return false;
+    }
+
+    if (formData.password !== formData.repeatPassword) {
+      toast.error("Passwords do not match.");
       return false;
     }
 
@@ -116,6 +148,40 @@ export default function FreeTrialStudent() {
       return false;
     }
 
+    return true;
+  };
+
+  /* =========================
+     Step completeness check (for button disabled state)
+  ========================= */
+
+  const isStepComplete = (): boolean => {
+    if (step === 1) {
+      return !!(formData.subject && formData.grade && formData.schoolType);
+    }
+    if (step === 2) {
+      return true; // step 2 has no required fields
+    }
+    if (step === 3) {
+      const baseFields =
+        !!formData.studentFirstName &&
+        !!formData.studentLastName &&
+        !!formData.email &&
+        !!formData.password &&
+        !!formData.repeatPassword &&
+        formData.password === formData.repeatPassword &&
+        formData.agreeToPolicy;
+
+      if (formData.isUnder18) {
+        return (
+          baseFields &&
+          !!formData.guardianFirstName &&
+          !!formData.guardianLastName &&
+          !!formData.guardianPhone
+        );
+      }
+      return baseFields;
+    }
     return true;
   };
 
@@ -193,9 +259,9 @@ export default function FreeTrialStudent() {
   return (
     <div className="min-h-screen">
         <nav className="bg-[#FBFCFC] h-20 shadow-sm flex items-center justify-center">
-          <h1 className="text-3xl font-bold text-[#0B31BD]">
+          <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
             Schäfer Tutoring
-          </h1>
+          </Link>
         </nav>
 
         <div className="min-h-[calc(100vh-80px)] flex justify-center py-12 px-4">
@@ -234,6 +300,7 @@ export default function FreeTrialStudent() {
               onBack={handleBack}
               isLastStep={step === 3}
               isLoading={isSubmitting}
+              isDisabled={!isStepComplete()}
             />
           </div>
         </div>

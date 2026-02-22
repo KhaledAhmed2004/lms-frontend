@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import Link from "next/link";
 
 interface Step3Props {
@@ -13,6 +15,7 @@ interface Step3Props {
 
 export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -125,15 +128,21 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Phone (Legal Guardian) <span className="text-red-500">*</span>
             </label>
-            <Input
-              type="tel"
-              name="guardianPhone"
-              value={formData.guardianPhone}
-              onChange={(e) =>
-                setFormData({ ...formData, guardianPhone: e.target.value })
-              }
-              placeholder="Enter phone number"
-            />
+            <div className="relative">
+              <PhoneInput
+                defaultCountry="de"
+                value={formData.guardianPhone}
+                onChange={(phone) =>
+                  setFormData((prev: any) => ({
+                    ...prev,
+                    guardianPhone: phone,
+                  }))
+                }
+                inputClassName="!h-10 !border-0 !bg-transparent !text-sm !outline-none !shadow-none focus:!outline-none focus:!ring-0 focus:!border-0 focus:!shadow-none"
+                className="flex h-10 w-full rounded-md border border-gray-300 bg-white text-sm [&_.react-international-phone-country-selector-button]:!border-0 [&_.react-international-phone-country-selector-button]:!bg-transparent [&_.react-international-phone-country-selector-button]:!h-full [&_.react-international-phone-country-selector-button]:!pl-2 [&_.react-international-phone-country-selector-button]:!pr-1 [&_.react-international-phone-input-container]:!border-0 [&_.react-international-phone-input-container]:!m-0 [&_.react-international-phone-country-selector-dropdown]:!z-50"
+                placeholder="Enter phone number"
+              />
+            </div>
           </div>
         </>
       )}
@@ -151,27 +160,53 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Password <span className="text-red-500">*</span>
-        </label>
-        <div className="relative">
-          <Input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            placeholder="Enter your Password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Password <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              placeholder="Enter your Password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Repeat Password{" "}
+            <span className="text-red-500">*</span>
+          </label>
+          <div className="relative">
+            <Input
+              type={showRepeatPassword ? "text" : "password"}
+              name="repeatPassword"
+              value={formData.repeatPassword}
+              onChange={(e) =>
+                setFormData({ ...formData, repeatPassword: e.target.value })
+              }
+              placeholder="Repeat your Password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowRepeatPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {showRepeatPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
       </div>
 

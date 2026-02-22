@@ -167,12 +167,12 @@ const LoginPage = () => {
           {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-gray-700 text-sm">
-              Want to teach with us?{" "}
+              Don&apos;t have an account?{" "}
               <Link
-                href="/free-trial-teacher"
+                href="/register"
                 className="text-[#0B31BD] hover:text-blue-700 font-semibold"
               >
-                Become a tutor
+                Sign up
               </Link>
             </p>
           </div>

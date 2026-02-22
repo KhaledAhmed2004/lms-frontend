@@ -6,6 +6,7 @@ interface FormNavigationButtonsProps {
   onBack?: () => void;
   isLastStep?: boolean;
   isLoading?: boolean;
+  isDisabled?: boolean;
 }
 
 export const FormNavigationButtons = ({
@@ -14,6 +15,7 @@ export const FormNavigationButtons = ({
   onBack,
   isLastStep = false,
   isLoading = false,
+  isDisabled = false,
 }: FormNavigationButtonsProps) => {
   return (
     <div className="flex gap-3">
@@ -29,8 +31,12 @@ export const FormNavigationButtons = ({
 
       <button
         onClick={onNext}
-        disabled={isLoading}
-        className="w-full bg-[#0B31BD] text-white py-3 rounded-md font-medium hover:bg-[#062183] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={isLoading || isDisabled}
+        className={`w-full py-3 rounded-md font-medium transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed ${
+          isDisabled
+            ? "bg-gray-300 text-gray-500"
+            : "bg-[#0B31BD] text-white hover:bg-[#062183] disabled:opacity-50"
+        }`}
       >
         {isLoading ? (
           <>

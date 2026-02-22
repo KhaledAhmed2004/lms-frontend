@@ -1,125 +1,44 @@
-// "use client";
+'use client';
 
-// import * as React from "react";
-// import Link from "next/link";
-
-// import { NavMain } from "@/components/sidebar/nav-main";
-// import { NavUser } from "@/components/sidebar/nav-user";
-// import {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarFooter,
-//   SidebarHeader,
-//   SidebarMenu,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-// } from "@/components/ui/sidebar";
-// import { useAuthStore } from "@/store/auth-store";
-
-// const navMain = [
-//   { title: "Sessions", url: "/teacher/overview" },
-//   { title: "Requests", url: "/teacher/requests" },
-//   { title: "Messages", url: "/teacher/messages" },
-//   { title: "Resources", url: "/teacher/resources" },
-//   { title: "Earnings", url: "/teacher/earnings" },
-//   { title: "Support", url: "/teacher/support" },
-// ];
-
-// export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-//   const { user } = useAuthStore();
-
-//   const userData = {
-//     name: user?.name || "Teacher",
-//     email: user?.email || "",
-//     avatar: user?.avatar || undefined,
-//   };
-
-//   return (
-//     <Sidebar collapsible="offcanvas" {...props}>
-//       <SidebarHeader>
-//         <SidebarMenu>
-//           <SidebarMenuItem>
-//             <SidebarMenuButton
-//               asChild
-//               className="data-[slot=sidebar-menu-button]:!p-1.5 bg-gray-100"
-//             >
-//               <Link href="/teacher/overview">
-//                 <span className="text-xl font-semibold text-[#0B31BD]">
-//                   Schäfer Tutoring
-//                 </span>
-//               </Link>
-//             </SidebarMenuButton>
-//           </SidebarMenuItem>
-//         </SidebarMenu>
-//       </SidebarHeader>
-//       <SidebarContent>
-//         <NavMain items={navMain} />
-//       </SidebarContent>
-//       <SidebarFooter className="md:hidden">
-//         <NavUser user={userData} />
-//       </SidebarFooter>
-//     </Sidebar>
-//   );
-// }
-
-"use client";
-
-import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
-import { NavMain } from "@/components/sidebar/nav-main";
-import { NavUser } from "@/components/sidebar/nav-user";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { useAuthStore } from "@/store/auth-store";
-
-const navMain = [
-  { title: "Sessions", url: "/teacher/overview" },
-  { title: "Requests", url: "/teacher/requests" },
-  { title: "Messages", url: "/teacher/messages" },
-  { title: "Resources", url: "/teacher/resources" },
-  { title: "Earnings", url: "/teacher/earnings" },
-  { title: "Support", url: "/teacher/support" },
+const menuItems = [
+  { label: "Sessions", href: "/teacher/overview" },
+  { label: "Requests", href: "/teacher/requests" },
+  { label: "Messages", href: "/teacher/messages" },
+  { label: "Resources", href: "/teacher/resources" },
+  { label: "Earnings", href: "/teacher/earnings" },
+  { label: "Support", href: "/teacher/support" },
 ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuthStore();
-
-  const userData = {
-    name: user?.name || "Teacher",
-    email: user?.email || "",
-    avatar: user?.avatar || undefined,
-  };
+export function AppSidebar() {
+  const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="offcanvas" className="bg-white" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <span className="text-[26px] font-semibold text-[#0B31BD] px-4">
-            Schäfer Tutoring
-          </span>
-          {/* <SidebarMenuItem>
-            <SidebarMenuButton className="data-[slot=sidebar-menu-button]:!p-1.5 bg-gray-100 cursor-default">
-              <span className="text-xl font-semibold text-[#0B31BD]">
-                Schäfer Tutoring
-              </span>
-            </SidebarMenuButton>
-          </SidebarMenuItem> */}
-        </SidebarMenu>
-      </SidebarHeader>
-      <SidebarContent className="bg-white">
-        <NavMain items={navMain} />
-      </SidebarContent>
-      <SidebarFooter className="md:hidden">
-        <NavUser user={userData} />
-      </SidebarFooter>
-    </Sidebar>
+    <aside className="w-full md:w-56 lg:w-[328px] h-full bg-white flex flex-col overflow-y-auto">
+      <nav className="flex-1 flex flex-col items-center py-3 sm:py-4 lg:py-5 space-y-2 sm:space-y-3 lg:space-y-4">
+        {menuItems.map((item) => {
+          const isActive = pathname.startsWith(item.href);
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`w-full max-w-[240px] sm:max-w-[220px] md:max-w-[200px] lg:w-64 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 rounded-lg sm:rounded-xl text-base sm:text-lg font-medium transition-all duration-200 ${
+                isActive
+                  ? "bg-[#002AC8] text-white shadow-xl"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="p-3 sm:p-4 lg:p-6 flex flex-col items-center">
+      </div>
+    </aside>
   );
 }

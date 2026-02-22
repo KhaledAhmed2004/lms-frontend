@@ -6,7 +6,7 @@ import FooterSection from "./FooterSection";
 const Footer = () => {
   return (
     <footer className="bg-[#0B31BD] text-white">
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
+      <div className="max-w-5xl mx-auto px-6 pt-20 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
 
           {/* Brand & Social */}
@@ -32,10 +32,10 @@ const Footer = () => {
           <FooterSection
             title="Company"
             links={[
-              { label: "About Us", href: "#" },
+              { label: "About Us", href: "/about" },
               { label: "Blog", href: "#" },
-              { label: "Careers", href: "#" },
-              { label: "Contact", href: "#" },
+              { label: "Careers", href: "/careers" },
+              { label: "Contact", href: "/contact" },
             ]}
           />
 
