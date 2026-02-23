@@ -61,6 +61,17 @@ function FreeTrialStudent() {
   const { mutate: createTrialRequest, isPending: isSubmitting } = useCreateTrialRequest();
   const { data: subjects = [] } = useActiveSubjects();
 
+  // Browser back button → previous step instead of leaving page
+  useEffect(() => {
+    window.history.replaceState({ step: 1 }, "");
+
+    const handlePopState = () => {
+      setStep((prev) => (prev > 1 ? prev - 1 : prev));
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const [formData, setFormData] = useState<FreeTrialFormData>({
     subject: "",
     grade: "",
@@ -248,6 +259,7 @@ function FreeTrialStudent() {
         },
       });
     } else {
+      window.history.pushState({ step: step + 1 }, "");
       setStep((prev) => prev + 1);
     }
   };

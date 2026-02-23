@@ -80,33 +80,11 @@ const RegisterPage = () => {
 
             {/* Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {/* Card 1: Create Account */}
+              {/* Card 1: Trial Session */}
               <div className="border border-gray-200 rounded-xl p-8 flex flex-col items-center text-center space-y-5 hover:shadow-lg transition-shadow">
                 <div className="w-36 h-36 rounded-full overflow-hidden">
                   <Image
                     src="/girl-student.png"
-                    alt="Create account"
-                    width={144}
-                    height={144}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <p className="text-gray-800 text-lg font-medium">
-                  ...create an account
-                </p>
-                <Link
-                  href="/free-trial-teacher"
-                  className="bg-[#0B31BD] hover:bg-blue-800 text-white font-semibold py-2.5 px-10 rounded-lg text-base transition-colors"
-                >
-                  SIGN UP
-                </Link>
-              </div>
-
-              {/* Card 2: Free Trial */}
-              <div className="border border-gray-200 rounded-xl p-8 flex flex-col items-center text-center space-y-5 hover:shadow-lg transition-shadow">
-                <div className="w-36 h-36 rounded-full overflow-hidden">
-                  <Image
-                    src="/teacher.png"
                     alt="Set up a trial session"
                     width={144}
                     height={144}
@@ -118,9 +96,31 @@ const RegisterPage = () => {
                 </p>
                 <Link
                   href="/free-trial-student"
+                  className="bg-[#0B31BD] hover:bg-blue-800 text-white font-semibold py-2.5 px-10 rounded-lg text-base transition-colors"
+                >
+                  REQUEST
+                </Link>
+              </div>
+
+              {/* Card 2: Become a Tutor */}
+              <div className="border border-gray-200 rounded-xl p-8 flex flex-col items-center text-center space-y-5 hover:shadow-lg transition-shadow">
+                <div className="w-36 h-36 rounded-full overflow-hidden">
+                  <Image
+                    src="/teacher.png"
+                    alt="Become a tutor"
+                    width={144}
+                    height={144}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <p className="text-gray-800 text-lg font-medium">
+                  ...become a tutor
+                </p>
+                <Link
+                  href="/free-trial-teacher"
                   className="bg-[#6366F1] hover:bg-indigo-600 text-white font-semibold py-2.5 px-10 rounded-lg text-base transition-colors"
                 >
-                  TRIAL SESSION
+                  APPLY
                 </Link>
               </div>
             </div>
@@ -134,15 +134,6 @@ const RegisterPage = () => {
                   className="text-[#0B31BD] hover:text-blue-700 font-semibold"
                 >
                   Login
-                </Link>
-              </p>
-              <p className="text-gray-700 text-sm">
-                Do you want to teach?{" "}
-                <Link
-                  href="/free-trial-teacher"
-                  className="text-[#0B31BD] hover:text-blue-700 font-semibold underline"
-                >
-                  Apply now
                 </Link>
               </p>
             </div>
