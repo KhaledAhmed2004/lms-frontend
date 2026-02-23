@@ -96,7 +96,7 @@ export default function TopNavbar() {
               className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition flex-shrink-0"
             >
               <Bell className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-gray-700" />
-              <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-orange-500 rounded-full border-2 border-white"></span>
             </button>
 
             {/* Notification Dropdown Menu */}

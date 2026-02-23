@@ -8,8 +8,8 @@ import { usePathname } from "next/navigation";
 const menuItems = [
   { label: "Sessions", href: "/student/session" },
   { label: "Messages", href: "/student/messages" },
-  { label: "Subscription", href: "/student/subscription" },
   { label: "Resources", href: "/student/resources" },
+  { label: "Subscription", href: "/student/subscription" },
   { label: "Support", href: "/student/support" },
 ];
 

@@ -51,82 +51,71 @@ export default function SupportPage() {
 
   return (
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-2xl font-semibold text-black">
+          How can we help?
+        </h2>
+      </div>
+
       {/* FAQ Section */}
-      <section className="bg-[#F7F7F7] p-4 sm:p-5 lg:p-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-semibold text-black">
-              How can we help?
-            </h2>
-          </div>
+      <div className="space-y-4">
+        {faqs.map((faq, index) => {
+          const isOpen = openIndex === index;
 
-          <div className='bg-white p-8 rounded-[12px] mb-10 shadow'>
-            <div>
-              <h2 className="text-2xl font-bold  mb-6">
-                Frequently Asked Questions
-              </h2>
-            </div>
-
-            <div className="space-y-4 mb-12">
-              {faqs.map((faq, index) => {
-                const isOpen = openIndex === index;
-
-                return (
-                  <div
-                    key={index}
-                    className="bg-white rounded-lg shadow-sm border-2 border-[#85C2DE] overflow-hidden"
-                  >
-                    <button
-                      onClick={() => setOpenIndex(isOpen ? null : index)}
-                      className="w-full px-5 py-4 sm:px-6 sm:py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors duration-200"
-                      aria-expanded={isOpen}
-                    >
-                      <span className="font-normal text-gray-900 text-sm sm:text-base pr-4 text-left">
-                        {faq.question}
-                      </span>
-                      <Plus
-                        className={`w-5 h-5 text-gray-400 transition-transform duration-300 shrink-0 ${isOpen ? "rotate-45" : ""
-                          }`}
-                      />
-                    </button>
-
-                    <div
-                      className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                        }`}
-                      style={{
-                        transition:
-                          "max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, padding 0.5s ease-in-out",
-                      }}
-                    >
-                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-2">
-                        <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
-                          {faq.answer}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Need Personal Assistance Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sm:p-8">
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">
-              Need Personal assistance?
-            </h3>
-            <p className="text-gray-600 text-sm sm:text-base mb-6">
-              If you couldn't find the information you need, our support team is ready to assist you. Submit a ticket, and we'll get back to you as soon as possible.
-            </p>
-            <button
-              onClick={() => setShowTicketModal(true)}
-              className="bg-[#0B31BD] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#0a2aa0] transition-colors duration-200"
+          return (
+            <div
+              key={index}
+              className="bg-white rounded-lg shadow-sm border-2 border-[#85C2DE] overflow-hidden"
             >
-              Submit Ticket
-            </button>
-          </div>
-        </div>
-      </section>
+              <button
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                className="w-full px-5 py-4 sm:px-6 sm:py-5 flex items-center justify-between text-left hover:bg-gray-50 transition-colors duration-200"
+                aria-expanded={isOpen}
+              >
+                <span className="font-normal text-gray-900 text-sm sm:text-base pr-4 text-left">
+                  {faq.question}
+                </span>
+                <Plus
+                  className={`w-5 h-5 text-gray-400 transition-transform duration-300 shrink-0 ${isOpen ? "rotate-45" : ""
+                    }`}
+                />
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                style={{
+                  transition:
+                    "max-height 0.5s ease-in-out, opacity 0.4s ease-in-out, padding 0.5s ease-in-out",
+                }}
+              >
+                <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-2">
+                  <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Need Personal Assistance Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-5 lg:p-6">
+        <h3 className="text-xl font-semibold text-gray-900 mb-3">
+          Need Personal assistance?
+        </h3>
+        <p className="text-gray-600 text-sm sm:text-base mb-6">
+          If you couldn't find the information you need, our support team is ready to assist you. Submit a ticket, and we'll get back to you as soon as possible.
+        </p>
+        <button
+          onClick={() => setShowTicketModal(true)}
+          className="bg-[#0B31BD] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#0a2aa0] transition-colors duration-200"
+        >
+          Submit Ticket
+        </button>
+      </div>
 
       {/* Ticket Modal */}
       {showTicketModal && (
