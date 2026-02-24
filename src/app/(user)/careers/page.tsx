@@ -13,27 +13,30 @@ const roles = [
     title: "Online Tutor",
     tags: ["Tutor", "Remote", "Flexible"],
     description:
-      "Work 1-on-1 with students in grades 5\u201313, fully online. You set your own hours \u2014 we handle everything else. Pay starts at 15 \u20AC/h and grows automatically as you gain experience.",
+      "Work 1-on-1 with students in grades 5–13, fully online. You set your own hours — we handle everything else. Pay starts at 15 €/h and grows up to 20 €/h as you gain experience.",
     posted: "Feb 2026",
     detail: {
-      breadcrumb: "EDUCATION \u00B7 REMOTE \u00B7 FLEXIBLE",
+      breadcrumb: "REMOTE \u00B7 FLEXIBLE",
       badges: ["From 15 \u20AC/h", "Flexible hours", "100% Online"],
       about:
-        "As an Online Tutor at Sch\u00E4fer Tutoring, you\u2019ll work 1-on-1 with students in grades 5\u201313, helping them improve in their chosen subjects. All sessions take place via Google Meet. You choose your own hours and availability \u2014 we handle the matching, scheduling, and billing.",
+        "As an Online Tutor at Schäfer Tutoring, you'll work 1-on-1 with students in grades 5–13, helping them improve in their chosen subjects. All sessions take place directly on our website. You choose your own hours and availability — we handle the matching and billing.",
       requirements: [
-        "Strong subject knowledge in at least one subject (Grades 5\u201313)",
-        "Currently enrolled as a student or university graduate",
+        "Strong subject knowledge",
+        "Abitur",
         "Patient, reliable, and communicative",
         "Laptop and stable internet connection",
-        "Available for at least a few hours per week",
       ],
       compensationText:
-        "Pay scales automatically with your experience level. You start at 15 \u20AC/h and increase as you complete more sessions \u2014 up to 20 \u20AC/h with a 90% revenue share at the top level.",
+        "Pay scales automatically with your experience level. You start at 15 €/h and increase as you complete more sessions — up to 20 €/h at the top level.",
       levels: [
-        { label: "Level 0", pay: "15 \u20AC/h", highlight: false },
-        { label: "Level 2", pay: "16 \u20AC/h", highlight: false },
-        { label: "Level 4", pay: "18 \u20AC/h", highlight: false },
-        { label: "Level 6", pay: "20 \u20AC/h", highlight: true },
+        { label: "Level 0", pay: "15 €/h", highlight: false },
+        { label: "Level 1", pay: "15.50 €/h", highlight: false },
+        { label: "Level 2", pay: "16 €/h", highlight: false },
+        { label: "Level 3", pay: "16.50 €/h", highlight: false },
+        { label: "Level 4", pay: "17 €/h", highlight: false },
+        { label: "Level 5", pay: "18 €/h", highlight: false },
+        { label: "Level 6", pay: "19 €/h", highlight: false },
+        { label: "Level 7", pay: "20 €/h", highlight: true },
       ],
     },
   },
@@ -63,18 +66,6 @@ export default function CareersPage() {
               tutoring accessible to every student. Come help us get there.
             </p>
           </div>
-
-          <div className="flex items-center gap-0 shrink-0">
-            <div className="text-center px-8">
-              <p className="text-3xl font-bold text-[#0B31BD]">{roles.length}</p>
-              <p className="text-sm text-gray-500 mt-1">Open role</p>
-            </div>
-            <div className="w-px h-14 bg-gray-200" />
-            <div className="text-center px-8">
-              <p className="text-3xl font-bold text-gray-900">DE</p>
-              <p className="text-sm text-gray-500 mt-1">Based in Germany</p>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -99,7 +90,7 @@ export default function CareersPage() {
             </select>
           </div>
           <p className="text-sm text-[#0B31BD] font-medium">
-            {roles.length} position found
+            {roles.length} positions
           </p>
         </div>
       </div>
@@ -110,17 +101,6 @@ export default function CareersPage() {
           const deptRoles = roles.filter((r) => r.department === dept);
           return (
             <div key={dept} className="mb-10">
-              {/* Department header */}
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-xs font-bold tracking-widest text-gray-500 uppercase shrink-0">
-                  {dept}
-                </span>
-                <div className="flex-1 border-t border-dashed border-gray-300" />
-                <span className="text-sm text-[#0B31BD] font-medium shrink-0">
-                  {deptRoles.length} role
-                </span>
-              </div>
-
               {/* Role cards */}
               <div className="space-y-4">
                 {deptRoles.map((role) => (
@@ -157,7 +137,7 @@ export default function CareersPage() {
                       onClick={() => setSelectedRole(role.id)}
                       className="shrink-0 px-6 py-2.5 rounded-lg border border-[#0B31BD] text-[#0B31BD] text-sm font-medium hover:bg-blue-50 transition-colors"
                     >
-                      View Role &rarr;
+                      View
                     </button>
                   </div>
                 ))}
@@ -238,7 +218,7 @@ export default function CareersPage() {
                 <p className="text-sm text-gray-600 leading-relaxed mb-4">
                   {activeRole.detail.compensationText}
                 </p>
-                <div className="grid grid-cols-4 border border-gray-200 rounded-lg overflow-hidden">
+                {/* <div className="grid grid-cols-4 border border-gray-200 rounded-lg overflow-hidden">
                   {activeRole.detail.levels.map((level) => (
                     <div
                       key={level.label}
@@ -260,7 +240,40 @@ export default function CareersPage() {
                       </p>
                     </div>
                   ))}
-                </div>
+                </div> */}
+               <div className="overflow-x-auto">
+  <table className="w-full border border-gray-200 rounded-xl text-center shadow-md">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="px-6 py-3 text-sm font-semibold border-r border-gray-200">Level</th>
+        <th className="px-6 py-3 text-sm font-semibold border-r border-gray-200">Ab Stunden</th>
+        <th className="px-6 py-3 text-sm font-semibold">Stundenlohn</th>
+      </tr>
+    </thead>
+    <tbody>
+      {[
+        { label: "Level 0", hours: "ab 0 Stunden", pay: "15,00 €/h" },
+        { label: "Level 1", hours: "ab 20 Stunden", pay: "15,50 €/h" },
+        { label: "Level 2", hours: "ab 50 Stunden", pay: "16,00 €/h" },
+        { label: "Level 3", hours: "ab 100 Stunden", pay: "16,00 €/h" },
+        { label: "Level 4", hours: "ab 200 Stunden", pay: "17,00 €/h" },
+        { label: "Level 5", hours: "ab 500 Stunden", pay: "18,00 €/h" },
+        { label: "Level 6", hours: "ab 1000 Stunden", pay: "19,00 €/h" },
+      ].map((level, index) => (
+        <tr
+          key={level.label}
+          className={`${
+            index % 2 === 0 ? "bg-white" : "bg-gray-50"
+          } hover:bg-blue-100 transition-colors duration-200`}
+        >
+          <td className="px-6 py-3 border-r border-gray-200">{level.label}</td>
+          <td className="px-6 py-3 border-r border-gray-200">{level.hours}</td>
+          <td className="px-6 py-3">{level.pay}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
               </div>
             </div>
 

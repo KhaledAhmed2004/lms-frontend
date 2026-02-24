@@ -24,13 +24,13 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "info@schaefer-tutoring.com",
-    href: "mailto:info@schaefer-tutoring.com",
+    value: "support@schaefer-tutoring.com",
+    href: "mailto:support@schaefer-tutoring.com",
   },
   {
     icon: CalendarDays,
     label: "Availability",
-    value: "Mon \u2013 Fri, 9 am \u2013 6 pm",
+    value: "Mon - Sun",
   },
 ];
 
@@ -59,7 +59,13 @@ export default function ContactPage() {
       return;
     }
     toast.success("Message sent! We'll get back to you soon.");
-    setFormData({ firstName: "", lastName: "", email: "", topic: "", message: "" });
+    setFormData({
+      firstName: "",
+      lastName: "",
+      email: "",
+      topic: "",
+      message: "",
+    });
   };
 
   return (
@@ -69,7 +75,9 @@ export default function ContactPage() {
           {/* Contact Details Card */}
           <div className="md:col-span-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 h-full">
-              <h2 className="text-xl font-bold text-gray-900 mb-8">Contact Details</h2>
+              <h2 className="text-xl font-bold text-gray-900 mb-8">
+                Contact Details
+              </h2>
               <div className="space-y-8">
                 {contactInfo.map((item) => (
                   <div key={item.label} className="flex items-start gap-4">
@@ -86,7 +94,9 @@ export default function ContactPage() {
                           {item.value}
                         </a>
                       ) : (
-                        <p className="text-gray-900 font-medium">{item.value}</p>
+                        <p className="text-gray-900 font-medium">
+                          {item.value}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -98,10 +108,9 @@ export default function ContactPage() {
           {/* Contact Form Card */}
           <div className="md:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Send us a message</h2>
-              <p className="text-sm text-gray-500 mb-8">
-                Fill in the form and we&apos;ll get back to you as soon as possible.
-              </p>
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                Send us a message
+              </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -111,7 +120,7 @@ export default function ContactPage() {
                     </label>
                     <Input
                       type="text"
-                      placeholder="Anna"
+                      placeholder="Enter your First Name"
                       value={formData.firstName}
                       onChange={(e) =>
                         setFormData({ ...formData, firstName: e.target.value })
@@ -124,7 +133,7 @@ export default function ContactPage() {
                     </label>
                     <Input
                       type="text"
-                      placeholder="Müller"
+                      placeholder="Enter your Last Name"
                       value={formData.lastName}
                       onChange={(e) =>
                         setFormData({ ...formData, lastName: e.target.value })
@@ -135,39 +144,16 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Email Address
+                    E-Mail
                   </label>
                   <Input
                     type="email"
-                    placeholder="anna@example.com"
+                    placeholder="Enter your E-Mail"
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
                     }
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Topic
-                  </label>
-                  <Select
-                    value={formData.topic}
-                    onValueChange={(value) =>
-                      setFormData({ ...formData, topic: value })
-                    }
-                  >
-                    <SelectTrigger className="h-10 w-full">
-                      <SelectValue placeholder="Select a topic" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {topics.map((topic) => (
-                        <SelectItem key={topic} value={topic}>
-                          {topic}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
 
                 <div>
