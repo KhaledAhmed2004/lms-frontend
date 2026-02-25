@@ -97,7 +97,7 @@ export default function AboutPage() {
       <section className="bg-gray-50 py-20 px-4">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           {/* placeholder image */}
-          <div className="aspect-[3/4] max-w-sm mx-auto w-full rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100" />
+          <div className="aspect-3/4 max-w-sm mx-auto w-full rounded-2xl bg-linear-to-br from-blue-100 to-indigo-100" />
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-2">
