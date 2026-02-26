@@ -1,5 +1,423 @@
+// // ============================================================
+// // OLD DESIGN START — uncomment this block to revert
+// // ============================================================
+// "use client";
+// import React, { useState, useEffect, useCallback } from "react";
+// import { Search, Loader2, ExternalLink, BookOpen } from "lucide-react";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
+// import { Input } from "@/components/ui/input";
+// import {
+//   useOERResources,
+//   useOERFilterOptions,
+//   OERResource,
+// } from "@/hooks/api/use-oer-resources";
+//
+// // Debounce hook
+// function useDebounce<T>(value: T, delay: number): T {
+//   const [debouncedValue, setDebouncedValue] = useState<T>(value);
+//
+//   useEffect(() => {
+//     const handler = setTimeout(() => {
+//       setDebouncedValue(value);
+//     }, delay);
+//
+//     return () => {
+//       clearTimeout(handler);
+//     };
+//   }, [value, delay]);
+//
+//   return debouncedValue;
+// }
+//
+// // Resource type badge color mapping
+// const getTypeBadgeColor = (type: string) => {
+//   const typeColors: Record<string, string> = {
+//     Video: "bg-purple-100 text-purple-700",
+//     PDF: "bg-blue-100 text-blue-700",
+//     Document: "bg-blue-100 text-blue-700",
+//     text: "bg-blue-100 text-blue-700",
+//     Interactive: "bg-green-100 text-green-700",
+//     application: "bg-green-100 text-green-700",
+//     Audio: "bg-orange-100 text-orange-700",
+//     audio: "bg-orange-100 text-orange-700",
+//     Image: "bg-pink-100 text-pink-700",
+//     image: "bg-pink-100 text-pink-700",
+//   };
+//   return typeColors[type] || "bg-gray-100 text-gray-700";
+// };
+//
+// // Resource type icon mapping
+// const getTypeIcon = (type: string) => {
+//   const lowerType = type.toLowerCase();
+//   if (lowerType.includes("video")) return "▶️";
+//   if (lowerType.includes("pdf") || lowerType.includes("text") || lowerType.includes("document")) return "📄";
+//   if (lowerType.includes("audio")) return "🎵";
+//   if (lowerType.includes("image")) return "🖼️";
+//   if (lowerType.includes("interactive") || lowerType.includes("application")) return "🎮";
+//   return "📚";
+// };
+//
+// // Skeleton loader for cards
+// const ResourceCardSkeleton = () => (
+//   <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-pulse">
+//     <div className="p-5 pb-4 border-b border-gray-100">
+//       <div className="flex items-start justify-between gap-3 mb-3">
+//         <div className="flex-1">
+//           <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+//           <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+//         </div>
+//         <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+//       </div>
+//       <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+//     </div>
+//     <div className="p-5">
+//       <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
+//       <div className="h-3 bg-gray-200 rounded w-5/6 mb-4"></div>
+//       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+//         <div className="h-3 bg-gray-200 rounded w-20"></div>
+//         <div className="h-3 bg-gray-200 rounded w-12"></div>
+//       </div>
+//     </div>
+//   </div>
+// );
+//
+// export default function Resources() {
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [selectedSubject, setSelectedSubject] = useState("");
+//   const [selectedGrade, setSelectedGrade] = useState("");
+//   const [selectedType, setSelectedType] = useState("");
+//   const [currentPage, setCurrentPage] = useState(1);
+//
+//   // Debounce search query
+//   const debouncedSearchQuery = useDebounce(searchQuery, 300);
+//
+//   // Reset page when filters change
+//   useEffect(() => {
+//     setCurrentPage(1);
+//   }, [debouncedSearchQuery, selectedSubject, selectedGrade, selectedType]);
+//
+//   // Fetch filter options
+//   const { data: filterOptions } = useOERFilterOptions();
+//
+//   // Fetch resources
+//   const {
+//     data: resourcesData,
+//     isLoading,
+//     isFetching,
+//     isError,
+//   } = useOERResources({
+//     query: debouncedSearchQuery || undefined,
+//     subject: selectedSubject || undefined,
+//     grade: selectedGrade || undefined,
+//     type: selectedType || undefined,
+//     page: currentPage,
+//     limit: 12,
+//   });
+//
+//   const resources = resourcesData?.data || [];
+//   const pagination = resourcesData?.pagination;
+//
+//   // Pagination handlers
+//   const handlePreviousPage = useCallback(() => {
+//     if (currentPage > 1) {
+//       setCurrentPage((prev) => prev - 1);
+//     }
+//   }, [currentPage]);
+//
+//   const handleNextPage = useCallback(() => {
+//     if (pagination && currentPage < pagination.totalPage) {
+//       setCurrentPage((prev) => prev + 1);
+//     }
+//   }, [currentPage, pagination]);
+//
+//   return (
+//     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+//       {/* Header */}
+//       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
+//         <div className="flex items-center gap-3 mb-2">
+//           <BookOpen className="w-6 h-6 text-blue-600" />
+//           <h1 className="text-lg sm:text-xl font-semibold text-gray-800">
+//             Resource Search
+//           </h1>
+//         </div>
+//         <p className="text-sm text-gray-600">
+//           Find educational materials from German OER platforms (OERSI, WirLernenOnline, MUNDO) -
+//           filtered by subject, grade, and material type
+//         </p>
+//       </div>
+//
+//       {/* Search Bar */}
+//       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
+//         <div className="relative">
+//           <Search
+//             className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+//             size={20}
+//           />
+//           <Input
+//             type="text"
+//             value={searchQuery}
+//             onChange={(e) => setSearchQuery(e.target.value)}
+//             placeholder="Search by topic, keyword, competencies..."
+//             className="pl-12 h-11 text-base"
+//           />
+//           {isFetching && !isLoading && (
+//             <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-500 animate-spin" size={20} />
+//           )}
+//         </div>
+//       </div>
+//
+//       {/* Filters */}
+//       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
+//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+//           <div>
+//             <label className="text-sm font-medium text-gray-700 block mb-2">
+//               Subject
+//             </label>
+//             <Select
+//               value={selectedSubject || "all-subjects"}
+//               onValueChange={(value) =>
+//                 setSelectedSubject(value === "all-subjects" ? "" : value)
+//               }
+//             >
+//               <SelectTrigger className="h-10 w-full">
+//                 <SelectValue placeholder="Select subject" />
+//               </SelectTrigger>
+//               <SelectContent>
+//                 <SelectItem value="all-subjects">All Subjects</SelectItem>
+//                 {filterOptions?.subjects.map((subject) => (
+//                   <SelectItem key={subject.id} value={subject.id}>
+//                     {subject.label}
+//                   </SelectItem>
+//                 ))}
+//               </SelectContent>
+//             </Select>
+//           </div>
+//
+//           <div>
+//             <label className="text-sm font-medium text-gray-700 block mb-2">
+//               Grade
+//             </label>
+//             <Select
+//               value={selectedGrade || "all-grades"}
+//               onValueChange={(value) =>
+//                 setSelectedGrade(value === "all-grades" ? "" : value)
+//               }
+//             >
+//               <SelectTrigger className="h-10 w-full">
+//                 <SelectValue placeholder="Select grade" />
+//               </SelectTrigger>
+//               <SelectContent>
+//                 <SelectItem value="all-grades">All Grades</SelectItem>
+//                 {filterOptions?.grades.map((grade) => (
+//                   <SelectItem key={grade.id} value={grade.id}>
+//                     {grade.label}
+//                   </SelectItem>
+//                 ))}
+//               </SelectContent>
+//             </Select>
+//           </div>
+//
+//           <div>
+//             <label className="text-sm font-medium text-gray-700 block mb-2">
+//               Material Type
+//             </label>
+//             <Select
+//               value={selectedType || "all-types"}
+//               onValueChange={(value) =>
+//                 setSelectedType(value === "all-types" ? "" : value)
+//               }
+//             >
+//               <SelectTrigger className="h-10 w-full">
+//                 <SelectValue placeholder="Select type" />
+//               </SelectTrigger>
+//               <SelectContent>
+//                 <SelectItem value="all-types">All Types</SelectItem>
+//                 {filterOptions?.types.map((type) => (
+//                   <SelectItem key={type.id} value={type.id}>
+//                     {type.label}
+//                   </SelectItem>
+//                 ))}
+//               </SelectContent>
+//             </Select>
+//           </div>
+//
+//           <div className="flex items-end">
+//             <button
+//               onClick={() => {
+//                 setSearchQuery("");
+//                 setSelectedSubject("");
+//                 setSelectedGrade("");
+//                 setSelectedType("");
+//                 setCurrentPage(1);
+//               }}
+//               className="h-10 px-4 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors w-full"
+//             >
+//               Clear Filters
+//             </button>
+//           </div>
+//         </div>
+//
+//         {/* Results Count & Sort */}
+//         <div className="mb-6 flex items-center justify-between">
+//           <p className="text-sm text-gray-600">
+//             {isLoading ? (
+//               <span className="inline-flex items-center gap-2">
+//                 <Loader2 className="w-4 h-4 animate-spin" />
+//                 Searching...
+//               </span>
+//             ) : (
+//               <>
+//                 <span className="font-semibold text-gray-900">
+//                   {pagination?.total || 0}
+//                 </span>{" "}
+//                 results found
+//               </>
+//             )}
+//           </p>
+//           {pagination && pagination.totalPage > 1 && (
+//             <p className="text-sm text-gray-500">
+//               Page {pagination.page} of {pagination.totalPage}
+//             </p>
+//           )}
+//         </div>
+//
+//         {/* Error State */}
+//         {isError && (
+//           <div className="text-center py-12 bg-red-50 rounded-lg mb-6">
+//             <p className="text-red-600 mb-2">Failed to load resources</p>
+//             <p className="text-sm text-red-500">Please try again later</p>
+//           </div>
+//         )}
+//
+//         {/* Loading State */}
+//         {isLoading && (
+//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {[...Array(6)].map((_, i) => (
+//               <ResourceCardSkeleton key={i} />
+//             ))}
+//           </div>
+//         )}
+//
+//         {/* Resource Cards Grid */}
+//         {!isLoading && (
+//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//             {resources.length > 0 ? (
+//               resources.map((resource: OERResource) => (
+//                 <div
+//                   key={resource.id}
+//                   className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300 overflow-hidden group"
+//                 >
+//                   {/* Card Header */}
+//                   <div className="p-5 pb-4 border-b border-gray-100">
+//                     <div className="flex items-start justify-between gap-3 mb-3">
+//                       <div className="flex-1">
+//                         <h3 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+//                           {resource.title}
+//                         </h3>
+//                       </div>
+//                       <span
+//                         className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${getTypeBadgeColor(
+//                           resource.type
+//                         )}`}
+//                       >
+//                         {getTypeIcon(resource.type)} {resource.type}
+//                       </span>
+//                     </div>
+//                     <p className="text-xs text-gray-500 leading-relaxed">
+//                       {resource.subject}
+//                       {resource.grade && ` • ${resource.grade}`}
+//                     </p>
+//                   </div>
+//
+//                   {/* Card Body */}
+//                   <div className="p-5">
+//                     <p className="text-xs text-gray-600 mb-4 leading-relaxed line-clamp-3">
+//                       {resource.description || "No description available"}
+//                     </p>
+//
+//                     {resource.author && (
+//                       <p className="text-xs text-gray-500 mb-3">
+//                         By: <span className="font-medium">{resource.author}</span>
+//                       </p>
+//                     )}
+//
+//                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+//                       <div className="flex items-center gap-2">
+//                         <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-medium">
+//                           {resource.source}
+//                         </span>
+//                         {resource.license && (
+//                           <span className="text-xs text-gray-400" title={resource.license}>
+//                             OER
+//                           </span>
+//                         )}
+//                       </div>
+//                       <a
+//                         href={resource.url}
+//                         target="_blank"
+//                         rel="noopener noreferrer"
+//                         className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+//                       >
+//                         View <ExternalLink size={12} />
+//                       </a>
+//                     </div>
+//                   </div>
+//                 </div>
+//               ))
+//             ) : (
+//               <div className="col-span-full text-center py-12">
+//                 <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+//                 <p className="text-gray-500 mb-2">
+//                   No resources found matching your criteria
+//                 </p>
+//                 <p className="text-sm text-gray-400">
+//                   Try adjusting your search or filters
+//                 </p>
+//               </div>
+//             )}
+//           </div>
+//         )}
+//
+//         {/* Pagination */}
+//         {pagination && pagination.totalPage > 1 && (
+//           <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t border-gray-100">
+//             <button
+//               onClick={handlePreviousPage}
+//               disabled={currentPage === 1}
+//               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+//             >
+//               Previous
+//             </button>
+//             <span className="text-sm text-gray-600">
+//               Page {currentPage} of {pagination.totalPage}
+//             </span>
+//             <button
+//               onClick={handleNextPage}
+//               disabled={currentPage >= pagination.totalPage}
+//               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+//             >
+//               Next
+//             </button>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+// // ============================================================
+// // OLD DESIGN END
+// // ============================================================
+
+// NEW DESIGN — "Study Finder" two-phase UI
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+
+import { useState, useEffect, useCallback, FormEvent } from "react";
 import { Search, Loader2, ExternalLink, BookOpen } from "lucide-react";
 import {
   Select,
@@ -8,33 +426,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import {
   useOERResources,
   useOERFilterOptions,
   OERResource,
 } from "@/hooks/api/use-oer-resources";
 
-// Debounce hook
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
-
   useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
   }, [value, delay]);
-
   return debouncedValue;
 }
 
-// Resource type badge color mapping
 const getTypeBadgeColor = (type: string) => {
-  const typeColors: Record<string, string> = {
+  const map: Record<string, string> = {
     Video: "bg-purple-100 text-purple-700",
     PDF: "bg-blue-100 text-blue-700",
     Document: "bg-blue-100 text-blue-700",
@@ -46,38 +454,28 @@ const getTypeBadgeColor = (type: string) => {
     Image: "bg-pink-100 text-pink-700",
     image: "bg-pink-100 text-pink-700",
   };
-  return typeColors[type] || "bg-gray-100 text-gray-700";
+  return map[type] || "bg-gray-100 text-gray-700";
 };
 
-// Resource type icon mapping
-const getTypeIcon = (type: string) => {
-  const lowerType = type.toLowerCase();
-  if (lowerType.includes("video")) return "▶️";
-  if (lowerType.includes("pdf") || lowerType.includes("text") || lowerType.includes("document")) return "📄";
-  if (lowerType.includes("audio")) return "🎵";
-  if (lowerType.includes("image")) return "🖼️";
-  if (lowerType.includes("interactive") || lowerType.includes("application")) return "🎮";
-  return "📚";
+const getSourceColor = (source: string) => {
+  const s = source.toLowerCase();
+  if (s.includes("mundo")) return "bg-orange-100 text-orange-700";
+  if (s.includes("oersi")) return "bg-blue-100 text-blue-700";
+  if (s.includes("wirlernen")) return "bg-green-100 text-green-700";
+  return "bg-gray-100 text-gray-700";
 };
 
-// Skeleton loader for cards
 const ResourceCardSkeleton = () => (
-  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden animate-pulse">
+  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden animate-pulse">
     <div className="p-5 pb-4 border-b border-gray-100">
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1">
-          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-        </div>
-        <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
-      </div>
+      <div className="h-4 bg-gray-200 rounded w-3/4 mb-3"></div>
       <div className="h-3 bg-gray-200 rounded w-2/3"></div>
     </div>
     <div className="p-5">
       <div className="h-3 bg-gray-200 rounded w-full mb-2"></div>
       <div className="h-3 bg-gray-200 rounded w-5/6 mb-4"></div>
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-        <div className="h-3 bg-gray-200 rounded w-20"></div>
+        <div className="h-5 w-16 bg-gray-200 rounded-full"></div>
         <div className="h-3 bg-gray-200 rounded w-12"></div>
       </div>
     </div>
@@ -85,325 +483,324 @@ const ResourceCardSkeleton = () => (
 );
 
 export default function Resources() {
+  const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedGrade, setSelectedGrade] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Debounce search query
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedQuery = useDebounce(searchQuery, 300);
 
-  // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [debouncedSearchQuery, selectedSubject, selectedGrade, selectedType]);
+  }, [debouncedQuery, selectedSubject, selectedGrade, selectedType]);
 
-  // Fetch filter options
   const { data: filterOptions } = useOERFilterOptions();
 
-  // Fetch resources
   const {
     data: resourcesData,
     isLoading,
     isFetching,
     isError,
-  } = useOERResources({
-    query: debouncedSearchQuery || undefined,
-    subject: selectedSubject || undefined,
-    grade: selectedGrade || undefined,
-    type: selectedType || undefined,
-    page: currentPage,
-    limit: 12,
-  });
+  } = useOERResources(
+    {
+      query: debouncedQuery || undefined,
+      subject: selectedSubject || undefined,
+      grade: selectedGrade || undefined,
+      type: selectedType || undefined,
+      page: currentPage,
+      limit: 12,
+    },
+    hasSearched
+  );
 
   const resources = resourcesData?.data || [];
   const pagination = resourcesData?.pagination;
 
-  // Pagination handlers
-  const handlePreviousPage = useCallback(() => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
+  const handleSearch = (e: FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      setSearchQuery(searchInput.trim());
+      setHasSearched(true);
     }
+  };
+
+  const handleFilterChange = useCallback(
+    (setter: (v: string) => void, value: string, clearValue: string) => {
+      const resolved = value === clearValue ? "" : value;
+      setter(resolved);
+      if (!hasSearched) setHasSearched(true);
+    },
+    [hasSearched]
+  );
+
+  const handleBackToHome = () => {
+    setHasSearched(false);
+    setSearchInput("");
+    setSearchQuery("");
+    setSelectedSubject("");
+    setSelectedGrade("");
+    setSelectedType("");
+    setCurrentPage(1);
+  };
+
+  const handlePreviousPage = useCallback(() => {
+    if (currentPage > 1) setCurrentPage((p) => p - 1);
   }, [currentPage]);
 
   const handleNextPage = useCallback(() => {
-    if (pagination && currentPage < pagination.totalPage) {
-      setCurrentPage((prev) => prev + 1);
-    }
+    if (pagination && currentPage < pagination.totalPage)
+      setCurrentPage((p) => p + 1);
   }, [currentPage, pagination]);
 
-  return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
-        <div className="flex items-center gap-3 mb-2">
-          <BookOpen className="w-6 h-6 text-blue-600" />
-          <h1 className="text-lg sm:text-xl font-semibold text-gray-800">
-            Resource Search
-          </h1>
-        </div>
-        <p className="text-sm text-gray-600">
-          Find educational materials from German OER platforms (OERSI, WirLernenOnline, MUNDO) -
-          filtered by subject, grade, and material type
+  // ---- PHASE 1: Hero / Landing ----
+  if (!hasSearched) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 text-center">
+          Study <span className="text-[#0B31BD]">Finder</span>
+        </h1>
+        <p className="text-gray-500 text-sm sm:text-base mb-8 text-center">
+          All your study resources in one place.
         </p>
-      </div>
 
-      {/* Search Bar */}
-      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
-        <div className="relative">
-          <Search
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-          <Input
+        <form
+          onSubmit={handleSearch}
+          className="w-full max-w-2xl flex items-center border-2 border-gray-300 rounded-lg bg-white focus-within:border-[#0B31BD] transition-colors"
+        >
+          <input
             type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by topic, keyword, competencies..."
-            className="pl-12 h-11 text-base"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="What are you looking for?"
+            className="flex-1 px-5 py-3.5 text-base text-gray-900 placeholder:text-gray-400 bg-transparent outline-none rounded-l-lg"
           />
-          {isFetching && !isLoading && (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-500 animate-spin" size={20} />
-          )}
-        </div>
+          <button
+            type="submit"
+            className="m-1.5 p-3 bg-gray-700 hover:bg-[#0B31BD] text-white rounded-lg transition-colors"
+          >
+            <Search className="w-5 h-5" />
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // ---- PHASE 2: Results ----
+  return (
+    <div className="space-y-4">
+      {/* Top bar: search left, title right */}
+      <div className="flex items-center gap-4 flex-wrap">
+        <form
+          onSubmit={handleSearch}
+          className="flex-1 min-w-[240px] flex items-center border border-gray-300 rounded-lg bg-white focus-within:border-[#0B31BD] transition-colors"
+        >
+          <input
+            type="text"
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              setSearchQuery(e.target.value);
+            }}
+            placeholder="What are you looking for?"
+            className="flex-1 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 bg-transparent outline-none rounded-l-lg"
+          />
+          {isFetching && !isLoading ? (
+            <Loader2 className="w-4 h-4 text-blue-500 animate-spin mr-3" />
+          ) : null}
+          <button
+            type="submit"
+            className="m-1 p-2 bg-[#0B31BD] hover:bg-blue-700 text-white rounded-lg transition-colors"
+          >
+            <Search className="w-4 h-4" />
+          </button>
+        </form>
+
+        <button
+          onClick={handleBackToHome}
+          className="text-xl sm:text-2xl font-bold text-[#0B31BD] hover:opacity-80 transition whitespace-nowrap"
+        >
+          Study Finder
+        </button>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">
-              Subject
-            </label>
-            <Select
-              value={selectedSubject || "all-subjects"}
-              onValueChange={(value) =>
-                setSelectedSubject(value === "all-subjects" ? "" : value)
-              }
-            >
-              <SelectTrigger className="h-10 w-full">
-                <SelectValue placeholder="Select subject" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-subjects">All Subjects</SelectItem>
-                {filterOptions?.subjects.map((subject) => (
-                  <SelectItem key={subject.id} value={subject.id}>
-                    {subject.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">
-              Grade
-            </label>
-            <Select
-              value={selectedGrade || "all-grades"}
-              onValueChange={(value) =>
-                setSelectedGrade(value === "all-grades" ? "" : value)
-              }
-            >
-              <SelectTrigger className="h-10 w-full">
-                <SelectValue placeholder="Select grade" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-grades">All Grades</SelectItem>
-                {filterOptions?.grades.map((grade) => (
-                  <SelectItem key={grade.id} value={grade.id}>
-                    {grade.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 block mb-2">
-              Material Type
-            </label>
-            <Select
-              value={selectedType || "all-types"}
-              onValueChange={(value) =>
-                setSelectedType(value === "all-types" ? "" : value)
-              }
-            >
-              <SelectTrigger className="h-10 w-full">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all-types">All Types</SelectItem>
-                {filterOptions?.types.map((type) => (
-                  <SelectItem key={type.id} value={type.id}>
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="flex items-end">
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedSubject("");
-                setSelectedGrade("");
-                setSelectedType("");
-                setCurrentPage(1);
-              }}
-              className="h-10 px-4 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors w-full"
-            >
-              Clear Filters
-            </button>
-          </div>
-        </div>
-
-        {/* Results Count & Sort */}
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-sm text-gray-600">
-            {isLoading ? (
-              <span className="inline-flex items-center gap-2">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Searching...
-              </span>
-            ) : (
-              <>
-                <span className="font-semibold text-gray-900">
-                  {pagination?.total || 0}
-                </span>{" "}
-                results found
-              </>
-            )}
-          </p>
-          {pagination && pagination.totalPage > 1 && (
-            <p className="text-sm text-gray-500">
-              Page {pagination.page} of {pagination.totalPage}
-            </p>
-          )}
-        </div>
-
-        {/* Error State */}
-        {isError && (
-          <div className="text-center py-12 bg-red-50 rounded-lg mb-6">
-            <p className="text-red-600 mb-2">Failed to load resources</p>
-            <p className="text-sm text-red-500">Please try again later</p>
-          </div>
-        )}
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <ResourceCardSkeleton key={i} />
+      {/* Filter row */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <Select
+          value={selectedSubject || "all-subjects"}
+          onValueChange={(v) =>
+            handleFilterChange(setSelectedSubject, v, "all-subjects")
+          }
+        >
+          <SelectTrigger className="h-9 w-[130px] text-xs">
+            <SelectValue placeholder="Subject" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all-subjects">Subject</SelectItem>
+            {filterOptions?.subjects.map((s) => (
+              <SelectItem key={s.id} value={s.id}>
+                {s.label}
+              </SelectItem>
             ))}
-          </div>
-        )}
+          </SelectContent>
+        </Select>
 
-        {/* Resource Cards Grid */}
-        {!isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resources.length > 0 ? (
-              resources.map((resource: OERResource) => (
-                <div
-                  key={resource.id}
-                  className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300 overflow-hidden group"
-                >
-                  {/* Card Header */}
-                  <div className="p-5 pb-4 border-b border-gray-100">
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
-                          {resource.title}
-                        </h3>
-                      </div>
-                      <span
-                        className={`text-xs font-medium px-2.5 py-1 rounded-full flex-shrink-0 ${getTypeBadgeColor(
-                          resource.type
-                        )}`}
-                      >
-                        {getTypeIcon(resource.type)} {resource.type}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500 leading-relaxed">
-                      {resource.subject}
-                      {resource.grade && ` • ${resource.grade}`}
-                    </p>
+        <Select
+          value={selectedGrade || "all-grades"}
+          onValueChange={(v) =>
+            handleFilterChange(setSelectedGrade, v, "all-grades")
+          }
+        >
+          <SelectTrigger className="h-9 w-[120px] text-xs">
+            <SelectValue placeholder="Grade" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all-grades">Grade</SelectItem>
+            {filterOptions?.grades.map((g) => (
+              <SelectItem key={g.id} value={g.id}>
+                {g.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={selectedType || "all-types"}
+          onValueChange={(v) =>
+            handleFilterChange(setSelectedType, v, "all-types")
+          }
+        >
+          <SelectTrigger className="h-9 w-[140px] text-xs">
+            <SelectValue placeholder="Material Type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all-types">Material Type</SelectItem>
+            {filterOptions?.types.map((t) => (
+              <SelectItem key={t.id} value={t.id}>
+                {t.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Error state */}
+      {isError ? (
+        <div className="text-center py-12 bg-red-50 rounded-lg">
+          <p className="text-red-600 mb-2">Failed to load resources</p>
+          <p className="text-sm text-red-500">Please try again later</p>
+        </div>
+      ) : null}
+
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="space-y-4">
+          {[...Array(4)].map((_, i) => (
+            <ResourceCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : null}
+
+      {/* Result cards — full width, single column (same card design as old) */}
+      {!isLoading && resources.length > 0 ? (
+        <div className="space-y-4">
+          {resources.map((resource: OERResource) => (
+            <div
+              key={resource.id}
+              className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300 overflow-hidden group"
+            >
+              {/* Card Header */}
+              <div className="p-5 pb-4 border-b border-gray-100">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">
+                      {resource.title}
+                    </h3>
                   </div>
-
-                  {/* Card Body */}
-                  <div className="p-5">
-                    <p className="text-xs text-gray-600 mb-4 leading-relaxed line-clamp-3">
-                      {resource.description || "No description available"}
-                    </p>
-
-                    {resource.author && (
-                      <p className="text-xs text-gray-500 mb-3">
-                        By: <span className="font-medium">{resource.author}</span>
-                      </p>
-                    )}
-
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded font-medium">
-                          {resource.source}
-                        </span>
-                        {resource.license && (
-                          <span className="text-xs text-gray-400" title={resource.license}>
-                            OER
-                          </span>
-                        )}
-                      </div>
-                      <a
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
-                      >
-                        View <ExternalLink size={12} />
-                      </a>
-                    </div>
-                  </div>
+                  <span
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full shrink-0 ${getTypeBadgeColor(
+                      resource.type
+                    )}`}
+                  >
+                    {resource.type}
+                  </span>
                 </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-12">
-                <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 mb-2">
-                  No resources found matching your criteria
-                </p>
-                <p className="text-sm text-gray-400">
-                  Try adjusting your search or filters
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  {resource.subject}
+                  {resource.grade ? ` • ${resource.grade}` : ""}
                 </p>
               </div>
-            )}
-          </div>
-        )}
 
-        {/* Pagination */}
-        {pagination && pagination.totalPage > 1 && (
-          <div className="flex items-center justify-center gap-4 mt-8 pt-6 border-t border-gray-100">
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-600">
-              Page {currentPage} of {pagination.totalPage}
-            </span>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage >= pagination.totalPage}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              Next
-            </button>
-          </div>
-        )}
-      </div>
+              {/* Card Body */}
+              <div className="p-5">
+                <p className="text-xs text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                  {resource.description || "No description available"}
+                </p>
+
+                {resource.author ? (
+                  <p className="text-xs text-gray-500 mb-3">
+                    By: <span className="font-medium">{resource.author}</span>
+                  </p>
+                ) : null}
+
+                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <span
+                    className={`text-xs font-semibold px-3 py-1 rounded-full italic ${getSourceColor(
+                      resource.source
+                    )}`}
+                  >
+                    {resource.source}
+                  </span>
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                  >
+                    View <ExternalLink size={12} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {/* Empty state */}
+      {!isLoading && !isError && resources.length === 0 ? (
+        <div className="text-center py-16">
+          <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500 mb-1">No resources found</p>
+          <p className="text-sm text-gray-400">
+            Try adjusting your search or filters
+          </p>
+        </div>
+      ) : null}
+
+      {/* Pagination */}
+      {pagination && pagination.totalPage > 1 ? (
+        <div className="flex items-center justify-center gap-4 pt-4 border-t border-gray-100">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-gray-600">
+            Page {currentPage} of {pagination.totalPage}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage >= pagination.totalPage}
+            className="px-4 py-2 text-sm font-medium text-white bg-[#0B31BD] rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

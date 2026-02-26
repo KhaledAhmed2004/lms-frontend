@@ -20,6 +20,7 @@ import {
   useBookInterviewSlot,
   useMyBookedInterview,
   useCancelMyInterview,
+  useRescheduleInterviewSlot,
   useGetInterviewMeetingToken,
   InterviewSlot,
 } from '@/hooks/api';
@@ -36,6 +37,9 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
 
+  // Use ref for rescheduling slot ID - refs are always up-to-date, immune to closure/stale state issues
+  const reschedulingSlotIdRef = useRef<string | null>(null);
+
   // Fetch available slots
   const { data: slots, isLoading: slotsLoading, error: slotsError } = useAvailableInterviewSlots();
 
@@ -44,6 +48,9 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
 
   // Book slot mutation
   const bookSlot = useBookInterviewSlot();
+
+  // Reschedule interview mutation
+  const rescheduleSlot = useRescheduleInterviewSlot();
 
   // Cancel interview mutation
   const cancelInterview = useCancelMyInterview();
@@ -105,17 +112,30 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   const handleBookSlot = async () => {
     if (!selectedSlotId) return;
 
+    // Read from ref - always has the latest value regardless of closures
+    const currentReschedulingId = reschedulingSlotIdRef.current;
+
     try {
-      await bookSlot.mutateAsync({
-        id: selectedSlotId,
-        applicationId,
-      });
-      toast.success('Interview slot booked successfully!');
+      if (isRescheduling && currentReschedulingId) {
+        // Use reschedule API - cancels old slot and books new one atomically
+        await rescheduleSlot.mutateAsync({
+          id: currentReschedulingId,
+          newSlotId: selectedSlotId,
+        });
+        toast.success('Interview rescheduled successfully!');
+      } else {
+        await bookSlot.mutateAsync({
+          id: selectedSlotId,
+          applicationId,
+        });
+        toast.success('Interview slot booked successfully!');
+      }
       setSelectedSlotId(null);
       setSelectedDate(undefined);
       setIsRescheduling(false);
+      reschedulingSlotIdRef.current = null;
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to book interview slot');
+      toast.error(error?.message || (isRescheduling ? 'Failed to reschedule interview' : 'Failed to book interview slot'));
     }
   };
 
@@ -132,6 +152,10 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   };
 
   const handleReschedule = () => {
+    // Capture the booked interview ID in a ref - refs persist across renders and closures
+    if (bookedInterview?._id) {
+      reschedulingSlotIdRef.current = bookedInterview._id;
+    }
     setIsRescheduling(true);
   };
 
@@ -372,7 +396,7 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsRescheduling(false)}
+              onClick={() => { setIsRescheduling(false); reschedulingSlotIdRef.current = null; }}
               className="text-gray-500"
             >
               Cancel
@@ -459,10 +483,10 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
         <div className="mt-8">
           <Button
             onClick={handleBookSlot}
-            disabled={!selectedSlotId || bookSlot.isPending}
+            disabled={!selectedSlotId || bookSlot.isPending || rescheduleSlot.isPending}
             className="w-full bg-[#0B31BD] hover:bg-[#0928a0] text-white py-6 text-base font-medium rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {bookSlot.isPending ? (
+            {(bookSlot.isPending || rescheduleSlot.isPending) ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                 {isRescheduling ? 'Rescheduling...' : 'Scheduling...'}
