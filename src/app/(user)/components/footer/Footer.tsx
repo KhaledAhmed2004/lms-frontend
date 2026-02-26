@@ -1,14 +1,13 @@
 "use client";
 
-import SocialIcons from "./SocialIcons";
 import FooterSection from "./FooterSection";
+import SocialIcons from "./SocialIcons";
 
 const Footer = () => {
   return (
     <footer className="bg-[#0B31BD] text-white">
       <div className="max-w-5xl mx-auto px-6 pt-20 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-
           {/* Brand & Social */}
           <div className="space-y-6 mb-[37px]">
             <h2 className="text-2xl font-bold">Schäfer Tutoring</h2>
@@ -33,13 +32,11 @@ const Footer = () => {
             title="Company"
             links={[
               { label: "About Us", href: "/about" },
-              { label: "Blog", href: "#" },
+              { label: "Blog", href: "/blogs" },
               { label: "Careers", href: "/careers" },
               { label: "Contact", href: "/contact" },
             ]}
           />
-
-
         </div>
 
         {/* Bottom Copyright */}

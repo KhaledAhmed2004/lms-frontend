@@ -1,0 +1,95 @@
+import type { PostRecord } from "./types";
+
+export const postsData: PostRecord[] = [
+  {
+    id: "1",
+    title: "How to Ace Your Abitur: A Complete 8-Week Study Plan",
+    status: "Published",
+    category: "Abitur",
+    views: 4821,
+    publishedAt: "Feb 18, 2026",
+    tags: [
+      "#Grade 10",
+      "#Grade 12",
+      "#Vocabulary",
+      "#Calculus",
+      "#Writing",
+      "#Finals",
+    ],
+    slug: "how-to-ace-your-abitur-a-complete-8-week-study-plan",
+    seoTitle: "How to Ace Your Abitur: A Complete 8-Week Study Plan",
+    seoDescription:
+      "A focused plan to help students prepare for the Abitur with confidence.",
+    cta: "Book Free Trial",
+  },
+  {
+    id: "2",
+    title: "Understanding Derivatives: The Visual Way",
+    status: "Published",
+    category: "Math",
+    views: 3102,
+    publishedAt: "Feb 14, 2026",
+    tags: ["#Derivatives", "#Graphing", "#Calculus", "#StudyTips"],
+    slug: "understanding-derivatives-the-visual-way",
+    seoTitle: "Understanding Derivatives: The Visual Way",
+    seoDescription:
+      "Learn derivatives with visual explanations and real-world intuition.",
+    cta: "Book Free Trial",
+  },
+  {
+    id: "3",
+    title: "5 Proven Techniques to Build English Vocabulary Fast",
+    status: "Draft",
+    category: "Languages",
+    views: 1983,
+    publishedAt: "",
+    tags: ["#Vocabulary", "#English", "#Writing"],
+    slug: "5-proven-techniques-to-build-english-vocabulary-fast",
+    seoTitle: "5 Proven Techniques to Build English Vocabulary Fast",
+    seoDescription:
+      "Practical methods students can use to retain vocabulary quickly.",
+    cta: "Book Free Trial",
+  },
+  {
+    id: "4",
+    title: "The Pomodoro Technique: Does It Actually Work?",
+    status: "Scheduled",
+    category: "Study Tips",
+    views: 1983,
+    publishedAt: "Mar 1, 2026",
+    tags: ["#Pomodoro", "#Focus", "#StudyTips"],
+    slug: "the-pomodoro-technique-does-it-actually-work",
+    seoTitle: "The Pomodoro Technique: Does It Actually Work?",
+    seoDescription:
+      "A balanced look at Pomodoro and how to use it for deep focus.",
+    cta: "Book Free Trial",
+  },
+  {
+    id: "5",
+    title: "How to Write a Perfect Essay Under Exam Conditions",
+    status: "Published",
+    category: "Exam Prep",
+    views: 2311,
+    publishedAt: "Jan 28, 2026",
+    tags: ["#Essay", "#ExamPrep", "#Writing"],
+    slug: "how-to-write-a-perfect-essay-under-exam-conditions",
+    seoTitle: "How to Write a Perfect Essay Under Exam Conditions",
+    seoDescription:
+      "A step-by-step guide to structuring essays under time pressure.",
+    cta: "Book Free Trial",
+  },
+];
+
+export const newPostDefaults: PostRecord = {
+  id: "new",
+  title: "",
+  status: "Published",
+  category: "Abitur",
+  views: 0,
+  publishedAt: "",
+  tags: [],
+  slug: "",
+  seoTitle: "",
+  seoDescription: "",
+  cta: "Book Free Trial",
+};
