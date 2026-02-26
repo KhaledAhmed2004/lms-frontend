@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { useVideoCall } from '@/providers/video-call-provider';
+import { useVideoCall } from "@/providers/video-call-provider";
 import {
+  Clock,
+  Maximize2,
   Mic,
   MicOff,
+  Minimize2,
+  PhoneOff,
   Video,
   VideoOff,
-  PhoneOff,
-  Maximize2,
-  Minimize2,
-  Clock,
-} from 'lucide-react';
+} from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface VideoCallProps {
   onClose?: () => void;
@@ -68,7 +68,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
 
   // Call duration timer
   useEffect(() => {
-    if (callState !== 'connected') {
+    if (callState !== "connected") {
       setCallDuration(0);
       return;
     }
@@ -82,7 +82,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
 
   // Session ending countdown timer
   useEffect(() => {
-    if (!currentCall?.endTime || callState !== 'connected') {
+    if (!currentCall?.endTime || callState !== "connected") {
       setRemainingTime(null);
       setShowWarning(false);
       return;
@@ -99,7 +99,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
 
       // Auto-disconnect when session time is up
       if (remaining <= 0) {
-        console.log('⏰ Session time ended - auto-disconnecting');
+        console.log("⏰ Session time ended - auto-disconnecting");
         endCall();
         onClose?.();
       }
@@ -119,7 +119,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
     const mins = Math.floor(totalSeconds / 60);
     const secs = totalSeconds % 60;
     if (mins > 0) {
-      return `${mins}:${secs.toString().padStart(2, '0')}`;
+      return `${mins}:${secs.toString().padStart(2, "0")}`;
     }
     return `${secs}s`;
   };
@@ -127,7 +127,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const handleEndCall = () => {
@@ -139,30 +139,30 @@ export default function VideoCall({ onClose }: VideoCallProps) {
     setIsFullscreen(!isFullscreen);
   };
 
-  if (!isInCall && callState !== 'connecting') {
+  if (!isInCall && callState !== "connecting") {
     return null;
   }
 
   return (
     <div
       className={`fixed inset-0 z-50 bg-gray-900 flex flex-col ${
-        isFullscreen ? '' : 'md:inset-4 md:rounded-2xl md:shadow-2xl'
+        isFullscreen ? "" : "md:inset-4 md:rounded-2xl md:shadow-2xl"
       }`}
     >
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-black/50 to-transparent">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 bg-linear-to-b from-black/50 to-transparent">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold">
-              {currentCall?.otherUser?.name?.[0] || '?'}
+              {currentCall?.otherUser?.name?.[0] || "?"}
             </div>
             <div>
               <h3 className="text-white font-medium">
-                {currentCall?.otherUser?.name || 'Unknown'}
+                {currentCall?.otherUser?.name || "Unknown"}
               </h3>
               <p className="text-white/70 text-sm">
-                {callState === 'connecting'
-                  ? 'Connecting...'
+                {callState === "connecting"
+                  ? "Connecting..."
                   : formatDuration(callDuration)}
               </p>
             </div>
@@ -203,13 +203,13 @@ export default function VideoCall({ onClose }: VideoCallProps) {
             <div className="text-center">
               <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl text-white">
-                  {currentCall?.otherUser?.name?.[0] || '?'}
+                  {currentCall?.otherUser?.name?.[0] || "?"}
                 </span>
               </div>
               <p className="text-white/70">
-                {callState === 'connecting'
-                  ? 'Connecting...'
-                  : 'Waiting for participant...'}
+                {callState === "connecting"
+                  ? "Connecting..."
+                  : "Waiting for participant..."}
               </p>
             </div>
           )}
@@ -219,7 +219,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
         <div
           ref={localVideoRef}
           className={`absolute bottom-4 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg ${
-            isVideoMuted ? 'hidden' : ''
+            isVideoMuted ? "hidden" : ""
           }`}
         >
           {isVideoMuted && (
@@ -231,15 +231,15 @@ export default function VideoCall({ onClose }: VideoCallProps) {
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/50 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black/50 to-transparent">
         <div className="flex items-center justify-center gap-4">
           {/* Mute Audio */}
           <button
             onClick={toggleAudio}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               isAudioMuted
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-white/20 hover:bg-white/30'
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-white/20 hover:bg-white/30"
             }`}
           >
             {isAudioMuted ? (
@@ -254,8 +254,8 @@ export default function VideoCall({ onClose }: VideoCallProps) {
             onClick={toggleVideo}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               isVideoMuted
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-white/20 hover:bg-white/30'
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-white/20 hover:bg-white/30"
             }`}
           >
             {isVideoMuted ? (
