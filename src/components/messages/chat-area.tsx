@@ -22,6 +22,15 @@ import { useProposeSession, useAcceptSessionProposal, useRejectSessionProposal, 
 import { useVideoCall } from "@/providers/video-call-provider";
 import { toast } from "sonner";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001';
+
+/** Resolve attachment URLs - backend stores relative paths like /doc/file.pdf */
+function resolveAttachmentUrl(url: string): string {
+  if (!url) return url;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return `${BACKEND_URL}${url}`;
+}
+
 interface ChatAreaProps {
   conversationId: string;
   onMenuClick: () => void;
@@ -567,35 +576,37 @@ export default function ChatArea({
                           {/* Display attachments */}
                           {msg.attachments && msg.attachments.length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-2">
-                              {msg.attachments.map((attachment, idx) => (
+                              {msg.attachments.map((attachment, idx) => {
+                                const fileUrl = resolveAttachmentUrl(attachment.url);
+                                return (
                                 <div key={idx} className="relative">
                                   {attachment.type === 'image' ? (
                                     <a
-                                      href={attachment.url}
+                                      href={fileUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                     >
                                       <img
-                                        src={attachment.url}
+                                        src={fileUrl}
                                         alt={attachment.name || 'Image'}
                                         className="max-w-[200px] max-h-[200px] rounded object-cover cursor-pointer hover:opacity-90"
                                       />
                                     </a>
                                   ) : attachment.type === 'video' ? (
                                     <video
-                                      src={attachment.url}
+                                      src={fileUrl}
                                       controls
                                       className="max-w-[250px] max-h-[200px] rounded"
                                     />
                                   ) : attachment.type === 'audio' ? (
                                     <audio
-                                      src={attachment.url}
+                                      src={fileUrl}
                                       controls
                                       className="max-w-[250px]"
                                     />
                                   ) : (
                                     <a
-                                      href={attachment.url}
+                                      href={fileUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className="flex items-center gap-2 p-2 bg-background rounded hover:bg-muted transition-colors"
@@ -607,7 +618,8 @@ export default function ChatArea({
                                     </a>
                                   )}
                                 </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           )}
                           {messageContent && (
@@ -691,7 +703,7 @@ export default function ChatArea({
                 multiple
                 accept="image/*,video/*,audio/*,.pdf"
                 onChange={handleFileSelect}
-                className="hidden"
+                className="absolute w-0 h-0 overflow-hidden opacity-0"
               />
 
               <Button
