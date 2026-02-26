@@ -1,7 +1,6 @@
 // src/components/dashboard/Sidebar.tsx
-'use client';
+"use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -18,9 +17,8 @@ function Sidebar() {
 
   return (
     <aside className="w-full md:w-56 lg:w-[328px] h-full bg-white flex flex-col overflow-y-auto">
-
       {/* Centered Menu Items */}
-      <nav className="flex-1 flex flex-col items-center py-3 sm:py-4 lg:py-5 space-y-2 sm:space-y-3 lg:space-y-4">
+      <nav className="flex-1 flex  flex-col items-center py-3 sm:py-4 lg:py-5 space-y-2 sm:space-y-3 lg:space-y-4">
         {menuItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
 
@@ -40,9 +38,7 @@ function Sidebar() {
         })}
       </nav>
 
-      <div className="p-3 sm:p-4 lg:p-6 flex flex-col items-center">
-        
-      </div>
+      <div className="p-3 sm:p-4 lg:p-6 flex flex-col items-center"></div>
     </aside>
   );
 }

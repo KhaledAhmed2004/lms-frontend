@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Bell, Menu } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import MobileMenuStudent from "@/components/dashboard/MobileMenuStudent";
 import { useLogout } from "@/hooks/api";
 import { useAuthStore } from "@/store/auth-store";
+import { Bell, Menu } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 export default function TopNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -44,35 +44,34 @@ export default function TopNavbar() {
       title: "Session Confirmed",
       message: "Your math session with Prof. Smith is confirmed for tomorrow",
       time: "5 min ago",
-      unread: true
+      unread: true,
     },
     {
       id: 2,
       title: "New Message",
       message: "You have a new message from your tutor",
       time: "1 hour ago",
-      unread: true
+      unread: true,
     },
     {
       id: 3,
       title: "Session Reminder",
       message: "Physics session starts in 30 minutes",
       time: "2 hours ago",
-      unread: false
+      unread: false,
     },
     {
       id: 4,
       title: "Payment Successful",
       message: "Your subscription payment was successful",
       time: "Yesterday",
-      unread: false
-    }
+      unread: false,
+    },
   ];
 
   return (
     <>
       <header className="h-16 sm:h-20 lg:h-24 bg-white fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-3 sm:px-4 md:px-16 max-w-full">
-
         {/* Left: Hamburger + Title */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-shrink">
           <button
@@ -91,8 +90,8 @@ export default function TopNavbar() {
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
           {/* Notification Dropdown */}
           <div ref={notificationMenuRef} className="relative">
-            <button 
-              onClick={() => setNotificationMenuOpen(prev => !prev)}
+            <button
+              onClick={() => setNotificationMenuOpen((prev) => !prev)}
               className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition flex-shrink-0"
             >
               <Bell className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-gray-700" />
@@ -105,7 +104,7 @@ export default function TopNavbar() {
                 {/* Header */}
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-lg">Notifications</h3>
-                  <Link 
+                  <Link
                     href="/student/notification"
                     className="text-sm text-[#0B31BD] hover:underline"
                     onClick={() => setNotificationMenuOpen(false)}
@@ -166,19 +165,22 @@ export default function TopNavbar() {
           <div
             ref={userMenuRef}
             className="relative flex items-center gap-1.5 sm:gap-2 flex-shrink-0 cursor-pointer"
-            onClick={() => setUserMenuOpen(prev => !prev)}
+            onClick={() => setUserMenuOpen((prev) => !prev)}
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD] flex-shrink-0">
-              <div className="w-full h-full bg-[#0B31BD] flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg">
-                {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "S"}
-              </div>
-            </div>
-
             <div className="hidden sm:block">
-              <h3 className="font-semibold text-sm lg:text-base whitespace-nowrap">
+              <h3 className="text-end font-semibold text-sm lg:text-base whitespace-nowrap">
                 {user?.name || "Student"}
               </h3>
-              <p className="text-xs lg:text-sm whitespace-nowrap">Student</p>
+              <p className="text-xs lg:text-sm whitespace-nowrap text-end">
+                Student
+              </p>
+            </div>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD] flex-shrink-0">
+              <div className="w-full h-full bg-[#0B31BD] flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg">
+                {user?.name?.charAt(0)?.toUpperCase() ||
+                  user?.email?.charAt(0)?.toUpperCase() ||
+                  "S"}
+              </div>
             </div>
 
             {/* Dropdown Menu */}
