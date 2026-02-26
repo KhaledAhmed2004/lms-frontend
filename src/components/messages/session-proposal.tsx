@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, Loader2, Video, Star } from "lucide-react";
+import { Calendar, Clock, Loader2, Star, Video } from "lucide-react";
 
 interface SessionProposalProps {
   date: string;
@@ -10,17 +10,27 @@ interface SessionProposalProps {
   startTimeRaw?: Date | string;
   endTimeRaw?: Date | string;
   meetLink?: string;
-  status?: 'PROPOSED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED' | 'COUNTER_PROPOSED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW' | 'STARTING_SOON' | 'IN_PROGRESS';
-  noShowBy?: 'tutor' | 'student';
+  status?:
+    | "PROPOSED"
+    | "ACCEPTED"
+    | "REJECTED"
+    | "EXPIRED"
+    | "COUNTER_PROPOSED"
+    | "CANCELLED"
+    | "COMPLETED"
+    | "NO_SHOW"
+    | "STARTING_SOON"
+    | "IN_PROGRESS";
+  noShowBy?: "tutor" | "student";
   isOwn?: boolean;
   isLoading?: boolean;
   userRole?: string;
   // Review related props
-  hasReview?: boolean;           // Tutor feedback exists
-  hasStudentReview?: boolean;    // Student review exists
-  reviewText?: string;           // Tutor's feedback text (shown to student)
-  studentReviewText?: string;    // Student's review text (shown to teacher)
-  studentReviewRating?: number;  // Student's rating (shown to teacher)
+  hasReview?: boolean; // Tutor feedback exists
+  hasStudentReview?: boolean; // Student review exists
+  reviewText?: string; // Tutor's feedback text (shown to student)
+  studentReviewText?: string; // Student's review text (shown to teacher)
+  studentReviewRating?: number; // Student's rating (shown to teacher)
   onAccept: () => void;
   onReschedule: () => void;
   onDecline: () => void;
@@ -36,7 +46,7 @@ export default function SessionProposal({
   startTimeRaw,
   endTimeRaw,
   meetLink,
-  status = 'PROPOSED',
+  status = "PROPOSED",
   noShowBy,
   isOwn = false,
   isLoading = false,
@@ -72,11 +82,11 @@ export default function SessionProposal({
     const diffDays = Math.floor(diffHours / 24);
 
     if (diffDays > 0) {
-      return `in ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+      return `in ${diffDays} day${diffDays > 1 ? "s" : ""}`;
     } else if (diffHours > 0) {
-      return `in ${diffHours} hour${diffHours > 1 ? 's' : ''}`;
+      return `in ${diffHours} hour${diffHours > 1 ? "s" : ""}`;
     } else if (diffMins > 0) {
-      return `in ${diffMins} minute${diffMins > 1 ? 's' : ''}`;
+      return `in ${diffMins} minute${diffMins > 1 ? "s" : ""}`;
     }
     return null;
   };
@@ -102,39 +112,33 @@ export default function SessionProposal({
 
   const getStatusBadge = () => {
     switch (status) {
-      case 'ACCEPTED':
+      case "ACCEPTED":
         return (
-          <span className="text-xs text-green-600 font-medium">
-            Scheduled
-          </span>
+          <span className="text-xs text-green-600 font-medium">Scheduled</span>
         );
-      case 'REJECTED':
+      case "REJECTED":
         return (
-          <span className="text-xs text-red-500 font-medium">
-            Declined
-          </span>
+          <span className="text-xs text-red-500 font-medium">Declined</span>
         );
-      case 'EXPIRED':
+      case "EXPIRED":
         return (
           <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium">
             Expired
           </span>
         );
-      case 'COUNTER_PROPOSED':
+      case "COUNTER_PROPOSED":
         return (
-          <span className="text-xs text-blue-600 font-medium">
-            Rescheduled
-          </span>
+          <span className="text-xs text-blue-600 font-medium">Rescheduled</span>
         );
-      case 'CANCELLED':
+      case "CANCELLED":
         return (
           <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full font-medium">
             Cancelled
           </span>
         );
-      case 'COMPLETED':
+      case "COMPLETED":
         // Teacher view: show "Feedback Given" if they submitted feedback
-        if (userRole === 'TUTOR' && hasReview) {
+        if (userRole === "TUTOR" && hasReview) {
           return (
             <span className="text-xs bg-green-100 text-green-600 px-3 py-1 rounded-full font-medium">
               Feedback Given
@@ -163,28 +167,26 @@ export default function SessionProposal({
             Review required
           </span>
         );
-      case 'NO_SHOW':
+      case "NO_SHOW":
         return (
           <span className="text-xs bg-red-100 text-red-600 px-3 py-1 rounded-full font-medium">
             No-show
           </span>
         );
-      case 'STARTING_SOON':
+      case "STARTING_SOON":
         return (
           <span className="text-xs text-blue-600 font-medium">
             Starting soon
           </span>
         );
-      case 'IN_PROGRESS':
+      case "IN_PROGRESS":
         return (
-          <span className="text-xs text-blue-600 font-medium">
-            In progress
-          </span>
+          <span className="text-xs text-blue-600 font-medium">In progress</span>
         );
       default:
         return (
           <span className="text-xs text-orange-500 font-medium">
-            {isOwn ? 'Sent' : 'Awaiting your response'}
+            {isOwn ? "Sent" : "Awaiting your response"}
           </span>
         );
     }
@@ -195,12 +197,14 @@ export default function SessionProposal({
   const inProgress = isInProgress();
 
   // Cancelled session - show cancelled card (no action buttons)
-  if (status === 'CANCELLED') {
+  if (status === "CANCELLED") {
     return (
       <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-medium text-gray-400">Session cancelled</h3>
+          <h3 className="text-base font-medium text-gray-400">
+            Session cancelled
+          </h3>
           {getStatusBadge()}
         </div>
 
@@ -208,7 +212,9 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              DATE
+            </p>
             <p className="text-sm font-medium text-gray-400 whitespace-nowrap">
               {getDateDisplay(date)}
             </p>
@@ -219,9 +225,12 @@ export default function SessionProposal({
         <div className="flex items-center gap-3">
           <Clock className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              TIME
+            </p>
             <p className="text-sm font-medium text-gray-400 whitespace-nowrap">
-              {time}{endTime ? ` – ${endTime}` : ''}
+              {time}
+              {endTime ? ` – ${endTime}` : ""}
             </p>
           </div>
         </div>
@@ -230,12 +239,14 @@ export default function SessionProposal({
   }
 
   // Expired session - show expired card (no action buttons)
-  if (status === 'EXPIRED') {
+  if (status === "EXPIRED") {
     return (
       <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-medium text-gray-400">Session proposal expired</h3>
+          <h3 className="text-base font-medium text-gray-400">
+            Session proposal expired
+          </h3>
           {getStatusBadge()}
         </div>
 
@@ -243,7 +254,9 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              DATE
+            </p>
             <p className="text-sm font-medium text-gray-400 whitespace-nowrap">
               {getDateDisplay(date)}
             </p>
@@ -254,9 +267,12 @@ export default function SessionProposal({
         <div className="flex items-center gap-3">
           <Clock className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              TIME
+            </p>
             <p className="text-sm font-medium text-gray-400 whitespace-nowrap">
-              {time}{endTime ? ` – ${endTime}` : ''}
+              {time}
+              {endTime ? ` – ${endTime}` : ""}
             </p>
           </div>
         </div>
@@ -265,12 +281,12 @@ export default function SessionProposal({
   }
 
   // No-show session - show no-show card with info about who didn't join
-  if (status === 'NO_SHOW') {
+  if (status === "NO_SHOW") {
     const getNoShowMessage = () => {
-      if (!noShowBy) return 'Session no-show';
+      if (!noShowBy) return "Session no-show";
 
-      const isTutor = userRole === 'TUTOR';
-      if (noShowBy === 'tutor') {
+      const isTutor = userRole === "TUTOR";
+      if (noShowBy === "tutor") {
         return isTutor ? "You didn't join" : "Tutor didn't join";
       } else {
         return isTutor ? "Student didn't join" : "You didn't join";
@@ -281,7 +297,9 @@ export default function SessionProposal({
       <div className="bg-white border border-red-100 rounded-xl p-6 w-72 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-medium text-gray-600">{getNoShowMessage()}</h3>
+          <h3 className="text-base font-medium text-gray-600">
+            {getNoShowMessage()}
+          </h3>
           {getStatusBadge()}
         </div>
 
@@ -289,7 +307,9 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              DATE
+            </p>
             <p className="text-sm font-medium text-gray-500 whitespace-nowrap">
               {getDateDisplay(date)}
             </p>
@@ -300,9 +320,12 @@ export default function SessionProposal({
         <div className="flex items-center gap-3">
           <Clock className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              TIME
+            </p>
             <p className="text-sm font-medium text-gray-500 whitespace-nowrap">
-              {time}{endTime ? ` – ${endTime}` : ''}
+              {time}
+              {endTime ? ` – ${endTime}` : ""}
             </p>
           </div>
         </div>
@@ -311,12 +334,14 @@ export default function SessionProposal({
   }
 
   // Completed session
-  if (status === 'COMPLETED') {
+  if (status === "COMPLETED") {
     return (
       <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-medium text-gray-900">Completed session</h3>
+          <h3 className="text-base font-medium text-gray-900">
+            Completed session
+          </h3>
           {getStatusBadge()}
         </div>
 
@@ -324,7 +349,9 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              DATE
+            </p>
             <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
               {getDateDisplay(date)}
             </p>
@@ -335,25 +362,29 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-6">
           <Clock className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
-            <p className="text-sm font-medium text-gray-900">
-              {time}{endTime ? ` – ${endTime}` : ''}
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              TIME
             </p>
+            <p className="text-sm font-medium text-gray-900">{time}</p>
           </div>
         </div>
 
         {/* Teacher Review Section - shown to STUDENT when teacher has submitted feedback */}
-        {hasReview && reviewText && userRole === 'STUDENT' && (
+        {hasReview && reviewText && userRole === "STUDENT" && (
           <div className="bg-blue-50 rounded-lg p-4 mb-4">
-            <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-wide mb-2">TEACHER REVIEW</p>
+            <p className="text-[11px] text-blue-600 font-semibold uppercase tracking-wide mb-2">
+              TEACHER REVIEW
+            </p>
             <p className="text-sm text-gray-700">"{reviewText}"</p>
           </div>
         )}
 
         {/* Student Review Section - shown to TUTOR when student has submitted review */}
-        {hasStudentReview && userRole === 'TUTOR' && (
+        {hasStudentReview && userRole === "TUTOR" && (
           <div className="bg-green-50 rounded-lg p-4 mb-4">
-            <p className="text-[11px] text-green-600 font-semibold uppercase tracking-wide mb-2">STUDENT REVIEW</p>
+            <p className="text-[11px] text-green-600 font-semibold uppercase tracking-wide mb-2">
+              STUDENT REVIEW
+            </p>
             {studentReviewRating && (
               <div className="flex items-center gap-1 mb-2">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -375,31 +406,41 @@ export default function SessionProposal({
         )}
 
         {/* Leave a review button for TUTOR - shown when tutor hasn't submitted feedback */}
-        {userRole === 'TUTOR' && !hasReview && onLeaveReview && (
+        {userRole === "TUTOR" && !hasReview && onLeaveReview && (
           <Button
             onClick={onLeaveReview}
             disabled={isLoading}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-lg h-11 text-sm font-medium"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Leave a review'}
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Leave a review"
+            )}
           </Button>
         )}
 
         {/* Leave a review button for STUDENT - shown when student hasn't reviewed yet */}
-        {userRole === 'STUDENT' && !hasStudentReview && onLeaveReview && (
+        {userRole === "STUDENT" && !hasStudentReview && onLeaveReview && (
           <Button
             onClick={onLeaveReview}
             disabled={isLoading}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg h-11 text-sm font-medium"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Rate your tutor'}
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Rate your tutor"
+            )}
           </Button>
         )}
 
         {/* Show "Review submitted" badge for student if they already reviewed */}
-        {userRole === 'STUDENT' && hasStudentReview && (
+        {userRole === "STUDENT" && hasStudentReview && (
           <div className="text-center">
-            <span className="text-xs text-green-600 font-medium">You have reviewed this session</span>
+            <span className="text-xs text-green-600 font-medium">
+              You have reviewed this session
+            </span>
           </div>
         )}
       </div>
@@ -408,14 +449,20 @@ export default function SessionProposal({
 
   // Accepted/Scheduled/In Progress session - Upcoming session card design
   // Handle ACCEPTED, STARTING_SOON, and IN_PROGRESS statuses
-  if (status === 'ACCEPTED' || status === 'STARTING_SOON' || status === 'IN_PROGRESS') {
+  if (
+    status === "ACCEPTED" ||
+    status === "STARTING_SOON" ||
+    status === "IN_PROGRESS"
+  ) {
     // Session is currently in progress (backend status OR client-side time check)
-    if (status === 'IN_PROGRESS' || inProgress) {
+    if (status === "IN_PROGRESS" || inProgress) {
       return (
         <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-medium text-gray-900">Session in progress</h3>
+            <h3 className="text-base font-medium text-gray-900">
+              Session in progress
+            </h3>
             <span className="text-xs text-blue-600 font-medium">
               In progress
             </span>
@@ -425,7 +472,9 @@ export default function SessionProposal({
           <div className="flex items-center gap-3 mb-4">
             <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
             <div>
-              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+                DATE
+              </p>
               <p className="text-sm font-medium text-gray-900">
                 {getDateDisplay(date)}
               </p>
@@ -436,9 +485,12 @@ export default function SessionProposal({
           <div className="flex items-center gap-3 mb-6">
             <Clock className="w-5 h-5 text-gray-300 shrink-0" />
             <div>
-              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+                TIME
+              </p>
               <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                {time}{endTime ? ` – ${endTime}` : ''}
+                {time}
+                {endTime ? ` – ${endTime}` : ""}
               </p>
             </div>
           </div>
@@ -456,12 +508,14 @@ export default function SessionProposal({
     }
 
     // Starting soon (backend status OR within 15 minutes client-side)
-    if (status === 'STARTING_SOON' || startingSoon) {
+    if (status === "STARTING_SOON" || startingSoon) {
       return (
         <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-medium text-gray-900">Session starting soon</h3>
+            <h3 className="text-base font-medium text-gray-900">
+              Session starting soon
+            </h3>
             <span className="text-xs text-blue-600 font-medium">
               Starting soon
             </span>
@@ -471,7 +525,9 @@ export default function SessionProposal({
           <div className="flex items-center gap-3 mb-4">
             <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
             <div>
-              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+                DATE
+              </p>
               <p className="text-sm font-medium text-gray-900">
                 {getDateDisplay(date)}
               </p>
@@ -482,9 +538,12 @@ export default function SessionProposal({
           <div className="flex items-center gap-3">
             <Clock className="w-5 h-5 text-gray-300 shrink-0" />
             <div>
-              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+              <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+                TIME
+              </p>
               <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                {time}{endTime ? ` – ${endTime}` : ''}
+                {time}
+                {endTime ? ` – ${endTime}` : ""}
               </p>
             </div>
           </div>
@@ -497,7 +556,9 @@ export default function SessionProposal({
       <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-base font-medium text-gray-900">Upcoming session</h3>
+          <h3 className="text-base font-medium text-gray-900">
+            Upcoming session
+          </h3>
           {getStatusBadge()}
         </div>
 
@@ -505,7 +566,9 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              DATE
+            </p>
             <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
               {getDateDisplay(date)}
             </p>
@@ -516,9 +579,13 @@ export default function SessionProposal({
         <div className="flex items-center gap-3 mb-6">
           <Clock className="w-5 h-5 text-gray-300 shrink-0" />
           <div>
-            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+            <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+              TIME
+            </p>
             <p className="text-sm font-medium text-gray-900 whitespace-nowrap">
-              {time}{endTime ? ` – ${endTime}` : ''}{timeUntil ? ` (${timeUntil})` : ''}
+              {time}
+              {endTime ? ` – ${endTime}` : ""}
+              {timeUntil ? ` (${timeUntil})` : ""}
             </p>
           </div>
         </div>
@@ -551,7 +618,9 @@ export default function SessionProposal({
     <div className="bg-white border border-gray-100 rounded-xl p-6 w-72 shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-base font-medium text-gray-900">Session proposal</h3>
+        <h3 className="text-base font-medium text-gray-900">
+          Session proposal
+        </h3>
         {getStatusBadge()}
       </div>
 
@@ -559,7 +628,9 @@ export default function SessionProposal({
       <div className="flex items-center gap-3 mb-4">
         <Calendar className="w-5 h-5 text-gray-300 shrink-0" />
         <div>
-          <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">DATE</p>
+          <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+            DATE
+          </p>
           <p className="text-sm font-medium text-gray-900">
             {getDateDisplay(date)}
           </p>
@@ -570,22 +641,29 @@ export default function SessionProposal({
       <div className="flex items-center gap-3 mb-6">
         <Clock className="w-5 h-5 text-gray-300 shrink-0" />
         <div>
-          <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">TIME</p>
+          <p className="text-[11px] text-gray-400 font-medium uppercase tracking-wide whitespace-nowrap">
+            TIME
+          </p>
           <p className="text-sm font-medium text-gray-900">
-            {time}{endTime ? ` – ${endTime}` : ''}
+            {time}
+            {endTime ? ` – ${endTime}` : ""}
           </p>
         </div>
       </div>
 
       {/* Action Buttons for recipient (student) when status is PROPOSED */}
-      {!isOwn && status === 'PROPOSED' && (
+      {!isOwn && status === "PROPOSED" && (
         <div className="flex flex-col gap-2.5">
           <Button
             onClick={onAccept}
             disabled={isLoading}
             className="w-full bg-[#0B31BD] hover:bg-[#0B31BD]/90 text-white rounded-lg h-11 text-sm font-medium"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Accept'}
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Accept"
+            )}
           </Button>
           <Button
             variant="outline"
@@ -607,14 +685,14 @@ export default function SessionProposal({
       )}
 
       {/* Cancel button for sender (teacher) when status is PROPOSED - waiting for response */}
-      {isOwn && status === 'PROPOSED' && (
+      {isOwn && status === "PROPOSED" && (
         <Button
           variant="outline"
           onClick={onCancel || onDecline}
           disabled={isLoading}
           className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 text-sm font-medium text-gray-700"
         >
-          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel'}
+          {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cancel"}
         </Button>
       )}
     </div>

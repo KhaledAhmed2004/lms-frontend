@@ -1,16 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { Calendar, Clock, Star, Check, Video, Loader2, Plus, FileText, X, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useUpcomingSessions, useCompletedSessions, Session } from "@/hooks/api/use-sessions";
-import { useMySessionRequests, useCancelSessionRequest, useExtendSessionRequest, SessionRequest } from "@/hooks/api/use-session-requests";
 import { useCreateReview } from "@/hooks/api/use-reviews";
+import {
+  SessionRequest,
+  useCancelSessionRequest,
+  useExtendSessionRequest,
+  useMySessionRequests,
+} from "@/hooks/api/use-session-requests";
+import {
+  Session,
+  useCompletedSessions,
+  useUpcomingSessions,
+} from "@/hooks/api/use-sessions";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { format, formatDistanceToNow } from "date-fns";
+import {
+  Calendar,
+  Check,
+  Clock,
+  FileText,
+  Loader2,
+  RefreshCw,
+  Star,
+  Video,
+  X,
+} from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { NewSessionRequestModal } from "./components/NewSessionRequestModal";
 
 function FeedbackModal({
@@ -67,7 +86,10 @@ function FeedbackModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md bg-white border-0 p-0 overflow-hidden" aria-describedby={undefined}>
+      <DialogContent
+        className="sm:max-w-md bg-white border-0 p-0 overflow-hidden"
+        aria-describedby={undefined}
+      >
         <VisuallyHidden>
           <DialogTitle>Feedback Modal</DialogTitle>
         </VisuallyHidden>
@@ -140,7 +162,9 @@ function FeedbackModal({
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-500 rounded-full mx-auto flex items-center justify-center">
               <Check className="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 text-white" />
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Success!</h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Success!
+            </h3>
             <p className="text-base sm:text-lg text-gray-600">
               Your review was submitted successfully
             </p>
@@ -193,7 +217,10 @@ function CancelRequestModal({
 }) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-white border-0 p-0 overflow-hidden" aria-describedby={undefined}>
+      <DialogContent
+        className="sm:max-w-md bg-white border-0 p-0 overflow-hidden"
+        aria-describedby={undefined}
+      >
         <VisuallyHidden>
           <DialogTitle>Cancel Request</DialogTitle>
         </VisuallyHidden>
@@ -243,25 +270,45 @@ function SessionRequestCard({
   onExtend: () => void;
   isExtending: boolean;
 }) {
-  const subjectName = typeof request.subject === 'object' ? request.subject.name : request.subject;
+  const subjectName =
+    typeof request.subject === "object"
+      ? request.subject.name
+      : request.subject;
   const expiresAt = new Date(request.expiresAt);
   const timeRemaining = expiresAt.getTime() - Date.now();
   const isExpiringSoon = timeRemaining < 2 * 24 * 60 * 60 * 1000; // 2 days
   // Show extend button only when 1 day or less remaining (6+ days passed) and not already extended
-  const canExtend = request.status === 'PENDING'
-    && (!request.extensionCount || request.extensionCount < 1)
-    && timeRemaining <= 1 * 24 * 60 * 60 * 1000; // 1 day or less remaining
+  const canExtend =
+    request.status === "PENDING" &&
+    (!request.extensionCount || request.extensionCount < 1) &&
+    timeRemaining <= 1 * 24 * 60 * 60 * 1000; // 1 day or less remaining
 
   const getStatusBadge = () => {
     switch (request.status) {
-      case 'PENDING':
-        return <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded font-medium">Pending</span>;
-      case 'ACCEPTED':
-        return <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded font-medium">Accepted</span>;
-      case 'EXPIRED':
-        return <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">Expired</span>;
-      case 'CANCELLED':
-        return <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 rounded font-medium">Cancelled</span>;
+      case "PENDING":
+        return (
+          <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded font-medium">
+            Pending
+          </span>
+        );
+      case "ACCEPTED":
+        return (
+          <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded font-medium">
+            Accepted
+          </span>
+        );
+      case "EXPIRED":
+        return (
+          <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
+            Expired
+          </span>
+        );
+      case "CANCELLED":
+        return (
+          <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 rounded font-medium">
+            Cancelled
+          </span>
+        );
       default:
         return null;
     }
@@ -276,7 +323,7 @@ function SessionRequestCard({
             {subjectName}
           </h3>
           {getStatusBadge()}
-          {request.requestType === 'TRIAL' && (
+          {request.requestType === "TRIAL" && (
             <span className="text-xs px-2 py-0.5 bg-orange-100 text-orange-600 rounded font-medium">
               Trial
             </span>
@@ -286,16 +333,28 @@ function SessionRequestCard({
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
           <div className="flex items-center gap-1">
             <FileText size={14} className="text-gray-400 flex-shrink-0" />
-            <span>{request.gradeLevel} • {request.schoolType}</span>
+            <span>
+              {request.gradeLevel} • {request.schoolType}
+            </span>
           </div>
-          {request.status === 'PENDING' && (
-            <div className={`flex items-center gap-1 ${isExpiringSoon ? 'text-red-500' : ''}`}>
-              <Clock size={14} className={`flex-shrink-0 ${isExpiringSoon ? 'text-red-500' : 'text-gray-400'}`} />
-              <span>Expires {formatDistanceToNow(expiresAt, { addSuffix: true })}</span>
+          {request.status === "PENDING" && (
+            <div
+              className={`flex items-center gap-1 ${isExpiringSoon ? "text-red-500" : ""}`}
+            >
+              <Clock
+                size={14}
+                className={`flex-shrink-0 ${isExpiringSoon ? "text-red-500" : "text-gray-400"}`}
+              />
+              <span>
+                Expires {formatDistanceToNow(expiresAt, { addSuffix: true })}
+              </span>
             </div>
           )}
           {request.learningGoals && (
-            <p className="text-gray-500 truncate max-w-[200px]" title={request.learningGoals}>
+            <p
+              className="text-gray-500 truncate max-w-[200px]"
+              title={request.learningGoals}
+            >
               {request.learningGoals}
             </p>
           )}
@@ -303,7 +362,7 @@ function SessionRequestCard({
       </div>
 
       {/* Action Buttons */}
-      {request.status === 'PENDING' && (
+      {request.status === "PENDING" && (
         <div className="flex gap-2 sm:ml-4">
           {canExtend && (
             <Button
@@ -348,11 +407,12 @@ function SessionCard({
 }) {
   const canJoin = isUpcoming && canJoinSession(session);
   // Backend returns 'COMPLETED' when review exists, 'PENDING' when not
-  const hasReviewed = !isUpcoming && session.studentReviewStatus === 'COMPLETED';
+  const hasReviewed =
+    !isUpcoming && session.studentReviewStatus === "COMPLETED";
 
   const handleJoinSession = () => {
     if (session.googleMeetLink) {
-      window.open(session.googleMeetLink, '_blank');
+      window.open(session.googleMeetLink, "_blank");
     }
   };
 
@@ -373,11 +433,17 @@ function SessionCard({
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600">
           <div className="flex items-center w-40 gap-1">
-            <Calendar size={14} className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0" />
+            <Calendar
+              size={14}
+              className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0"
+            />
             <span>{formatSessionDate(session.startTime)}</span>
           </div>
           <div className="flex items-center gap-1 w-32">
-            <Clock size={14} className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0" />
+            <Clock
+              size={14}
+              className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0"
+            />
             <span>{formatSessionTime(session.startTime)}</span>
           </div>
           <p className="text-[#405ED5] hover:text-[#3052D2] font-medium">
@@ -423,27 +489,37 @@ export default function StudentSession() {
   const [isNewRequestModalOpen, setIsNewRequestModalOpen] = useState(false);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
-  const [selectedRequest, setSelectedRequest] = useState<SessionRequest | null>(null);
-  const [extendingRequestId, setExtendingRequestId] = useState<string | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<SessionRequest | null>(
+    null,
+  );
+  const [extendingRequestId, setExtendingRequestId] = useState<string | null>(
+    null,
+  );
 
   // Fetch data
-  const { data: upcomingSessions, isLoading: isLoadingUpcoming } = useUpcomingSessions();
-  const { data: completedSessions, isLoading: isLoadingCompleted } = useCompletedSessions();
-  const { data: myRequests, isLoading: isLoadingRequests } = useMySessionRequests();
+  const { data: upcomingSessions, isLoading: isLoadingUpcoming } =
+    useUpcomingSessions();
+  const { data: completedSessions, isLoading: isLoadingCompleted } =
+    useCompletedSessions();
+  const { data: myRequests, isLoading: isLoadingRequests } =
+    useMySessionRequests();
 
   // Mutations
   const cancelRequest = useCancelSessionRequest();
   const extendRequest = useExtendSessionRequest();
 
   // Filter pending requests count
-  const pendingRequestsCount = myRequests?.filter(r => r.status === 'PENDING').length || 0;
+  const pendingRequestsCount =
+    myRequests?.filter((r) => r.status === "PENDING").length || 0;
 
-  const isLoading = activeTab === "upcoming"
-    ? isLoadingUpcoming
-    : activeTab === "completed"
-      ? isLoadingCompleted
-      : isLoadingRequests;
-  const sessions = activeTab === "upcoming" ? upcomingSessions : completedSessions;
+  const isLoading =
+    activeTab === "upcoming"
+      ? isLoadingUpcoming
+      : activeTab === "completed"
+        ? isLoadingCompleted
+        : isLoadingRequests;
+  const sessions =
+    activeTab === "upcoming" ? upcomingSessions : completedSessions;
 
   // Handlers for session requests
   const handleCancelRequest = (request: SessionRequest) => {
@@ -489,7 +565,7 @@ export default function StudentSession() {
     <>
       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-5 lg:mb-6">
+        {/* <div className="flex items-center justify-between mb-4 sm:mb-5 lg:mb-6">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
             Session Overview
           </h2>
@@ -500,7 +576,7 @@ export default function StudentSession() {
             <Plus className="w-4 h-4 mr-1" />
             New Request
           </Button>
-        </div>
+        </div> */}
 
         {/* Tabs */}
         <div className="flex gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-7 lg:mb-8 border-b border-gray-200 overflow-x-auto">
