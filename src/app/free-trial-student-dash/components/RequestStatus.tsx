@@ -5,8 +5,9 @@ import { useMyRequests, TRIAL_REQUEST_STATUS } from "@/hooks/api";
 import { useTrialSession, SESSION_STATUS } from "@/hooks/api/use-sessions";
 import { useMySubscription } from "@/hooks/api/use-subscription";
 import { useAuthStore } from "@/store/auth-store";
-import Page2 from "./Page2";
-import Page3 from "./Page3";
+import TutorChat from "./TutorChat";
+import PlanSelection from "./PlanSelection";
+import { TrialProgressStepper } from "./TrialProgressStepper";
 
 const SCHOOL_TYPE_LABELS: Record<string, string> = {
   GRUNDSCHULE: "Grundschule",
@@ -19,10 +20,9 @@ const SCHOOL_TYPE_LABELS: Record<string, string> = {
   OTHER: "Other",
 };
 
-const Page1 = () => {
+const RequestStatus = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  const [progressWidth, setProgressWidth] = useState("0%");
   const [mounted, setMounted] = useState(false);
 
   // Handle hydration
@@ -41,13 +41,15 @@ const Page1 = () => {
 
   // Fetch trial session associated with this trial request
   const { data: trialSession, isLoading: isLoadingSession } = useTrialSession(
-    trialRequest?._id
+    trialRequest?._id,
   );
 
   // Fetch subscription to check if student already has active subscription
-  const { data: subscription, isLoading: isLoadingSubscription } = useMySubscription();
+  const { data: subscription, isLoading: isLoadingSubscription } =
+    useMySubscription();
 
-  const isLoading = isLoadingRequests || isLoadingSession || isLoadingSubscription;
+  const isLoading =
+    isLoadingRequests || isLoadingSession || isLoadingSubscription;
 
   // Determine step based on status
   const getStep = () => {
@@ -79,33 +81,14 @@ const Page1 = () => {
 
   // Redirect to student dashboard if subscription is active
   useEffect(() => {
-    if (mounted && !isLoadingSubscription && subscription?.status === 'ACTIVE') {
+    if (
+      mounted &&
+      !isLoadingSubscription &&
+      subscription?.status === "ACTIVE"
+    ) {
       router.replace("/student/session");
     }
   }, [mounted, isLoadingSubscription, subscription, router]);
-
-  useEffect(() => {
-    const computeWidth = () => {
-      const w = typeof window !== "undefined" ? window.innerWidth : 0;
-      if (w <= 640) {
-        return step === 1 ? "22%" : step === 2 ? "55%" : "88%";
-      } else if (w <= 768) {
-        return step === 1 ? "18%" : step === 2 ? "52%" : "86%";
-      }
-      return step === 1 ? "10%" : step === 2 ? "55%" : "95%";
-    };
-    const init = () => setProgressWidth(computeWidth());
-    const timer = setTimeout(init, 0);
-
-    const handleResize = () => setProgressWidth(computeWidth());
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", handleResize);
-      return () => {
-        clearTimeout(timer);
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, [step]);
 
   // Loading state
   if (!mounted || isLoading) {
@@ -141,14 +124,14 @@ const Page1 = () => {
     );
   }
 
-  // Show Page3 when trial session is completed
+  // Show PlanSelection when trial session is completed
   if (trialSession?.status === SESSION_STATUS.COMPLETED) {
-    return <Page3 />;
+    return <PlanSelection />;
   }
 
-  // Show Page2 with chat when request is accepted
+  // Show TutorChat with chat when request is accepted
   if (trialRequest.status === TRIAL_REQUEST_STATUS.ACCEPTED) {
-    return <Page2 trialRequest={trialRequest} />;
+    return <TutorChat trialRequest={trialRequest} />;
   }
 
   // Status message based on request status
@@ -158,7 +141,8 @@ const Page1 = () => {
         return {
           bg: "bg-[#FFF4E6]",
           border: "border-[#FF8A00]",
-          title: "Your request has been sent and we are now looking for a fitting tutor.",
+          title:
+            "Your request has been sent and we are now looking for a fitting tutor.",
           subtitle: "You will be notified once we found your tutor",
         };
       case TRIAL_REQUEST_STATUS.ACCEPTED:
@@ -166,7 +150,8 @@ const Page1 = () => {
           bg: "bg-green-50",
           border: "border-green-500",
           title: "A tutor has accepted your request!",
-          subtitle: "You can now chat with your tutor to schedule the trial session",
+          subtitle:
+            "You can now chat with your tutor to schedule the trial session",
         };
       case TRIAL_REQUEST_STATUS.EXPIRED:
         return {
@@ -204,68 +189,12 @@ const Page1 = () => {
             Trial Session Request
           </h2>
 
-          {/* Progress Stepper */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between relative">
-              <div className="absolute top-2.5 left-0 right-0 h-2 rounded-3xl bg-gray-300 z-0"></div>
-
-              <div
-                className="absolute top-2.5 left-0 h-2 rounded-3xl bg-[#0B31BD] z-10 transition-all duration-700 ease-in-out"
-                style={{ width: progressWidth }}
-              ></div>
-
-              {/* Step 1 - Active if step >= 1 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 1 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                ></div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 1 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Tutor Matching request
-                </span>
-              </div>
-
-              {/* Step 2 - Active if step >= 2 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 2 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                ></div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 2 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Trial Session
-                </span>
-              </div>
-
-              {/* Step 3 - Active if step >= 3 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 3 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                ></div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 3 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Start Learning
-                </span>
-              </div>
-            </div>
-          </div>
+          <TrialProgressStepper step={step} />
 
           {/* Status Message */}
-          <div className={`border ${statusMessage.bg} ${statusMessage.border} rounded-lg p-4`}>
+          <div
+            className={`border ${statusMessage.bg} ${statusMessage.border} rounded-lg p-4`}
+          >
             <p className="font-normal">{statusMessage.title}</p>
             {statusMessage.subtitle && (
               <p className="text-sm text-[#666666]">{statusMessage.subtitle}</p>
@@ -291,7 +220,8 @@ const Page1 = () => {
               <div>
                 <p className="text-sm text-gray-600 mb-1">School Type</p>
                 <p className="text-gray-800 font-medium">
-                  {SCHOOL_TYPE_LABELS[trialRequest.schoolType] || trialRequest.schoolType}
+                  {SCHOOL_TYPE_LABELS[trialRequest.schoolType] ||
+                    trialRequest.schoolType}
                 </p>
               </div>
             </div>
@@ -318,7 +248,9 @@ const Page1 = () => {
             <div>
               <p className="text-sm text-gray-600 mb-1">Learning goals</p>
               <p className="text-gray-800">
-                {trialRequest.description || trialRequest.learningGoals || "N/A"}
+                {trialRequest.description ||
+                  trialRequest.learningGoals ||
+                  "N/A"}
               </p>
             </div>
 
@@ -337,16 +269,19 @@ const Page1 = () => {
         </div>
 
         {/* Action Buttons for Accepted Status */}
-        {trialRequest.status === TRIAL_REQUEST_STATUS.ACCEPTED && trialRequest.chatId && (
-          <div className="mb-6">
-            <button
-              onClick={() => router.push(`/student/chat/${trialRequest.chatId}`)}
-              className="w-full bg-[#0B31BD] text-white py-3 rounded-lg hover:bg-[#062183] transition-colors font-medium"
-            >
-              Chat with your Tutor
-            </button>
-          </div>
-        )}
+        {trialRequest.status === TRIAL_REQUEST_STATUS.ACCEPTED &&
+          trialRequest.chatId && (
+            <div className="mb-6">
+              <button
+                onClick={() =>
+                  router.push(`/student/chat/${trialRequest.chatId}`)
+                }
+                className="w-full bg-[#0B31BD] text-white py-3 rounded-lg hover:bg-[#062183] transition-colors font-medium"
+              >
+                Chat with your Tutor
+              </button>
+            </div>
+          )}
 
         {/* Info Message */}
         <div className="border bg-[#E2E6F5] border-[#0B31BD] rounded-lg p-4">
@@ -360,4 +295,4 @@ const Page1 = () => {
   );
 };
 
-export default Page1;
+export default RequestStatus;

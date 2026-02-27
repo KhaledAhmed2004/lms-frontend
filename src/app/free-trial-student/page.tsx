@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { ProgressBar } from "./components/ProgressBar";
+import { ProgressBar } from "@/components/form/ProgressBar";
 import { SubjectInfoStep } from "./components/SubjectInfoStep";
 import { GoalsDocumentsStep } from "./components/GoalsDocumentsStep";
 import { PersonalInfoStep } from "./components/PersonalInfoStep";

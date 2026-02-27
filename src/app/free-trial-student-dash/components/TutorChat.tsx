@@ -1,51 +1,73 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
-import { useMessages, useSendMessage, useSendMessageWithAttachment } from '@/hooks/api/use-chats';
-import { useAuthStore } from '@/store/auth-store';
-import { TrialRequest, AcceptedTutor } from '@/hooks/api/use-trial-requests';
-import { Loader2, Send, Paperclip, X, FileText, Image as ImageIcon, Film } from 'lucide-react';
-import { useSocket } from '@/providers/socket-provider';
-import { useAcceptSessionProposal, useRejectSessionProposal } from '@/hooks/api/use-sessions';
-import SessionProposalWithFeedback from '@/components/messages/SessionProposalWithFeedback';
-import ScheduleModal from '@/components/messages/schedule-modal';
-import StudentReviewModal from '@/components/modals/StudentReviewModal';
-import { useVideoCall } from '@/providers/video-call-provider';
-import { toast } from 'sonner';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  useMessages,
+  useSendMessage,
+  useSendMessageWithAttachment,
+} from "@/hooks/api/use-chats";
+import { useAuthStore } from "@/store/auth-store";
+import { TrialRequest, AcceptedTutor } from "@/hooks/api/use-trial-requests";
+import {
+  Loader2,
+  Send,
+  Paperclip,
+  X,
+  FileText,
+  Image as ImageIcon,
+  Film,
+} from "lucide-react";
+import { useSocket } from "@/providers/socket-provider";
+import {
+  useAcceptSessionProposal,
+  useRejectSessionProposal,
+} from "@/hooks/api/use-sessions";
+import SessionProposalWithFeedback from "@/components/messages/SessionProposalWithFeedback";
+import ScheduleModal from "@/components/messages/schedule-modal";
+import StudentReviewModal from "@/components/modals/StudentReviewModal";
+import { useVideoCall } from "@/providers/video-call-provider";
+import { toast } from "sonner";
+import { TrialProgressStepper } from "./TrialProgressStepper";
 
-interface Page2Props {
+interface TutorChatProps {
   trialRequest: TrialRequest;
 }
 
-const Page2 = ({ trialRequest }: Page2Props) => {
-  const step = 2;
-  const [message, setMessage] = useState('');
-  const [progressWidth, setProgressWidth] = useState("55%");
+const TutorChat = ({ trialRequest }: TutorChatProps) => {
+  const [message, setMessage] = useState("");
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [selectedSessionForReview, setSelectedSessionForReview] = useState<string | null>(null);
+  const [selectedSessionForReview, setSelectedSessionForReview] = useState<
+    string | null
+  >(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
   const { joinChat, leaveChat, isConnected } = useSocket();
 
   // Get tutor info from populated acceptedTutorId
-  const tutor = typeof trialRequest.acceptedTutorId === 'object'
-    ? trialRequest.acceptedTutorId as AcceptedTutor
-    : null;
+  const tutor =
+    typeof trialRequest.acceptedTutorId === "object"
+      ? (trialRequest.acceptedTutorId as AcceptedTutor)
+      : null;
 
   // Handle both populated (object with _id) and non-populated (string) chatId
-  const chatId = typeof trialRequest.chatId === 'object' && trialRequest.chatId !== null
-    ? (trialRequest.chatId as { _id: string })._id
-    : (trialRequest.chatId as string) || '';
+  const chatId =
+    typeof trialRequest.chatId === "object" && trialRequest.chatId !== null
+      ? (trialRequest.chatId as { _id: string })._id
+      : (trialRequest.chatId as string) || "";
 
   // Fetch messages from API
-  const { data: messagesData, isLoading: messagesLoading } = useMessages(chatId);
+  const { data: messagesData, isLoading: messagesLoading } =
+    useMessages(chatId);
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
-  const { mutate: sendMessageWithAttachment, isPending: isUploadingSending } = useSendMessageWithAttachment();
-  const { mutate: acceptProposal, isPending: isAccepting } = useAcceptSessionProposal();
-  const { mutate: rejectProposal, isPending: isRejecting } = useRejectSessionProposal();
+  const { mutate: sendMessageWithAttachment, isPending: isUploadingSending } =
+    useSendMessageWithAttachment();
+  const { mutate: acceptProposal, isPending: isAccepting } =
+    useAcceptSessionProposal();
+  const { mutate: rejectProposal, isPending: isRejecting } =
+    useRejectSessionProposal();
   const { joinSessionCall } = useVideoCall();
 
   // Join/leave socket room when chatId changes
@@ -60,33 +82,19 @@ const Page2 = ({ trialRequest }: Page2Props) => {
 
   // Get tutor initials for avatar
   const getTutorInitials = () => {
-    if (!tutor?.name) return 'T';
-    const names = tutor.name.split(' ');
+    if (!tutor?.name) return "T";
+    const names = tutor.name.split(" ");
     if (names.length >= 2) {
       return `${names[0][0]}${names[1][0]}`.toUpperCase();
     }
     return names[0][0].toUpperCase();
   };
 
-  // Handle responsive progress bar (step 2 = 55% progress)
-  useEffect(() => {
-    const computeWidth = () => {
-      const w = typeof window !== "undefined" ? window.innerWidth : 0;
-      if (w <= 640) return "55%";
-      if (w <= 768) return "52%";
-      return "55%";
-    };
-    setProgressWidth(computeWidth());
-
-    const handleResize = () => setProgressWidth(computeWidth());
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [messagesData]);
 
@@ -94,39 +102,49 @@ const Page2 = ({ trialRequest }: Page2Props) => {
     if (chatId) {
       // If there are files selected, send with attachments
       if (selectedFiles.length > 0) {
-        sendMessageWithAttachment({
-          chatId,
-          text: message.trim() || undefined,
-          files: selectedFiles,
-        }, {
-          onSuccess: () => {
-            setMessage('');
-            setSelectedFiles([]);
+        sendMessageWithAttachment(
+          {
+            chatId,
+            text: message.trim() || undefined,
+            files: selectedFiles,
           },
-          onError: (error: any) => {
-            toast.error(error?.response?.data?.message || 'Failed to send attachment');
+          {
+            onSuccess: () => {
+              setMessage("");
+              setSelectedFiles([]);
+            },
+            onError: (error: any) => {
+              toast.error(
+                error?.response?.data?.message || "Failed to send attachment",
+              );
+            },
           },
-        });
+        );
       } else if (message.trim()) {
         // Text only message
-        sendMessage({
-          chatId,
-          content: message.trim(),
-          type: 'TEXT',
-        }, {
-          onSuccess: () => {
-            setMessage('');
+        sendMessage(
+          {
+            chatId,
+            content: message.trim(),
+            type: "TEXT",
           },
-          onError: (error: any) => {
-            toast.error(error?.response?.data?.message || 'Failed to send message');
+          {
+            onSuccess: () => {
+              setMessage("");
+            },
+            onError: (error: any) => {
+              toast.error(
+                error?.response?.data?.message || "Failed to send message",
+              );
+            },
           },
-        });
+        );
       }
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
@@ -140,7 +158,7 @@ const Page2 = ({ trialRequest }: Page2Props) => {
     const validFiles: File[] = [];
     const maxSize = 10 * 1024 * 1024; // 10MB max per file
 
-    files.forEach(file => {
+    files.forEach((file) => {
       if (file.size > maxSize) {
         toast.error(`${file.name} is too large. Max size is 10MB`);
         return;
@@ -148,13 +166,15 @@ const Page2 = ({ trialRequest }: Page2Props) => {
 
       const mimeType = file.type.toLowerCase();
       const isValidType =
-        mimeType.startsWith('image/') ||
-        mimeType.startsWith('video/') ||
-        mimeType.startsWith('audio/') ||
-        mimeType === 'application/pdf';
+        mimeType.startsWith("image/") ||
+        mimeType.startsWith("video/") ||
+        mimeType.startsWith("audio/") ||
+        mimeType === "application/pdf";
 
       if (!isValidType) {
-        toast.error(`${file.name} is not supported. Use images, videos, audio, or PDF`);
+        toast.error(
+          `${file.name} is not supported. Use images, videos, audio, or PDF`,
+        );
         return;
       }
 
@@ -165,45 +185,45 @@ const Page2 = ({ trialRequest }: Page2Props) => {
     setSelectedFiles(newFiles);
 
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const getFileIcon = (file: File) => {
     const mimeType = file.type.toLowerCase();
-    if (mimeType.startsWith('image/')) return <ImageIcon className="w-4 h-4" />;
-    if (mimeType.startsWith('video/')) return <Film className="w-4 h-4" />;
+    if (mimeType.startsWith("image/")) return <ImageIcon className="w-4 h-4" />;
+    if (mimeType.startsWith("video/")) return <Film className="w-4 h-4" />;
     return <FileText className="w-4 h-4" />;
   };
 
   const getFilePreview = (file: File) => {
-    if (file.type.startsWith('image/')) {
+    if (file.type.startsWith("image/")) {
       return URL.createObjectURL(file);
     }
     return null;
   };
 
   const handleSessionAction = (messageId: string, action: string) => {
-    if (action === 'accepted') {
+    if (action === "accepted") {
       acceptProposal(messageId, {
         onSuccess: () => {
-          toast.success('Session accepted! Check your upcoming sessions.');
+          toast.success("Session accepted! Check your upcoming sessions.");
         },
         onError: (error: any) => {
-          toast.error(error?.message || 'Failed to accept session');
+          toast.error(error?.message || "Failed to accept session");
         },
       });
-    } else if (action === 'declined') {
+    } else if (action === "declined") {
       rejectProposal(messageId, {
         onSuccess: () => {
-          toast.info('Session proposal declined');
+          toast.info("Session proposal declined");
         },
         onError: (error: any) => {
-          toast.error(error?.message || 'Failed to decline session');
+          toast.error(error?.message || "Failed to decline session");
         },
       });
     }
@@ -211,59 +231,30 @@ const Page2 = ({ trialRequest }: Page2Props) => {
 
   const formatTime = (dateString: string) => {
     return new Date(dateString).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto py-12 px-4">
-
         {/* Trial Session Card */}
         <div className="rounded-lg shadow-sm border border-gray-200 p-6 mb-6 bg-white">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Trial Session Request</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+            Trial Session Request
+          </h2>
 
-          {/* Progress Stepper */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between relative">
-              <div className="absolute top-2.5 left-0 right-0 h-2 rounded-3xl bg-gray-300 z-0"></div>
-
-              <div
-                className="absolute top-2.5 left-0 h-2 rounded-3xl bg-[#0B31BD] z-10 transition-all duration-700 ease-in-out"
-                style={{ width: progressWidth }}
-              ></div>
-
-              {/* Step 1 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${step >= 1 ? 'bg-[#0B31BD]' : 'bg-gray-300'}`}></div>
-                <span className={`text-sm text-center ${step >= 1 ? 'text-gray-700' : 'text-gray-600'}`}>
-                  Tutor Matching request
-                </span>
-              </div>
-
-              {/* Step 2 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${step >= 2 ? 'bg-[#0B31BD]' : 'bg-gray-300'}`}></div>
-                <span className={`text-sm text-center ${step >= 2 ? 'text-gray-700' : 'text-gray-600'}`}>
-                  Trial Session
-                </span>
-              </div>
-
-              {/* Step 3 */}
-              <div className="flex flex-col items-center relative z-10">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${step >= 3 ? 'bg-[#0B31BD]' : 'bg-gray-300'}`}></div>
-                <span className={`text-sm text-center ${step >= 3 ? 'text-gray-700' : 'text-gray-600'}`}>
-                  Start Learning
-                </span>
-              </div>
-            </div>
-          </div>
+          <TrialProgressStepper step={2} />
 
           {/* Status Message */}
           <div className="border bg-[#FFF4E6] border-[#FF8A00] rounded-lg p-4">
-            <p className="font-normal">We have found the perfect tutor for you.</p>
-            <p className="text-sm text-[#666666]">Start chatting and schedule your trial session.</p>
+            <p className="font-normal">
+              We have found the perfect tutor for you.
+            </p>
+            <p className="text-sm text-[#666666]">
+              Start chatting and schedule your trial session.
+            </p>
           </div>
         </div>
 
@@ -282,15 +273,18 @@ const Page2 = ({ trialRequest }: Page2Props) => {
               </div>
             )}
             <div className="flex-1">
-              <p className="font-semibold text-gray-800">{tutor?.name || 'Tutor'}</p>
-              <p className="text-sm text-gray-600">{trialRequest.subject?.name} Tutor</p>
+              <p className="font-semibold text-gray-800">
+                {tutor?.name || "Tutor"}
+              </p>
+              <p className="text-sm text-gray-600">
+                {trialRequest.subject?.name} Tutor
+              </p>
             </div>
           </div>
         </div>
 
         {/* Messaging Card */}
         <div className="rounded-lg shadow-sm border border-gray-200 p-6 mb-6 bg-white">
-
           {/* Chat Area */}
           <div
             ref={chatContainerRef}
@@ -306,10 +300,13 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                 const isTutor = !isStudent;
 
                 return (
-                  <div key={msg._id} className={`flex gap-3 ${isStudent ? "justify-end" : ""}`}>
+                  <div
+                    key={msg._id}
+                    className={`flex gap-3 ${isStudent ? "justify-end" : ""}`}
+                  >
                     {/* Tutor Avatar */}
-                    {isTutor && (
-                      tutor?.profilePicture ? (
+                    {isTutor &&
+                      (tutor?.profilePicture ? (
                         <img
                           src={tutor.profilePicture}
                           alt={tutor.name}
@@ -319,21 +316,43 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                         <div className="w-8 h-8 rounded-full bg-[#0B31BD] flex-shrink-0 flex items-center justify-center text-white text-xs font-semibold">
                           {getTutorInitials()}
                         </div>
-                      )
-                    )}
+                      ))}
 
                     <div className={isStudent ? "text-right" : ""}>
                       {isTutor && (
-                        <p className="text-xs font-semibold text-gray-700">{tutor?.name || 'Tutor'}</p>
+                        <p className="text-xs font-semibold text-gray-700">
+                          {tutor?.name || "Tutor"}
+                        </p>
                       )}
 
                       {/* Check if message has session proposal */}
                       {(msg as any).sessionProposal ? (
                         <SessionProposalWithFeedback
-                          date={new Date((msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt).toLocaleDateString()}
-                          time={new Date((msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          endTime={(msg as any).sessionProposal.endTime ? new Date((msg as any).sessionProposal.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
-                          startTimeRaw={(msg as any).sessionProposal.startTime || (msg as any).sessionProposal.scheduledAt}
+                          date={new Date(
+                            (msg as any).sessionProposal.startTime ||
+                              (msg as any).sessionProposal.scheduledAt,
+                          ).toLocaleDateString()}
+                          time={new Date(
+                            (msg as any).sessionProposal.startTime ||
+                              (msg as any).sessionProposal.scheduledAt,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                          endTime={
+                            (msg as any).sessionProposal.endTime
+                              ? new Date(
+                                  (msg as any).sessionProposal.endTime,
+                                ).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                              : undefined
+                          }
+                          startTimeRaw={
+                            (msg as any).sessionProposal.startTime ||
+                            (msg as any).sessionProposal.scheduledAt
+                          }
                           endTimeRaw={(msg as any).sessionProposal.endTime}
                           status={(msg as any).sessionProposal.status}
                           noShowBy={(msg as any).sessionProposal.noShowBy}
@@ -341,19 +360,27 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                           isLoading={isAccepting || isRejecting}
                           userRole="STUDENT"
                           sessionId={(msg as any).sessionProposal.sessionId}
-                          onAccept={() => handleSessionAction(msg._id, "accepted")}
+                          onAccept={() =>
+                            handleSessionAction(msg._id, "accepted")
+                          }
                           onReschedule={() => setIsScheduleOpen(true)}
-                          onDecline={() => handleSessionAction(msg._id, "declined")}
+                          onDecline={() =>
+                            handleSessionAction(msg._id, "declined")
+                          }
                           onJoinSession={() => {
                             // Join session-based video call with the tutor
                             // Both users will join the same channel based on sessionId
-                            if (tutor?._id && (msg as any).sessionProposal?.sessionId) {
-                              const endTimeRaw = (msg as any).sessionProposal.endTime;
+                            if (
+                              tutor?._id &&
+                              (msg as any).sessionProposal?.sessionId
+                            ) {
+                              const endTimeRaw = (msg as any).sessionProposal
+                                .endTime;
                               joinSessionCall(
                                 (msg as any).sessionProposal.sessionId,
                                 tutor._id,
-                                tutor.name || 'Tutor',
-                                endTimeRaw ? new Date(endTimeRaw) : undefined  // Pass endTime for countdown
+                                tutor.name || "Tutor",
+                                endTimeRaw ? new Date(endTimeRaw) : undefined, // Pass endTime for countdown
                               );
                             }
                           }}
@@ -364,59 +391,68 @@ const Page2 = ({ trialRequest }: Page2Props) => {
                         />
                       ) : (
                         <>
-                          <div className={`inline-block rounded-lg p-3 mt-1 max-w-xs ${isStudent ? "bg-[#0B31BD] text-white" : "bg-white border border-gray-200"}`}>
+                          <div
+                            className={`inline-block rounded-lg p-3 mt-1 max-w-xs ${isStudent ? "bg-[#0B31BD] text-white" : "bg-white border border-gray-200"}`}
+                          >
                             {/* Display attachments */}
-                            {(msg as any).attachments && (msg as any).attachments.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mb-2">
-                                {(msg as any).attachments.map((attachment: any, idx: number) => (
-                                  <div key={idx} className="relative">
-                                    {attachment.type === 'image' ? (
-                                      <a
-                                        href={attachment.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        <img
-                                          src={attachment.url}
-                                          alt={attachment.name || 'Image'}
-                                          className="max-w-[180px] max-h-[180px] rounded object-cover cursor-pointer hover:opacity-90"
-                                        />
-                                      </a>
-                                    ) : attachment.type === 'video' ? (
-                                      <video
-                                        src={attachment.url}
-                                        controls
-                                        className="max-w-[200px] max-h-[150px] rounded"
-                                      />
-                                    ) : attachment.type === 'audio' ? (
-                                      <audio
-                                        src={attachment.url}
-                                        controls
-                                        className="max-w-[200px]"
-                                      />
-                                    ) : (
-                                      <a
-                                        href={attachment.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`flex items-center gap-2 p-2 rounded hover:opacity-80 transition-opacity ${isStudent ? "bg-blue-600" : "bg-gray-100"}`}
-                                      >
-                                        <FileText className="w-5 h-5" />
-                                        <span className="text-sm truncate max-w-[120px]">
-                                          {attachment.name || 'Document'}
-                                        </span>
-                                      </a>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
+                            {(msg as any).attachments &&
+                              (msg as any).attachments.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-2">
+                                  {(msg as any).attachments.map(
+                                    (attachment: any, idx: number) => (
+                                      <div key={idx} className="relative">
+                                        {attachment.type === "image" ? (
+                                          <a
+                                            href={attachment.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                          >
+                                            <img
+                                              src={attachment.url}
+                                              alt={attachment.name || "Image"}
+                                              className="max-w-[180px] max-h-[180px] rounded object-cover cursor-pointer hover:opacity-90"
+                                            />
+                                          </a>
+                                        ) : attachment.type === "video" ? (
+                                          <video
+                                            src={attachment.url}
+                                            controls
+                                            className="max-w-[200px] max-h-[150px] rounded"
+                                          />
+                                        ) : attachment.type === "audio" ? (
+                                          <audio
+                                            src={attachment.url}
+                                            controls
+                                            className="max-w-[200px]"
+                                          />
+                                        ) : (
+                                          <a
+                                            href={attachment.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className={`flex items-center gap-2 p-2 rounded hover:opacity-80 transition-opacity ${isStudent ? "bg-blue-600" : "bg-gray-100"}`}
+                                          >
+                                            <FileText className="w-5 h-5" />
+                                            <span className="text-sm truncate max-w-[120px]">
+                                              {attachment.name || "Document"}
+                                            </span>
+                                          </a>
+                                        )}
+                                      </div>
+                                    ),
+                                  )}
+                                </div>
+                              )}
                             {((msg as any).text || msg.content) && (
-                              <p className="text-sm">{(msg as any).text || msg.content}</p>
+                              <p className="text-sm">
+                                {(msg as any).text || msg.content}
+                              </p>
                             )}
                           </div>
 
-                          <p className={`text-xs text-gray-500 mt-1 ${isStudent ? "text-right" : ""}`}>
+                          <p
+                            className={`text-xs text-gray-500 mt-1 ${isStudent ? "text-right" : ""}`}
+                          >
                             {formatTime(msg.createdAt)}
                           </p>
                         </>
@@ -485,10 +521,14 @@ const Page2 = ({ trialRequest }: Page2Props) => {
               />
               <button
                 onClick={handleSendMessage}
-                disabled={(!message.trim() && selectedFiles.length === 0) || isSending || isUploadingSending}
+                disabled={
+                  (!message.trim() && selectedFiles.length === 0) ||
+                  isSending ||
+                  isUploadingSending
+                }
                 className="bg-[#0B31BD] text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-2"
               >
-                {(isSending || isUploadingSending) ? (
+                {isSending || isUploadingSending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <Send className="w-4 h-4" />
@@ -527,7 +567,9 @@ const Page2 = ({ trialRequest }: Page2Props) => {
         onSchedule={(selectedDate, time) => {
           // For now just close the modal - reschedule would need a separate API
           setIsScheduleOpen(false);
-          toast.info('Reschedule request noted. Please discuss with your tutor.');
+          toast.info(
+            "Reschedule request noted. Please discuss with your tutor.",
+          );
         }}
       />
 
@@ -545,4 +587,4 @@ const Page2 = ({ trialRequest }: Page2Props) => {
   );
 };
 
-export default Page2;
+export default TutorChat;

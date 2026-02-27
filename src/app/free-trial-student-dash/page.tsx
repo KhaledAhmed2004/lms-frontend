@@ -1,6 +1,6 @@
 "use client";
-import Page1 from "./components/Page1";
+import RequestStatus from "./components/RequestStatus";
 
 export default function Page() {
-  return <Page1 />;
+  return <RequestStatus />;
 }

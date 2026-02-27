@@ -1,4 +1,3 @@
-// src/app/free-trial-student-dash/layout.tsx
 import type { ReactNode } from "react";
 import Nav from "./components/Nav";
 
