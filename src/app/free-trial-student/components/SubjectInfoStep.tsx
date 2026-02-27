@@ -5,18 +5,19 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useActiveSubjects, useActiveGrades, useActiveSchoolTypes } from "@/hooks/api";
+import {
+  useActiveSubjects,
+  useActiveGrades,
+  useActiveSchoolTypes,
+} from "@/hooks/api";
 
-interface Step1Props {
-  formData: any;
-  setFormData: (data: any) => void;
-}
-
-export const Step1SubjectInfo = ({ formData, setFormData }: Step1Props) => {
-  // Fetch data from backend API
-  const { data: subjects = [], isLoading: subjectsLoading } = useActiveSubjects();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const SubjectInfoStep = ({ formData, setFormData }: { formData: any; setFormData: any }) => {
+  const { data: subjects = [], isLoading: subjectsLoading } =
+    useActiveSubjects();
   const { data: grades = [], isLoading: gradesLoading } = useActiveGrades();
-  const { data: schoolTypes = [], isLoading: schoolTypesLoading } = useActiveSchoolTypes();
+  const { data: schoolTypes = [], isLoading: schoolTypesLoading } =
+    useActiveSchoolTypes();
 
   return (
     <div className="space-y-6">

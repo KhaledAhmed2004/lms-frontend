@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// components/free-trial/steps/Step3PersonalInfo.tsx
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -8,12 +6,8 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import Link from "next/link";
 
-interface Step3Props {
-  formData: any;
-  setFormData: (data: any) => void;
-}
-
-export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const PersonalInfoStep = ({ formData, setFormData }: { formData: any; setFormData: any }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
@@ -52,39 +46,35 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
       </div>
 
       <div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">
-    Is the student under 18 years of age? <span className="text-red-500">*</span>
-  </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Is the student under 18 years of age?{" "}
+          <span className="text-red-500">*</span>
+        </label>
 
-  <div className="flex gap-6">
-    {/* YES → Under 18 */}
-    <label className="flex items-center gap-2 cursor-pointer">
-      <input
-        type="radio"
-        name="ageCheck"
-        checked={formData.isUnder18 === true}
-        onChange={() =>
-          setFormData({ ...formData, isUnder18: true })
-        }
-      />
-      <span className="text-sm text-gray-700">Yes</span>
-    </label>
+        <div className="flex gap-6">
+          {/* YES → Under 18 */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="ageCheck"
+              checked={formData.isUnder18 === true}
+              onChange={() => setFormData({ ...formData, isUnder18: true })}
+            />
+            <span className="text-sm text-gray-700">Yes</span>
+          </label>
 
-    {/* NO → 18 or above */}
-    <label className="flex items-center gap-2 cursor-pointer">
-      <input
-        type="radio"
-        name="ageCheck"
-        checked={formData.isUnder18 === false}
-        onChange={() =>
-          setFormData({ ...formData, isUnder18: false })
-        }
-      />
-      <span className="text-sm text-gray-700">No</span>
-    </label>
-  </div>
-</div>
-
+          {/* NO → 18 or above */}
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="ageCheck"
+              checked={formData.isUnder18 === false}
+              onChange={() => setFormData({ ...formData, isUnder18: false })}
+            />
+            <span className="text-sm text-gray-700">No</span>
+          </label>
+        </div>
+      </div>
 
       {formData.isUnder18 && (
         <>
@@ -133,6 +123,7 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
                 defaultCountry="de"
                 value={formData.guardianPhone}
                 onChange={(phone) =>
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   setFormData((prev: any) => ({
                     ...prev,
                     guardianPhone: phone,
@@ -186,8 +177,7 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Repeat Password{" "}
-            <span className="text-red-500">*</span>
+            Repeat Password <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Input
@@ -214,7 +204,7 @@ export const Step3PersonalInfo = ({ formData, setFormData }: Step3Props) => {
         <Checkbox
           checked={formData.agreeToPolicy}
           onCheckedChange={(checked) =>
-            setFormData({ ...formData, agreeToPolicy: checked })
+            setFormData({ ...formData, agreeToPolicy: checked as boolean })
           }
         />
         <label className="ml-2 text-sm text-gray-700">

@@ -1,18 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// components/free-trial/steps/Step2GoalsDocuments.tsx
 import { Input } from "@/components/ui/input";
 
-interface Step2Props {
-  formData: any;
-  setFormData: (data: any) => void;
-  handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const GoalsDocumentsStep = ({ formData, setFormData }: { formData: any; setFormData: any }) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setFormData((prev: any) => ({
+        ...prev,
+        documents: e.target.files![0],
+      }));
+    }
+  };
 
-export const Step2GoalsDocuments = ({
-  formData,
-  setFormData,
-  handleFileChange,
-}: Step2Props) => {
   return (
     <div className="space-y-6">
       <div>
@@ -55,11 +54,11 @@ export const Step2GoalsDocuments = ({
             </p>
             <p className="text-gray-500 text-sm">png, jpg, pdf up to 10MB</p>
           </label>
-          {formData.documents && (
+          {formData.documents ? (
             <p className="mt-4 text-sm text-green-600">
               File selected: {formData.documents.name}
             </p>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

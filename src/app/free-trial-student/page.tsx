@@ -1,47 +1,19 @@
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-
 import Link from "next/link";
 import { ProgressBar } from "./components/ProgressBar";
-import { Step1SubjectInfo } from "./components/Step1SubjectInfo";
-import { Step2GoalsDocuments } from "./components/Step2GoalsDocuments";
-import { Step3PersonalInfo } from "./components/Step3PersonalInfo";
+import { SubjectInfoStep } from "./components/SubjectInfoStep";
+import { GoalsDocumentsStep } from "./components/GoalsDocumentsStep";
+import { PersonalInfoStep } from "./components/PersonalInfoStep";
 import { FormNavigationButtons } from "./components/FormNavigationButtons";
-import { useCreateTrialRequest, useActiveSubjects, type CreateTrialRequestData } from "@/hooks/api";
-
-/* =========================
-   Types
-========================= */
-
-interface FreeTrialFormData {
-  subject: string;
-  grade: string;
-  schoolType: string;
-  learningGoals: string;
-  documents: File | null;
-
-  studentFirstName: string;
-  studentLastName: string;
-  isUnder18: boolean;
-
-  guardianFirstName: string;
-  guardianLastName: string;
-  guardianPhone: string;
-
-  email: string;
-  password: string;
-  repeatPassword: string;
-  agreeToPolicy: boolean;
-}
-
-/* =========================
-   Component
-========================= */
+import {
+  useCreateTrialRequest,
+  useActiveSubjects,
+  type CreateTrialRequestData,
+} from "@/hooks/api";
 
 export default function FreeTrialStudentPage() {
   return (
@@ -55,10 +27,11 @@ function FreeTrialStudent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const subjectFromUrl = searchParams.get("subject");
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState(1);
 
   // Trial request mutation - isPending is synchronously true after mutate(), prevents double-submit
-  const { mutate: createTrialRequest, isPending: isSubmitting } = useCreateTrialRequest();
+  const { mutate: createTrialRequest, isPending: isSubmitting } =
+    useCreateTrialRequest();
   const { data: subjects = [] } = useActiveSubjects();
 
   // Browser back button → previous step instead of leaving page
@@ -72,7 +45,8 @@ function FreeTrialStudent() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const [formData, setFormData] = useState<FreeTrialFormData>({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [formData, setFormData] = useState<any>({
     subject: "",
     grade: "",
     schoolType: "",
@@ -97,35 +71,51 @@ function FreeTrialStudent() {
   useEffect(() => {
     if (subjectFromUrl && subjects.length > 0 && !formData.subject) {
       const match = subjects.find(
-        (s) => s.name.toLowerCase() === subjectFromUrl.toLowerCase()
+        (s) => s.name.toLowerCase() === subjectFromUrl.toLowerCase(),
       );
       if (match) {
-        setFormData((prev) => ({ ...prev, subject: match._id }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setFormData((prev: any) => ({ ...prev, subject: match._id }));
       }
     }
   }, [subjectFromUrl, subjects]);
 
   /* =========================
-     Helpers
-  ========================= */
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        documents: e.target.files![0],
-      }));
-    }
-  };
-
-
-
-  /* =========================
      Validation
   ========================= */
 
+  const isStepComplete = () => {
+    if (step === 1) {
+      return !!(formData.subject && formData.grade && formData.schoolType);
+    }
+    if (step === 2) {
+      return true; // step 2 has no required fields
+    }
+    if (step === 3) {
+      const baseFields =
+        !!formData.studentFirstName &&
+        !!formData.studentLastName &&
+        !!formData.email &&
+        !!formData.password &&
+        !!formData.repeatPassword &&
+        formData.password === formData.repeatPassword &&
+        formData.agreeToPolicy;
+
+      if (formData.isUnder18) {
+        return (
+          baseFields &&
+          !!formData.guardianFirstName &&
+          !!formData.guardianLastName &&
+          !!formData.guardianPhone
+        );
+      }
+      return baseFields;
+    }
+    return true;
+  };
+
   const validateStep1 = () => {
-    if (!formData.subject || !formData.grade || !formData.schoolType) {
+    if (!isStepComplete()) {
       toast.error("Please fill in all required fields.");
       return false;
     }
@@ -161,44 +151,6 @@ function FreeTrialStudent() {
 
     return true;
   };
-
-  /* =========================
-     Step completeness check (for button disabled state)
-  ========================= */
-
-  const isStepComplete = (): boolean => {
-    if (step === 1) {
-      return !!(formData.subject && formData.grade && formData.schoolType);
-    }
-    if (step === 2) {
-      return true; // step 2 has no required fields
-    }
-    if (step === 3) {
-      const baseFields =
-        !!formData.studentFirstName &&
-        !!formData.studentLastName &&
-        !!formData.email &&
-        !!formData.password &&
-        !!formData.repeatPassword &&
-        formData.password === formData.repeatPassword &&
-        formData.agreeToPolicy;
-
-      if (formData.isUnder18) {
-        return (
-          baseFields &&
-          !!formData.guardianFirstName &&
-          !!formData.guardianLastName &&
-          !!formData.guardianPhone
-        );
-      }
-      return baseFields;
-    }
-    return true;
-  };
-
-  /* =========================
-     Navigation
-  ========================= */
 
   const handleBack = () => {
     setStep((prev) => prev - 1);
@@ -250,6 +202,7 @@ function FreeTrialStudent() {
           toast.success("Your request has been sent successfully!");
           router.push("/free-trial-student-dash");
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
           const message =
             error?.getFullMessage?.() ||
@@ -264,58 +217,47 @@ function FreeTrialStudent() {
     }
   };
 
-  /* =========================
-     JSX
-  ========================= */
-
   return (
     <div className="min-h-screen">
-        <nav className="bg-[#FBFCFC] h-20 shadow-sm flex items-center justify-center">
-          <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
-            Schäfer Tutoring
-          </Link>
-        </nav>
+      <nav className="bg-[#FBFCFC] h-20 shadow-sm flex items-center justify-center">
+        <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
+          Schäfer Tutoring
+        </Link>
+      </nav>
 
-        <div className="min-h-[calc(100vh-80px)] flex justify-center py-12 px-4">
-          <div className="w-full max-w-2xl space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-800">
-              Free Trial Session (Step {step}/3)
-            </h2>
+      <div className="min-h-[calc(100vh-80px)] flex justify-center py-12 px-4">
+        <div className="w-full max-w-2xl space-y-6">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Free Trial Session (Step {step}/3)
+          </h2>
 
-            <ProgressBar step={step} totalSteps={3} />
-             <label className="block text-base font-semibold text-[#0B31BD] mb-2">
-              What do you want to learn?
-            </label>
-            {step === 1 && (
-              <Step1SubjectInfo formData={formData} setFormData={setFormData} />
-            )}
+          <ProgressBar step={step} totalSteps={3} />
+          <label className="block text-base font-semibold text-[#0B31BD] mb-2">
+            What do you want to learn?
+          </label>
+          {step === 1 && (
+            <SubjectInfoStep formData={formData} setFormData={setFormData} />
+          )}
 
-            {step === 2 && (
-              <Step2GoalsDocuments
-                formData={formData}
-                setFormData={setFormData}
-                handleFileChange={handleFileChange}
-              />
-            )}
+          {step === 2 && (
+            <GoalsDocumentsStep formData={formData} setFormData={setFormData} />
+          )}
 
-            {step === 3 && (
-              <Step3PersonalInfo
-                formData={formData}
-                setFormData={setFormData}
-              />
-            )}
+          {step === 3 && (
+            <PersonalInfoStep formData={formData} setFormData={setFormData} />
+          )}
 
-            <FormNavigationButtons
-              step={step}
-              totalSteps={3}
-              onNext={handleNext}
-              onBack={handleBack}
-              isLastStep={step === 3}
-              isLoading={isSubmitting}
-              isDisabled={!isStepComplete()}
-            />
-          </div>
+          <FormNavigationButtons
+            step={step}
+            totalSteps={3}
+            onNext={handleNext}
+            onBack={handleBack}
+            isLastStep={step === 3}
+            isLoading={isSubmitting}
+            isDisabled={!isStepComplete()}
+          />
         </div>
+      </div>
     </div>
   );
 }

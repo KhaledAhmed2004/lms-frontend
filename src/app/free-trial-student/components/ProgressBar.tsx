@@ -1,10 +1,5 @@
-// components/free-trial/ProgressBar.tsx
-interface ProgressBarProps {
-  step: number;
-  totalSteps: number;
-}
-
-export const ProgressBar = ({ step, totalSteps }: ProgressBarProps) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const ProgressBar = ({ step, totalSteps }: any) => {
   const progress = (step / totalSteps) * 100;
 
   return (
