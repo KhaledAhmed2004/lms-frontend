@@ -58,24 +58,24 @@ export default function page() {
         <section>
           <Banner />
         </section>
-        <section>
+        {/* <section>
           <Stats stats={stats} />
-        </section>
+        </section> */}
         <section>
           <HowItWorks heading={heading} cards={cards} />
         </section>
         <section>
           <Approach approach={approach} />
         </section>
-        <section>
+        {/* <section>
           <TutorsSection />
-        </section>
+        </section> */}
         <section>
           <PricingSection />
         </section>
-        <section>
+        {/* <section>
           <Testimonial />
-        </section>
+        </section> */}
         <section>
           <FAQSection />
         </section>
