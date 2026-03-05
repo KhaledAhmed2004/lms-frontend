@@ -65,6 +65,39 @@ export interface EarningsHistoryResponse {
   };
 }
 
+export interface EarningLineItem {
+  sessionId: string;
+  studentName: string;
+  subject: string;
+  completedAt: string;
+  duration: number;
+  sessionPrice: number;
+  tutorEarning: number;
+}
+
+export interface EarningsDetail {
+  _id: string;
+  tutorId: {
+    _id: string;
+    name: string;
+    email: string;
+  };
+  payoutMonth: number;
+  payoutYear: number;
+  periodStart: string;
+  periodEnd: string;
+  lineItems: EarningLineItem[];
+  totalSessions: number;
+  totalHours: number;
+  grossEarnings: number;
+  platformCommission: number;
+  commissionRate: number;
+  netEarnings: number;
+  status: PayoutStatus;
+  payoutReference: string;
+  paidAt?: string;
+}
+
 // ============ HOOKS ============
 
 /**
@@ -143,6 +176,14 @@ export function useEarningsHistory(page = 1, limit = 10) {
     },
     enabled: isAuthenticated && isTutor,
   });
+}
+
+/**
+ * Fetch single earnings record with line items (for receipt generation)
+ */
+export async function fetchEarningsDetail(id: string): Promise<EarningsDetail> {
+  const { data } = await apiClient.get(`/earnings/${id}`);
+  return data.data as EarningsDetail;
 }
 
 // ============ CONSTANTS ============

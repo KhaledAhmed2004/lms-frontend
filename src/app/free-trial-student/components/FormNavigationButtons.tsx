@@ -1,6 +1,5 @@
-import { Spinner } from "@/components/ui/spinner";
+import { Loader2 } from "lucide-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FormNavigationButtons = ({
   step,
   onNext,
@@ -8,7 +7,15 @@ export const FormNavigationButtons = ({
   isLastStep = false,
   isLoading = false,
   isDisabled = false,
-}: any) => {
+}: {
+  step: number;
+  totalSteps?: number;
+  onNext: () => void;
+  onBack: () => void;
+  isLastStep?: boolean;
+  isLoading?: boolean;
+  isDisabled?: boolean;
+}) => {
   return (
     <div className="flex gap-3">
       {step > 1 ? (
@@ -32,7 +39,7 @@ export const FormNavigationButtons = ({
       >
         {isLoading ? (
           <>
-            <Spinner className="size-5 text-white" />
+            <Loader2 className="size-5 text-white animate-spin" />
             Submitting...
           </>
         ) : isLastStep ? (

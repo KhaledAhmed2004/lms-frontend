@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React, { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
@@ -231,10 +230,11 @@ const FreeTrialTeacher = () => {
         );
         router.push("/free-trial-teacher-dash");
       },
-      onError: (error: any) => {
+      onError: (error: unknown) => {
+        const err = error as { getFullMessage?: () => string; message?: string };
         const message =
-          error?.getFullMessage?.() ||
-          error?.message ||
+          err?.getFullMessage?.() ||
+          err?.message ||
           "Something went wrong. Please try again.";
         toast.error(message);
       },

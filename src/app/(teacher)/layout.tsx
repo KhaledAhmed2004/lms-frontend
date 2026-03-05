@@ -2,7 +2,6 @@
 
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-
 import { AppSidebar } from "./components/app-sidebar";
 import { SiteHeader } from "./components/site-header";
 
@@ -20,7 +19,9 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
       </div>
 
       {/* Main Content */}
-      <main className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}>
+      <main
+        className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}
+      >
         <div className={isMessagesPage ? "h-full" : "mx-auto px-4 py-5"}>
           {children}
         </div>

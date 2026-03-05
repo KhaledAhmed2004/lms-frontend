@@ -1,48 +1,49 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Search, MoreVertical, Clock, CheckCircle, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import React, { useState } from "react";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
+  Search,
+  MoreVertical,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { AdminPagination } from "@/components/admin/admin-pagination";
+import { AdminTableSkeleton } from "@/components/admin/admin-table-skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { formatDateShort } from "@/lib/utils";
 import {
   useUnifiedSessions,
   useSessionStats,
   SESSION_STATUS,
-} from '@/hooks/api';
-import type { UnifiedSession } from '@/hooks/api';
+} from "@/hooks/api";
+import type { UnifiedSession } from "@/hooks/api";
 
-type TabFilter = 'all' | 'COMPLETED' | 'CANCELLED' | 'SCHEDULED';
+type TabFilter = "all" | "COMPLETED" | "CANCELLED" | "SCHEDULED";
 
 const SessionManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<TabFilter>('all');
-  const [selectedSession, setSelectedSession] = useState<UnifiedSession | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<TabFilter>("all");
+  const [selectedSession, setSelectedSession] = useState<UnifiedSession | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 10;
 
@@ -51,11 +52,15 @@ const SessionManagement = () => {
     page: currentPage,
     limit: itemsPerPage,
     search: searchTerm || undefined,
-    status: activeTab === 'all' ? undefined : activeTab,
+    status: activeTab === "all" ? undefined : activeTab,
   };
 
   // Fetch unified sessions (sessions + trial requests)
-  const { data: sessionsData, isLoading, isFetching } = useUnifiedSessions(filters);
+  const {
+    data: sessionsData,
+    isLoading,
+    isFetching,
+  } = useUnifiedSessions(filters);
 
   // Fetch stats
   const { data: statsData } = useSessionStats();
@@ -79,45 +84,36 @@ const SessionManagement = () => {
     setIsModalOpen(true);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: '2-digit',
-    });
-  };
-
   const formatDateTime = (dateString?: string) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
     });
   };
 
   const formatScheduledTime = (startTime?: string, endTime?: string) => {
-    if (!startTime) return 'Not scheduled yet';
+    if (!startTime) return "Not scheduled yet";
     const start = new Date(startTime);
-    const dateStr = start.toLocaleDateString('en-US', {
-      month: 'short',
-      day: '2-digit',
-      year: 'numeric',
+    const dateStr = start.toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
     });
-    const startTimeStr = start.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
+    const startTimeStr = start.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     });
     if (!endTime) return `${dateStr} - ${startTimeStr}`;
     const end = new Date(endTime);
-    const endTimeStr = end.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
+    const endTimeStr = end.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     });
     return `${dateStr} - ${startTimeStr} - ${endTimeStr}`;
@@ -125,98 +121,88 @@ const SessionManagement = () => {
 
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
-      case 'FREE_TRIAL':
-        return 'bg-purple-100 text-purple-800';
-      case 'PAID':
-        return 'bg-green-100 text-green-800';
-      case 'PENDING':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'FAILED':
-      case 'REFUNDED':
-        return 'bg-red-100 text-red-800';
+      case "FREE_TRIAL":
+        return "bg-purple-100 text-purple-800";
+      case "PAID":
+        return "bg-green-100 text-green-800";
+      case "PENDING":
+        return "bg-yellow-100 text-yellow-800";
+      case "FAILED":
+      case "REFUNDED":
+        return "bg-red-100 text-red-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getLessonStatusColor = (status: string) => {
     switch (status) {
       case SESSION_STATUS.COMPLETED:
-        return 'bg-green-100 text-green-800';
+        return "bg-green-100 text-green-800";
       case SESSION_STATUS.SCHEDULED:
       case SESSION_STATUS.STARTING_SOON:
       case SESSION_STATUS.IN_PROGRESS:
-        return 'bg-blue-100 text-blue-800';
+        return "bg-blue-100 text-blue-800";
       case SESSION_STATUS.CANCELLED:
       case SESSION_STATUS.EXPIRED:
       case SESSION_STATUS.NO_SHOW:
-        return 'bg-red-100 text-red-800';
+        return "bg-red-100 text-red-800";
       case SESSION_STATUS.AWAITING_RESPONSE:
       case SESSION_STATUS.RESCHEDULE_REQUESTED:
-      case 'PENDING':
-      case 'ACCEPTED':
-        return 'bg-yellow-100 text-yellow-800';
+      case "PENDING":
+      case "ACCEPTED":
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const formatStatusLabel = (status: string) => {
-    if (status === 'FREE_TRIAL') return 'Free Trial';
+    if (status === "FREE_TRIAL") return "Free Trial";
     return status
-      .split('_')
+      .split("_")
       .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-      .join(' ');
+      .join(" ");
   };
 
   // Stats cards data
   const stats = [
     {
-      label: 'Total Sessions',
-      value: statsData?.totalSessions?.toLocaleString() || '0',
+      label: "Total Sessions",
+      value: statsData?.totalSessions?.toLocaleString() || "0",
       icon: <Clock className="text-blue-600" size={24} />,
-      bgColor: 'bg-blue-50',
+      bgColor: "bg-blue-50",
     },
     {
-      label: 'Pending Sessions',
-      value: statsData?.pendingSessions?.toLocaleString() || '0',
+      label: "Pending Sessions",
+      value: statsData?.pendingSessions?.toLocaleString() || "0",
       icon: <AlertCircle className="text-yellow-600" size={24} />,
-      bgColor: 'bg-yellow-50',
+      bgColor: "bg-yellow-50",
     },
     {
-      label: 'Completed Sessions',
-      value: statsData?.completedSessions?.toLocaleString() || '0',
+      label: "Completed Sessions",
+      value: statsData?.completedSessions?.toLocaleString() || "0",
       icon: <CheckCircle className="text-green-600" size={24} />,
-      bgColor: 'bg-green-50',
+      bgColor: "bg-green-50",
     },
   ];
 
-  // Skeleton rows for table loading
-  const TableSkeleton = () => (
-    <>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <tr key={index} className="border-b border-gray-100">
-          <td className="py-3 px-4"><Skeleton className="h-4 w-28" /></td>
-          <td className="py-3 px-4"><Skeleton className="h-4 w-20" /></td>
-          <td className="py-3 px-4"><Skeleton className="h-4 w-20" /></td>
-          <td className="py-3 px-4"><Skeleton className="h-6 w-16 rounded-full" /></td>
-          <td className="py-3 px-4"><Skeleton className="h-6 w-20 rounded-full" /></td>
-          <td className="py-3 px-4"><Skeleton className="h-8 w-8 rounded" /></td>
-        </tr>
-      ))}
-    </>
-  );
 
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, index) => (
-          <Card key={index} className="border-gray-200 hover:shadow-md transition-shadow">
+          <Card
+            key={index}
+            className="border-gray-200 hover:shadow-md transition-shadow"
+          >
             <CardContent className="pt-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <div className={`${stat.bgColor} p-2 rounded-full w-fit mb-2`}>
+                  <div
+                    className={`${stat.bgColor} p-2 rounded-full w-fit mb-2`}
+                  >
                     {stat.icon}
                   </div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
@@ -247,7 +233,11 @@ const SessionManagement = () => {
       </div>
 
       {/* Table Section */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={handleTabChange}
+        className="w-full"
+      >
         <Card>
           <CardHeader className="pb-4">
             <TabsList className="grid w-1/2 grid-cols-4 bg-transparent p-0 h-auto">
@@ -255,7 +245,7 @@ const SessionManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All Session
+                All Sessions
               </TabsTrigger>
               <TabsTrigger
                 value="COMPLETED"
@@ -307,11 +297,14 @@ const SessionManagement = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {isLoading || isFetching ? (
-                        <TableSkeleton />
+                      {isLoading ? (
+                        <AdminTableSkeleton cols={6} />
                       ) : sessions.length === 0 ? (
                         <tr>
-                          <td colSpan={6} className="py-8 text-center text-gray-500">
+                          <td
+                            colSpan={6}
+                            className="py-8 text-center text-gray-500"
+                          >
                             No sessions found
                           </td>
                         </tr>
@@ -319,12 +312,12 @@ const SessionManagement = () => {
                         sessions.map((session) => (
                           <tr
                             key={session._id}
-                            className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                            className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${isFetching ? "opacity-50" : ""}`}
                           >
                             <td className="py-3 px-4 text-gray-900 font-medium text-sm">
                               <div className="flex items-center gap-2">
-                                {session.studentName || 'N/A'}
-                                {session.type === 'TRIAL_REQUEST' && (
+                                {session.studentName || "N/A"}
+                                {session.type === "TRIAL_REQUEST" && (
                                   <Badge className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
                                     Trial Request
                                   </Badge>
@@ -335,15 +328,19 @@ const SessionManagement = () => {
                               {session.subject}
                             </td>
                             <td className="py-3 px-4 text-gray-600 text-sm">
-                              {formatDate(session.createdAt)}
+                              {formatDateShort(session.createdAt)}
                             </td>
                             <td className="py-3 px-4">
-                              <Badge className={`${getPaymentStatusColor(session.paymentStatus)} border-0`}>
+                              <Badge
+                                className={`${getPaymentStatusColor(session.paymentStatus)} border-0`}
+                              >
                                 {formatStatusLabel(session.paymentStatus)}
                               </Badge>
                             </td>
                             <td className="py-3 px-4">
-                              <Badge className={`${getLessonStatusColor(session.status)} border-0`}>
+                              <Badge
+                                className={`${getLessonStatusColor(session.status)} border-0`}
+                              >
                                 {formatStatusLabel(session.status)}
                               </Badge>
                             </td>
@@ -359,7 +356,9 @@ const SessionManagement = () => {
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                  <DropdownMenuItem onClick={() => handleViewDetails(session)}>
+                                  <DropdownMenuItem
+                                    onClick={() => handleViewDetails(session)}
+                                  >
                                     View Details
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -373,70 +372,14 @@ const SessionManagement = () => {
                 </div>
               </div>
 
-              {/* Pagination */}
               {sessions.length > 0 && (
-                <div className="flex items-center justify-between pt-6">
-                  <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to{' '}
-                    {Math.min(currentPage * itemsPerPage, pagination?.total || 0)} of{' '}
-                    {pagination?.total || 0} results
-                  </p>
-                  <Pagination className="justify-end mx-0">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                          className={
-                            currentPage === 1
-                              ? 'pointer-events-none opacity-50'
-                              : 'cursor-pointer'
-                          }
-                        />
-                      </PaginationItem>
-
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-                        if (
-                          page === 1 ||
-                          page === totalPages ||
-                          (page >= currentPage - 1 && page <= currentPage + 1)
-                        ) {
-                          return (
-                            <PaginationItem key={page}>
-                              <PaginationLink
-                                onClick={() => setCurrentPage(page)}
-                                isActive={page === currentPage}
-                                className="cursor-pointer"
-                              >
-                                {page}
-                              </PaginationLink>
-                            </PaginationItem>
-                          );
-                        } else if (
-                          (page === 2 && currentPage > 3) ||
-                          (page === totalPages - 1 && currentPage < totalPages - 2)
-                        ) {
-                          return (
-                            <PaginationItem key={page}>
-                              <PaginationEllipsis />
-                            </PaginationItem>
-                          );
-                        }
-                        return null;
-                      })}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                          className={
-                            currentPage === totalPages
-                              ? 'pointer-events-none opacity-50'
-                              : 'cursor-pointer'
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                <AdminPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  total={pagination?.total || 0}
+                  onPageChange={setCurrentPage}
+                />
               )}
             </TabsContent>
           </CardContent>
@@ -448,7 +391,9 @@ const SessionManagement = () => {
         <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              {selectedSession?.type === 'TRIAL_REQUEST' ? 'Trial Request Details' : 'Session Details'}
+              {selectedSession?.type === "TRIAL_REQUEST"
+                ? "Trial Request Details"
+                : "Session Details"}
               {selectedSession?.isTrial && (
                 <Badge className="bg-purple-100 text-purple-800 border-0">
                   Free Trial
@@ -474,7 +419,10 @@ const SessionManagement = () => {
                     Scheduled Lesson Date & Time
                   </p>
                   <p className="text-sm text-gray-900 font-medium">
-                    {formatScheduledTime(selectedSession.startTime, selectedSession.endTime)}
+                    {formatScheduledTime(
+                      selectedSession.startTime,
+                      selectedSession.endTime,
+                    )}
                   </p>
                 </div>
               </div>
@@ -488,19 +436,19 @@ const SessionManagement = () => {
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Student Name</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentName || 'N/A'}
+                      {selectedSession.studentName || "N/A"}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Student Email</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentEmail || 'N/A'}
+                      {selectedSession.studentEmail || "N/A"}
                     </p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-600 mb-1">Student Phone</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentPhone || 'N/A'}
+                      {selectedSession.studentPhone || "N/A"}
                     </p>
                   </div>
                 </div>
@@ -515,19 +463,19 @@ const SessionManagement = () => {
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Tutor Name</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorName || 'N/A'}
+                      {selectedSession.tutorName || "N/A"}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Tutor Email</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorEmail || 'N/A'}
+                      {selectedSession.tutorEmail || "N/A"}
                     </p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-600 mb-1">Tutor Phone</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorPhone || 'N/A'}
+                      {selectedSession.tutorPhone || "N/A"}
                     </p>
                   </div>
                 </div>
@@ -541,12 +489,22 @@ const SessionManagement = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Subject</p>
-                    <p className="text-sm text-gray-900">{selectedSession.subject}</p>
+                    <p className="text-sm text-gray-900">
+                      {selectedSession.subject}
+                    </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">Type</p>
-                    <Badge className={selectedSession.isTrial ? 'bg-purple-100 text-purple-800 border-0' : 'bg-blue-100 text-blue-800 border-0'}>
-                      {selectedSession.isTrial ? 'Trial Session' : 'Paid Session'}
+                    <Badge
+                      className={
+                        selectedSession.isTrial
+                          ? "bg-purple-100 text-purple-800 border-0"
+                          : "bg-blue-100 text-blue-800 border-0"
+                      }
+                    >
+                      {selectedSession.isTrial
+                        ? "Trial Session"
+                        : "Paid Session"}
                     </Badge>
                   </div>
                   <div>
@@ -565,18 +523,23 @@ const SessionManagement = () => {
                       {formatStatusLabel(selectedSession.status)}
                     </Badge>
                   </div>
-                  {selectedSession.totalPrice !== undefined && selectedSession.totalPrice > 0 && (
-                    <div className="col-span-2">
-                      <p className="text-xs text-gray-600 mb-1">Total Price</p>
-                      <p className="text-sm text-gray-900 font-medium">
-                        €{selectedSession.totalPrice.toFixed(2)}
-                      </p>
-                    </div>
-                  )}
+                  {selectedSession.totalPrice !== undefined &&
+                    selectedSession.totalPrice > 0 && (
+                      <div className="col-span-2">
+                        <p className="text-xs text-gray-600 mb-1">
+                          Total Price
+                        </p>
+                        <p className="text-sm text-gray-900 font-medium">
+                          €{selectedSession.totalPrice.toFixed(2)}
+                        </p>
+                      </div>
+                    )}
                   {selectedSession.description && (
                     <div className="col-span-2">
                       <p className="text-xs text-gray-600 mb-1">Description</p>
-                      <p className="text-sm text-gray-900">{selectedSession.description}</p>
+                      <p className="text-sm text-gray-900">
+                        {selectedSession.description}
+                      </p>
                     </div>
                   )}
                 </div>

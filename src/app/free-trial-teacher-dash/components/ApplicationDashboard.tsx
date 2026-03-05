@@ -1,12 +1,14 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { FileText, Check, Loader2, AlertCircle, XCircle, Upload, X } from "lucide-react";
+import { Check, Loader2, AlertCircle, XCircle } from "lucide-react";
 import { useMyApplication, useUpdateMyApplication, useMyBookedInterview, type ApplicationStatus } from "@/hooks/api";
 import { useStripeConnect } from "@/hooks/api/use-stripe";
 import { toast } from "sonner";
 import InterviewBookingSection from "./InterviewBookingSection";
 import ProfileSetupSection from "./ProfileSetupSection";
+import { ApplicationProgressStepper } from "./ApplicationProgressStepper";
+import { DocumentCard } from "./DocumentCard";
 
 // Helper functions
 const getStepFromStatus = (status: ApplicationStatus): number => {
@@ -84,14 +86,13 @@ const getStatusMessage = (
   }
 };
 
-const Page1 = () => {
+const ApplicationDashboard = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { data: application, isLoading, error } = useMyApplication();
   const { refetchStatus } = useStripeConnect();
   const { mutate: updateApplication, isPending: isUpdating } = useUpdateMyApplication();
   const { data: bookedInterview } = useMyBookedInterview();
-  const [progressWidth, setProgressWidth] = useState("8%");
   const stripeToastShownRef = useRef(false);
 
   // Check if interview is already booked
@@ -104,11 +105,6 @@ const Page1 = () => {
     abiturCertificate?: File;
     officialId?: File;
   }>({});
-
-  // Refs for file inputs
-  const cvInputRef = useRef<HTMLInputElement>(null);
-  const abiturInputRef = useRef<HTMLInputElement>(null);
-  const officialIdInputRef = useRef<HTMLInputElement>(null);
 
   const step = application ? getStepFromStatus(application.status) : 1;
 
@@ -165,25 +161,6 @@ const Page1 = () => {
     }
   }, [searchParams, refetchStatus, router]);
 
-  // Calculate progress width based on step and screen size
-  useEffect(() => {
-    const calculateWidth = () => {
-      const isMobile = window.innerWidth <= 640;
-      const isTablet = window.innerWidth <= 768;
-
-      if (isMobile) {
-        setProgressWidth(step === 1 ? "15%" : step === 2 ? "55%" : step >= 3 ? "95%" : "0%");
-      } else if (isTablet) {
-        setProgressWidth(step === 1 ? "12%" : step === 2 ? "52%" : step >= 3 ? "92%" : "0%");
-      } else {
-        setProgressWidth(step === 1 ? "8%" : step === 2 ? "55%" : step >= 3 ? "95%" : "0%");
-      }
-    };
-
-    calculateWidth();
-    window.addEventListener("resize", calculateWidth);
-    return () => window.removeEventListener("resize", calculateWidth);
-  }, [step]);
 
   // Loading state
   if (isLoading) {
@@ -228,71 +205,7 @@ const Page1 = () => {
             Teacher Application Progress
           </h2>
 
-          {/* Progress Stepper */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between relative">
-              <div className="absolute top-2.5 left-0 right-0 h-2 rounded-3xl bg-gray-300 z-0"></div>
-
-              <div
-                className="absolute top-2.5 left-0 h-2 rounded-3xl bg-[#0B31BD] z-10 transition-all duration-700 ease-in-out"
-                style={{ width: progressWidth }}
-              ></div>
-
-              {/* Step 1 - Application Review */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 1 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                >
-                  {step > 1 ? <Check className="w-5 h-5" /> : ""}
-                </div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 1 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Application Review
-                </span>
-              </div>
-
-              {/* Step 2 - Interview */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 2 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                >
-                  {step > 2 ? <Check className="w-5 h-5" /> : ""}
-                </div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 2 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Interview
-                </span>
-              </div>
-
-              {/* Step 3 - Profile Setup */}
-              <div className="flex flex-col items-center relative z-10">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold mb-2 transition-all duration-500 ${
-                    step >= 3 ? "bg-[#0B31BD]" : "bg-gray-300"
-                  }`}
-                >
-                  {step > 3 ? <Check className="w-5 h-5" /> : ""}
-                </div>
-                <span
-                  className={`text-sm text-center transition-colors duration-500 ${
-                    step >= 3 ? "text-gray-700" : "text-gray-600"
-                  }`}
-                >
-                  Profile Setup
-                </span>
-              </div>
-            </div>
-          </div>
+          <ApplicationProgressStepper step={step} />
 
           {/* Status Message */}
           {application.status === "SELECTED_FOR_INTERVIEW" && hasBookedInterview && bookedInterview?.status === "BOOKED" ? (
@@ -428,173 +341,31 @@ const Page1 = () => {
                   )}
                 </div>
 
-                {/* Hidden file inputs */}
-                <input
-                  type="file"
-                  ref={cvInputRef}
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,image/*"
-                  onChange={(e) => handleFileSelect('cv', e.target.files?.[0] || null)}
-                />
-                <input
-                  type="file"
-                  ref={abiturInputRef}
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,image/*"
-                  onChange={(e) => handleFileSelect('abiturCertificate', e.target.files?.[0] || null)}
-                />
-                <input
-                  type="file"
-                  ref={officialIdInputRef}
-                  className="hidden"
-                  accept=".pdf,.doc,.docx,image/*"
-                  onChange={(e) => handleFileSelect('officialId', e.target.files?.[0] || null)}
-                />
-
                 <div className="grid grid-cols-3 gap-4">
-                  {/* CV */}
-                  {isEditing ? (
-                    <div
-                      onClick={() => cvInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                        selectedFiles.cv
-                          ? "border-green-400 bg-green-50"
-                          : "border-gray-300 bg-gray-50 hover:border-[#0B31BD] hover:bg-blue-50"
-                      }`}
-                    >
-                      {selectedFiles.cv ? (
-                        <>
-                          <div className="relative w-full">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveFile('cv');
-                              }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                            <Check className="w-8 h-8 text-green-500 mb-2 mx-auto" />
-                          </div>
-                          <p className="text-xs text-gray-600 text-center truncate w-full">
-                            {selectedFiles.cv.name}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-3" />
-                          <p className="text-sm font-medium text-gray-700">CV</p>
-                          <p className="text-xs text-gray-500 mt-1">Click to upload</p>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <a
-                      href={application.cv}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                    >
-                      <FileText className="w-8 h-8 text-gray-400 mb-3" />
-                      <p className="text-sm font-medium text-gray-700">CV</p>
-                    </a>
-                  )}
-
-                  {/* Abitur Certificate */}
-                  {isEditing ? (
-                    <div
-                      onClick={() => abiturInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                        selectedFiles.abiturCertificate
-                          ? "border-green-400 bg-green-50"
-                          : "border-gray-300 bg-gray-50 hover:border-[#0B31BD] hover:bg-blue-50"
-                      }`}
-                    >
-                      {selectedFiles.abiturCertificate ? (
-                        <>
-                          <div className="relative w-full">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveFile('abiturCertificate');
-                              }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                            <Check className="w-8 h-8 text-green-500 mb-2 mx-auto" />
-                          </div>
-                          <p className="text-xs text-gray-600 text-center truncate w-full">
-                            {selectedFiles.abiturCertificate.name}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-3" />
-                          <p className="text-sm font-medium text-gray-700">Abitur Certificate</p>
-                          <p className="text-xs text-gray-500 mt-1">Click to upload</p>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <a
-                      href={application.abiturCertificate}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                    >
-                      <FileText className="w-8 h-8 text-gray-400 mb-3" />
-                      <p className="text-sm font-medium text-gray-700">Abitur Certificate</p>
-                    </a>
-                  )}
-
-                  {/* ID Document */}
-                  {isEditing ? (
-                    <div
-                      onClick={() => officialIdInputRef.current?.click()}
-                      className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer transition-colors ${
-                        selectedFiles.officialId
-                          ? "border-green-400 bg-green-50"
-                          : "border-gray-300 bg-gray-50 hover:border-[#0B31BD] hover:bg-blue-50"
-                      }`}
-                    >
-                      {selectedFiles.officialId ? (
-                        <>
-                          <div className="relative w-full">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleRemoveFile('officialId');
-                              }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <X className="w-3 h-3" />
-                            </button>
-                            <Check className="w-8 h-8 text-green-500 mb-2 mx-auto" />
-                          </div>
-                          <p className="text-xs text-gray-600 text-center truncate w-full">
-                            {selectedFiles.officialId.name}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-8 h-8 text-gray-400 mb-3" />
-                          <p className="text-sm font-medium text-gray-700">ID-Document</p>
-                          <p className="text-xs text-gray-500 mt-1">Click to upload</p>
-                        </>
-                      )}
-                    </div>
-                  ) : (
-                    <a
-                      href={application.officialId}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border border-gray-300 rounded-lg p-6 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
-                    >
-                      <FileText className="w-8 h-8 text-gray-400 mb-3" />
-                      <p className="text-sm font-medium text-gray-700">ID-Document</p>
-                    </a>
-                  )}
+                  <DocumentCard
+                    label="CV"
+                    file={selectedFiles.cv}
+                    documentUrl={application.cv}
+                    isEditing={isEditing}
+                    onSelect={(file) => handleFileSelect('cv', file)}
+                    onRemove={() => handleRemoveFile('cv')}
+                  />
+                  <DocumentCard
+                    label="Abitur Certificate"
+                    file={selectedFiles.abiturCertificate}
+                    documentUrl={application.abiturCertificate}
+                    isEditing={isEditing}
+                    onSelect={(file) => handleFileSelect('abiturCertificate', file)}
+                    onRemove={() => handleRemoveFile('abiturCertificate')}
+                  />
+                  <DocumentCard
+                    label="ID-Document"
+                    file={selectedFiles.officialId}
+                    documentUrl={application.officialId}
+                    isEditing={isEditing}
+                    onSelect={(file) => handleFileSelect('officialId', file)}
+                    onRemove={() => handleRemoveFile('officialId')}
+                  />
                 </div>
 
                 {/* Submit button when editing */}
@@ -635,4 +406,4 @@ const Page1 = () => {
   );
 };
 
-export default Page1;
+export default ApplicationDashboard;

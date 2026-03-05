@@ -1,90 +1,96 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { User, AlertCircle, MessageSquare, Star } from 'lucide-react';
+import { useState } from "react";
+import { User, AlertCircle, MessageSquare, Star } from "lucide-react";
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([
     {
       id: 1,
-      type: 'success',
+      type: "success",
       icon: User,
-      message: 'User "john@example.com" has successfully upgraded from Free to Pro.',
-      timestamp: '2 min ago',
+      message:
+        'User "john@example.com" has successfully upgraded from Free to Pro.',
+      timestamp: "2 min ago",
       read: false,
     },
     {
       id: 2,
-      type: 'error',
+      type: "error",
       icon: AlertCircle,
-      message: 'User "sadia.user42@gmail.com" attempted to upgrade to Pro but encountered an issue',
-      timestamp: '10 mins ago',
+      message:
+        'User "sadia.user42@gmail.com" attempted to upgrade to Pro but encountered an issue',
+      timestamp: "10 mins ago",
       read: false,
     },
     {
       id: 3,
-      type: 'suggestion',
+      type: "suggestion",
       icon: MessageSquare,
-      message: 'User "rahim.khan12" submitted a new suggestion: "Please add a savings goal tracker."',
-      timestamp: '30 min ago',
+      message:
+        'User "rahim.khan12" submitted a new suggestion: "Please add a savings goal tracker."',
+      timestamp: "30 min ago",
       read: false,
     },
     {
       id: 4,
-      type: 'review',
+      type: "review",
       icon: Star,
-      message: 'User "tasnia_98" left a 5-star review on the Play Store: "Very useful app. Helped me track my expenses easily!"',
-      timestamp: '2 hours ago',
+      message:
+        'User "tasnia_98" left a 5-star review on the Play Store: "Very useful app. Helped me track my expenses easily!"',
+      timestamp: "2 hours ago",
       read: false,
     },
     {
       id: 5,
-      type: 'request',
+      type: "request",
       icon: MessageSquare,
       message: 'User "robin_dev23" has submitted a request to review the app.',
-      timestamp: 'Yesterday',
+      timestamp: "Yesterday",
       read: true,
     },
   ]);
 
   const handleMarkAllAsRead = () => {
-    setNotifications(notifications.map(notif => ({ ...notif, read: true })));
+    setNotifications(notifications.map((notif) => ({ ...notif, read: true })));
   };
 
   const handleMarkAsRead = (id: number) => {
-    setNotifications(notifications.map(notif => 
-      notif.id === id ? { ...notif, read: true } : notif
-    ));
+    setNotifications(
+      notifications.map((notif) =>
+        notif.id === id ? { ...notif, read: true } : notif,
+      ),
+    );
   };
 
   const getIconColor = (type: string) => {
     switch (type) {
-      case 'success':
-        return 'bg-blue-100 text-blue-600';
-      case 'error':
-        return 'bg-red-100 text-red-600';
-      case 'suggestion':
-        return 'bg-yellow-100 text-yellow-600';
-      case 'review':
-        return 'bg-green-100 text-green-600';
-      case 'request':
-        return 'bg-yellow-100 text-yellow-600';
+      case "success":
+        return "bg-blue-100 text-blue-600";
+      case "error":
+        return "bg-red-100 text-red-600";
+      case "suggestion":
+        return "bg-yellow-100 text-yellow-600";
+      case "review":
+        return "bg-green-100 text-green-600";
+      case "request":
+        return "bg-yellow-100 text-yellow-600";
       default:
-        return 'bg-gray-100 text-gray-600';
+        return "bg-gray-100 text-gray-600";
     }
   };
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'success':
+      case "success":
         return User;
-      case 'error':
+      case "error":
         return AlertCircle;
-      case 'suggestion':
+      case "suggestion":
         return MessageSquare;
-      case 'review':
+      case "review":
         return Star;
-      case 'request':
+      case "request":
         return MessageSquare;
       default:
         return User;
@@ -118,12 +124,14 @@ export default function NotificationsPage() {
                   onClick={() => handleMarkAsRead(notification.id)}
                   className={`flex items-start gap-4 p-5 cursor-pointer transition-colors ${
                     notification.read
-                      ? 'bg-white hover:bg-gray-50'
-                      : 'bg-blue-50 hover:bg-blue-100'
-                  } ${index !== notifications.length - 1 ? 'border-b border-gray-200' : ''}`}
+                      ? "bg-white hover:bg-gray-50"
+                      : "bg-blue-50 hover:bg-blue-100"
+                  } ${index !== notifications.length - 1 ? "border-b border-gray-200" : ""}`}
                 >
                   {/* Icon */}
-                  <div className={`shrink-0 p-2.5 rounded-lg ${iconColorClass}`}>
+                  <div
+                    className={`shrink-0 p-2.5 rounded-lg ${iconColorClass}`}
+                  >
                     <IconComponent className="w-5 h-5" />
                   </div>
 
@@ -147,7 +155,7 @@ export default function NotificationsPage() {
         </div>
 
         {/* Empty State Info */}
-        {notifications.every(n => n.read) && (
+        {notifications.every((n) => n.read) && (
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               You&apos;re all caught up! No new notifications.

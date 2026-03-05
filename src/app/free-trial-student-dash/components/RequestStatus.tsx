@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { useMyRequests, TRIAL_REQUEST_STATUS } from "@/hooks/api";
 import { useTrialSession, SESSION_STATUS } from "@/hooks/api/use-sessions";
 import { useMySubscription } from "@/hooks/api/use-subscription";
@@ -25,7 +26,6 @@ const RequestStatus = () => {
   const { isAuthenticated } = useAuthStore();
   const [mounted, setMounted] = useState(false);
 
-  // Handle hydration
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -95,7 +95,7 @@ const RequestStatus = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0B31BD] mx-auto mb-4"></div>
+          <Loader2 className="w-10 h-10 animate-spin text-[#0B31BD] mx-auto mb-4" />
           <p className="text-gray-600">Loading your request...</p>
         </div>
       </div>
@@ -139,38 +139,38 @@ const RequestStatus = () => {
     switch (trialRequest.status) {
       case TRIAL_REQUEST_STATUS.PENDING:
         return {
-          bg: "bg-[#FFF4E6]",
-          border: "border-[#FF8A00]",
+          bgColor: "bg-[#FFF4E6]",
+          borderColor: "border-[#FF8A00]",
           title:
             "Your request has been sent and we are now looking for a fitting tutor.",
           subtitle: "You will be notified once we found your tutor",
         };
       case TRIAL_REQUEST_STATUS.ACCEPTED:
         return {
-          bg: "bg-green-50",
-          border: "border-green-500",
+          bgColor: "bg-green-50",
+          borderColor: "border-green-500",
           title: "A tutor has accepted your request!",
           subtitle:
             "You can now chat with your tutor to schedule the trial session",
         };
       case TRIAL_REQUEST_STATUS.EXPIRED:
         return {
-          bg: "bg-red-50",
-          border: "border-red-500",
+          bgColor: "bg-red-50",
+          borderColor: "border-red-500",
           title: "Your request has expired.",
           subtitle: "Please submit a new trial request",
         };
       case TRIAL_REQUEST_STATUS.CANCELLED:
         return {
-          bg: "bg-gray-50",
-          border: "border-gray-400",
+          bgColor: "bg-gray-50",
+          borderColor: "border-gray-400",
           title: "Your request was cancelled.",
           subtitle: "You can submit a new trial request anytime",
         };
       default:
         return {
-          bg: "bg-[#FFF4E6]",
-          border: "border-[#FF8A00]",
+          bgColor: "bg-[#FFF4E6]",
+          borderColor: "border-[#FF8A00]",
           title: "Processing your request...",
           subtitle: "",
         };
@@ -193,7 +193,7 @@ const RequestStatus = () => {
 
           {/* Status Message */}
           <div
-            className={`border ${statusMessage.bg} ${statusMessage.border} rounded-lg p-4`}
+            className={`border ${statusMessage.bgColor} ${statusMessage.borderColor} rounded-lg p-4`}
           >
             <p className="font-normal">{statusMessage.title}</p>
             {statusMessage.subtitle && (

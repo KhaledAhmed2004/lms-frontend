@@ -15,7 +15,7 @@ interface MobileMenuProps {
 /* ================= MENU DATA ================= */
 
 const menuItems = [
-  {  label: "Sessions", href: "/teacher/overview" },
+  {  label: "Sessions", href: "/teacher/session" },
   {  label: "Requests", href: "/teacher/requests" },
   {  label: "Messages", href: "/teacher/messages" },
   {  label: "Resources", href: "/teacher/resources" },

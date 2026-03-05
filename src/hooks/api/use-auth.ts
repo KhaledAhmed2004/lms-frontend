@@ -61,7 +61,7 @@ const decodeToken = (token: string): { id: string; role: string; email: string }
 // Role-based redirect map
 const REDIRECT_MAP: Record<string, string> = {
   STUDENT: '/student/session',
-  TUTOR: '/teacher/overview',
+  TUTOR: '/teacher/session',
   SUPER_ADMIN: '/admin/overview',
   APPLICANT: '/free-trial-teacher-dash',
 };

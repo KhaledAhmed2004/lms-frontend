@@ -237,6 +237,7 @@ export {
   usePayoutSettings,
   useUpdatePayoutSettings,
   useEarningsHistory,
+  fetchEarningsDetail,
   LEVEL_DISPLAY_NAMES,
   LEVEL_NUMBERS,
   PAYOUT_STATUS_LABELS,
@@ -303,6 +304,8 @@ export type {
   TutorStats,
   EarningsHistoryItem,
   EarningsHistoryResponse,
+  EarningLineItem,
+  EarningsDetail,
 } from './use-tutor-earnings';
 
 // Legal Policy Hooks
@@ -331,7 +334,6 @@ export {
   useTicketStats,
   useUpdateTicketStatus,
   useUpdateTicketPriority,
-  useAssignTicket,
   useAddAdminNotes,
   TICKET_CATEGORY,
   TICKET_STATUS,
@@ -360,3 +362,33 @@ export {
   useResetPricing,
 } from './use-pricing';
 export type { PricingPlan, PricingConfig } from './use-pricing';
+
+// FAQ Hooks (Public + Admin)
+export {
+  useActiveFAQs,
+  useAdminFAQs,
+  useCreateFAQ,
+  useUpdateFAQ,
+  useDeleteFAQ,
+} from './use-faqs';
+export type { FAQ, FAQFilters, FAQsResponse } from './use-faqs';
+
+// Admin Export Hooks
+export {
+  useExportUsers,
+  useExportApplications,
+  useExportSessions,
+  useExportBillings,
+  useExportEarnings,
+  useExportSubscriptions,
+  useExportTrialRequests,
+} from './use-admin-exports';
+export type {
+  ExportUsersParams,
+  ExportApplicationsParams,
+  ExportSessionsParams,
+  ExportBillingsParams,
+  ExportEarningsParams,
+  ExportSubscriptionsParams,
+  ExportTrialRequestsParams,
+} from './use-admin-exports';

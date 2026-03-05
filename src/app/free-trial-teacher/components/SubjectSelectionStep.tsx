@@ -112,9 +112,7 @@ export const SubjectSelectionStep = ({
                         ? "bg-blue-50"
                         : "hover:bg-gray-50",
                     )}
-                    onClick={() =>
-                      handleToggle(subject._id, subject.name)
-                    }
+                    onClick={() => handleToggle(subject._id, subject.name)}
                   >
                     <span
                       className={cn(

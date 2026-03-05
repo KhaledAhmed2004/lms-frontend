@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
-import { Edit, Check, X, Camera, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useProfile } from '@/hooks/api/use-auth';
+import React, { useState, useRef, useEffect } from "react";
+import { Edit, Check, X, Camera, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useProfile } from "@/hooks/api/use-auth";
 
 export default function ProfilePage() {
   const { data: profile, isLoading } = useProfile();
@@ -12,20 +12,20 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [profilePic, setProfilePic] = useState<string>(
-    "https://i.ibb.co/z5YHLV9/profile.png"
+    "https://i.ibb.co/z5YHLV9/profile.png",
   );
   const [tempPhoto, setTempPhoto] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
-    name: '',
-    dateOfBirth: '',
-    email: '',
-    phoneNumber: '',
-    street: '',
-    number: '',
-    zip: '',
-    city: '',
+    name: "",
+    dateOfBirth: "",
+    email: "",
+    phoneNumber: "",
+    street: "",
+    number: "",
+    zip: "",
+    city: "",
   });
 
   const [tempFormData, setTempFormData] = useState({ ...formData });
@@ -33,36 +33,36 @@ export default function ProfilePage() {
   // Update form data when profile loads
   useEffect(() => {
     if (profile) {
-      const address = profile.tutorProfile?.address || '';
-      const addressParts = address.split(',').map(s => s.trim());
-      const streetPart = addressParts[0] || '';
-      const cityPart = addressParts[1] || '';
+      const address = profile.tutorProfile?.address || "";
+      const addressParts = address.split(",").map((s) => s.trim());
+      const streetPart = addressParts[0] || "";
+      const cityPart = addressParts[1] || "";
 
       // Parse street and number
       const streetMatch = streetPart.match(/^(.+?)\s*(\d+)?$/);
       const street = streetMatch?.[1] || streetPart;
-      const number = streetMatch?.[2] || '';
+      const number = streetMatch?.[2] || "";
 
       // Parse zip and city
       const cityMatch = cityPart.match(/^(\d+)?\s*(.+)?$/);
-      const zip = cityMatch?.[1] || '';
+      const zip = cityMatch?.[1] || "";
       const city = cityMatch?.[2] || cityPart;
 
       // Format date
-      let formattedDate = '';
+      let formattedDate = "";
       if (profile.tutorProfile?.birthDate) {
         const date = new Date(profile.tutorProfile.birthDate);
-        formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+        formattedDate = `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`;
       } else if (profile.dateOfBirth) {
         const date = new Date(profile.dateOfBirth);
-        formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+        formattedDate = `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`;
       }
 
       const newFormData = {
-        name: profile.name || '',
+        name: profile.name || "",
         dateOfBirth: formattedDate,
-        email: profile.email || '',
-        phoneNumber: profile.phone || '',
+        email: profile.email || "",
+        phoneNumber: profile.phone || "",
         street,
         number,
         zip,
@@ -80,11 +80,14 @@ export default function ProfilePage() {
 
   // Get subjects string for display
   const getSubjectsString = () => {
-    if (!profile?.tutorProfile?.subjects || profile.tutorProfile.subjects.length === 0) {
-      return 'Tutor';
+    if (
+      !profile?.tutorProfile?.subjects ||
+      profile.tutorProfile.subjects.length === 0
+    ) {
+      return "Tutor";
     }
-    const subjectNames = profile.tutorProfile.subjects.map(s => s.name);
-    return `Tutor (${subjectNames.join(', ')})`;
+    const subjectNames = profile.tutorProfile.subjects.map((s) => s.name);
+    return `Tutor (${subjectNames.join(", ")})`;
   };
 
   const handleEditClick = () => {
@@ -132,7 +135,7 @@ export default function ProfilePage() {
   const handleCancelPhoto = () => {
     setShowPhotoModal(false);
     setTempPhoto(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   // Loading state
@@ -171,23 +174,31 @@ export default function ProfilePage() {
               </button>
 
               {/* Small Camera Icon at Bottom Right */}
-              <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 bg-blue-600 p-1.5 sm:p-2 rounded-full shadow-lg border-2 border-white cursor-pointer hover:bg-blue-700 transition-colors"
-                   onClick={handleCameraClick}>
+              <div
+                className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 bg-blue-600 p-1.5 sm:p-2 rounded-full shadow-lg border-2 border-white cursor-pointer hover:bg-blue-700 transition-colors"
+                onClick={handleCameraClick}
+              >
                 <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4 text-white" />
               </div>
             </div>
 
             {/* Name & Role */}
             <div className="flex-1 text-center sm:text-left sm:pt-2 lg:pt-4">
-              <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-900">{formData.name || 'Loading...'}</h1>
-              <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1">{getSubjectsString()}</p>
+              <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
+                {formData.name || "Loading..."}
+              </h1>
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1">
+                {getSubjectsString()}
+              </p>
             </div>
           </div>
 
           {/* Personal Information */}
           <div className="border-t border-gray-200 pt-6 sm:pt-7 lg:pt-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-7 lg:mb-8">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Personal Information</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+                Personal Information
+              </h2>
               {!isEditing ? (
                 <Button
                   onClick={handleEditClick}
@@ -198,11 +209,18 @@ export default function ProfilePage() {
                 </Button>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button variant="outline" onClick={handleCancel} className="h-9 sm:h-10 text-sm sm:text-base order-2 sm:order-1">
+                  <Button
+                    variant="outline"
+                    onClick={handleCancel}
+                    className="h-9 sm:h-10 text-sm sm:text-base order-2 sm:order-1"
+                  >
                     <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                     Cancel
                   </Button>
-                  <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 h-9 sm:h-10 text-sm sm:text-base order-1 sm:order-2">
+                  <Button
+                    onClick={handleSave}
+                    className="bg-blue-600 hover:bg-blue-700 h-9 sm:h-10 text-sm sm:text-base order-1 sm:order-2"
+                  >
                     <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                     Save Changes
                   </Button>
@@ -217,46 +235,105 @@ export default function ProfilePage() {
                 <InfoRow label="Date of Birth" value={formData.dateOfBirth} />
                 <InfoRow label="Email Address" value={formData.email} />
                 <InfoRow label="Phone Number" value={formData.phoneNumber} />
-                <InfoRow label="Address" value={`${formData.street} ${formData.number}`} />
-                <InfoRow label="City" value={`${formData.zip} ${formData.city}`} />
+                <InfoRow
+                  label="Address"
+                  value={`${formData.street} ${formData.number}`}
+                />
+                <InfoRow
+                  label="City"
+                  value={`${formData.zip} ${formData.city}`}
+                />
               </div>
             ) : (
               <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Date of Birth</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.dateOfBirth} onChange={(e) => handleInputChange('dateOfBirth', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      Date of Birth
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.dateOfBirth}
+                      onChange={(e) =>
+                        handleInputChange("dateOfBirth", e.target.value)
+                      }
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Phone Number</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.phoneNumber} onChange={(e) => handleInputChange('phoneNumber', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      Phone Number
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.phoneNumber}
+                      onChange={(e) =>
+                        handleInputChange("phoneNumber", e.target.value)
+                      }
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Email Address</label>
-                  <Input className="h-9 sm:h-10 text-sm sm:text-base" type="email" value={tempFormData.email} onChange={(e) => handleInputChange('email', e.target.value)} />
+                  <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                    Email Address
+                  </label>
+                  <Input
+                    className="h-9 sm:h-10 text-sm sm:text-base"
+                    type="email"
+                    value={tempFormData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Street</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.street} onChange={(e) => handleInputChange('street', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      Street
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.street}
+                      onChange={(e) =>
+                        handleInputChange("street", e.target.value)
+                      }
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">House Number</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.number} onChange={(e) => handleInputChange('number', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      House Number
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.number}
+                      onChange={(e) =>
+                        handleInputChange("number", e.target.value)
+                      }
+                    />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">ZIP Code</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.zip} onChange={(e) => handleInputChange('zip', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      ZIP Code
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.zip}
+                      onChange={(e) => handleInputChange("zip", e.target.value)}
+                    />
                   </div>
                   <div>
-                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">City</label>
-                    <Input className="h-9 sm:h-10 text-sm sm:text-base" value={tempFormData.city} onChange={(e) => handleInputChange('city', e.target.value)} />
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
+                      City
+                    </label>
+                    <Input
+                      className="h-9 sm:h-10 text-sm sm:text-base"
+                      value={tempFormData.city}
+                      onChange={(e) =>
+                        handleInputChange("city", e.target.value)
+                      }
+                    />
                   </div>
                 </div>
               </div>
@@ -269,7 +346,9 @@ export default function ProfilePage() {
       {showPhotoModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Change Profile Picture</h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
+              Change Profile Picture
+            </h3>
 
             <div className="flex justify-center mb-6 sm:mb-8">
               <div className="relative">
@@ -299,7 +378,7 @@ export default function ProfilePage() {
               <Button
                 variant="outline"
                 className="flex-1 h-9 sm:h-10 text-sm sm:text-base"
-                onClick={() => document.getElementById('photo-upload')?.click()}
+                onClick={() => document.getElementById("photo-upload")?.click()}
               >
                 <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
                 Choose Photo
@@ -313,7 +392,11 @@ export default function ProfilePage() {
               </Button>
             </div>
 
-            <Button variant="ghost" className="w-full mt-3 sm:mt-4 h-9 sm:h-10 text-sm sm:text-base" onClick={handleCancelPhoto}>
+            <Button
+              variant="ghost"
+              className="w-full mt-3 sm:mt-4 h-9 sm:h-10 text-sm sm:text-base"
+              onClick={handleCancelPhoto}
+            >
               Cancel
             </Button>
           </div>
@@ -328,7 +411,9 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-xs sm:text-sm text-gray-500">{label}</p>
-      <p className="text-sm sm:text-base lg:text-lg font-medium text-gray-900 mt-0.5 sm:mt-1 break-words">{value}</p>
+      <p className="text-sm sm:text-base lg:text-lg font-medium text-gray-900 mt-0.5 sm:mt-1 break-words">
+        {value}
+      </p>
     </div>
   );
 }

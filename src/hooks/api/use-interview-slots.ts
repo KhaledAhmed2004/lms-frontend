@@ -61,10 +61,9 @@ export function useInterviewSlots(filters: InterviewSlotFilters = {}) {
       if (filters.endDate) params.append('endDate', filters.endDate);
 
       const { data } = await apiClient.get(`/interview-slots?${params}`);
-      // Map pagination to meta for consistency
       return {
         data: data.data as InterviewSlot[],
-        meta: data.pagination as {
+        pagination: data.pagination as {
           total: number;
           page: number;
           limit: number;
@@ -196,10 +195,9 @@ export function useAvailableInterviewSlots() {
       params.append('status', 'AVAILABLE');
 
       const { data } = await apiClient.get(`/interview-slots?${params}`);
-      // Map pagination to meta for consistency
       return {
         data: data.data as InterviewSlot[],
-        meta: data.pagination as {
+        pagination: data.pagination as {
           total: number;
           page: number;
           limit: number;

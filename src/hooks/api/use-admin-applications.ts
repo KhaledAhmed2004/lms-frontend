@@ -39,7 +39,7 @@ export interface AdminApplication {
 }
 
 export interface AdminApplicationsResponse {
-  meta: {
+  pagination: {
     page: number;
     limit: number;
     total: number;
@@ -68,9 +68,8 @@ export function useAdminApplications(filters?: ApplicationFilters) {
     queryKey: ['adminApplications', filters],
     queryFn: async () => {
       const { data } = await apiClient.get('/applications', { params: filters });
-      // Backend returns { success: true, data: [...], pagination: {...} }
       return {
-        meta: data.pagination,
+        pagination: data.pagination,
         data: data.data,
       } as AdminApplicationsResponse;
     },

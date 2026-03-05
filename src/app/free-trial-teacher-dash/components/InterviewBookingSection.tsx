@@ -1,11 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useMemo, useEffect, useRef } from 'react';
-import { Clock, Loader2, CheckCircle, AlertCircle, Calendar as CalendarIcon, Video, Mic, MicOff, VideoOff, PhoneOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar } from '@/components/ui/calendar';
+import { useState, useMemo, useEffect, useRef } from "react";
+import {
+  Clock,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Calendar as CalendarIcon,
+  Video,
+  Mic,
+  MicOff,
+  VideoOff,
+  PhoneOff,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +24,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { toast } from 'sonner';
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 import {
   useAvailableInterviewSlots,
   useBookInterviewSlot,
@@ -23,15 +34,17 @@ import {
   useRescheduleInterviewSlot,
   useGetInterviewMeetingToken,
   InterviewSlot,
-} from '@/hooks/api';
-import { useAgora } from '@/hooks/use-agora';
-import { format, isSameDay, differenceInHours } from 'date-fns';
+} from "@/hooks/api";
+import { useAgora } from "@/hooks/use-agora";
+import { format, isSameDay, differenceInHours } from "date-fns";
 
 interface InterviewBookingSectionProps {
   applicationId: string;
 }
 
-export function InterviewBookingSection({ applicationId }: InterviewBookingSectionProps) {
+export function InterviewBookingSection({
+  applicationId,
+}: InterviewBookingSectionProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [isRescheduling, setIsRescheduling] = useState(false);
@@ -41,10 +54,15 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   const reschedulingSlotIdRef = useRef<string | null>(null);
 
   // Fetch available slots
-  const { data: slots, isLoading: slotsLoading, error: slotsError } = useAvailableInterviewSlots();
+  const {
+    data: slots,
+    isLoading: slotsLoading,
+    error: slotsError,
+  } = useAvailableInterviewSlots();
 
   // Check if user already has a booked interview
-  const { data: bookedInterview, isLoading: bookedLoading } = useMyBookedInterview();
+  const { data: bookedInterview, isLoading: bookedLoading } =
+    useMyBookedInterview();
 
   // Book slot mutation
   const bookSlot = useBookInterviewSlot();
@@ -61,7 +79,7 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   // Agora hook for video call
   const agora = useAgora({
     onError: (error) => {
-      toast.error(error.message || 'Failed to join meeting');
+      toast.error(error.message || "Failed to join meeting");
     },
   });
 
@@ -72,16 +90,16 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
     try {
       const tokenData = await getMeetingToken.mutateAsync(bookedInterview._id);
       await agora.join(tokenData.channelName, tokenData.token, tokenData.uid);
-      toast.success('Joined meeting successfully');
+      toast.success("Joined meeting successfully");
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to join meeting');
+      toast.error(error?.message || "Failed to join meeting");
     }
   };
 
   // Leave meeting handler
   const handleLeaveMeeting = async () => {
     await agora.leave();
-    toast.info('Left the meeting');
+    toast.info("Left the meeting");
   };
 
   // Get unique dates that have available slots
@@ -91,14 +109,19 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
     // Remove duplicates by comparing date strings
     return dates.filter(
       (date, index, self) =>
-        index === self.findIndex((d) => format(d, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd'))
+        index ===
+        self.findIndex(
+          (d) => format(d, "yyyy-MM-dd") === format(date, "yyyy-MM-dd"),
+        ),
     );
   }, [slots?.data]);
 
   // Get time slots for selected date
   const timeSlotsForDate = useMemo(() => {
     if (!selectedDate || !slots?.data) return [];
-    return slots.data.filter((slot) => isSameDay(new Date(slot.startTime), selectedDate));
+    return slots.data.filter((slot) =>
+      isSameDay(new Date(slot.startTime), selectedDate),
+    );
   }, [selectedDate, slots?.data]);
 
   // Check if interview can be cancelled/rescheduled (1 hour before)
@@ -122,20 +145,25 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
           id: currentReschedulingId,
           newSlotId: selectedSlotId,
         });
-        toast.success('Interview rescheduled successfully!');
+        toast.success("Interview rescheduled successfully!");
       } else {
         await bookSlot.mutateAsync({
           id: selectedSlotId,
           applicationId,
         });
-        toast.success('Interview slot booked successfully!');
+        toast.success("Interview slot booked successfully!");
       }
       setSelectedSlotId(null);
       setSelectedDate(undefined);
       setIsRescheduling(false);
       reschedulingSlotIdRef.current = null;
     } catch (error: any) {
-      toast.error(error?.message || (isRescheduling ? 'Failed to reschedule interview' : 'Failed to book interview slot'));
+      toast.error(
+        error?.message ||
+          (isRescheduling
+            ? "Failed to reschedule interview"
+            : "Failed to book interview slot"),
+      );
     }
   };
 
@@ -144,10 +172,10 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
 
     try {
       await cancelInterview.mutateAsync(bookedInterview._id);
-      toast.success('Interview cancelled successfully');
+      toast.success("Interview cancelled successfully");
       setShowCancelDialog(false);
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to cancel interview');
+      toast.error(error?.message || "Failed to cancel interview");
     }
   };
 
@@ -163,8 +191,8 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
     const start = new Date(slot.startTime);
     const end = new Date(slot.endTime);
     return {
-      date: format(start, 'EEEE, dd.MM.yyyy'),
-      time: `${format(start, 'h:mma').toLowerCase()} - ${format(end, 'h:mma').toLowerCase()}`,
+      date: format(start, "EEEE, dd.MM.yyyy"),
+      time: `${format(start, "h:mma").toLowerCase()} - ${format(end, "h:mma").toLowerCase()}`,
     };
   };
 
@@ -194,21 +222,25 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
       <Card className="border border-gray-200 shadow-sm">
         <CardContent className="py-8 text-center">
           <AlertCircle className="mx-auto h-12 w-12 text-red-400 mb-4" />
-          <p className="text-red-600">Failed to load interview slots. Please try again later.</p>
+          <p className="text-red-600">
+            Failed to load interview slots. Please try again later.
+          </p>
         </CardContent>
       </Card>
     );
   }
 
   // Show completed interview UI
-  if (bookedInterview && bookedInterview.status === 'COMPLETED') {
+  if (bookedInterview && bookedInterview.status === "COMPLETED") {
     const { date, time } = formatSlotTime(bookedInterview);
     return (
       <div className="space-y-4">
         {/* Completed Interview Card */}
         <Card className="border border-gray-200 shadow-sm">
           <CardContent className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Interview Completed</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              Interview Completed
+            </h2>
 
             {/* Date */}
             <div className="flex items-start gap-3 mb-4">
@@ -239,7 +271,8 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
         {/* Info Banner */}
         <div className="border border-[#0B31BD] bg-[#E2E6F5] rounded-xl p-4">
           <p className="text-[#0B31BD] text-sm">
-            The admin will review your interview and update your application status. You will be notified once a decision is made.
+            The admin will review your interview and update your application
+            status. You will be notified once a decision is made.
           </p>
         </div>
       </div>
@@ -247,7 +280,11 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
   }
 
   // Show booked interview if exists (and not rescheduling)
-  if (bookedInterview && bookedInterview.status === 'BOOKED' && !isRescheduling) {
+  if (
+    bookedInterview &&
+    bookedInterview.status === "BOOKED" &&
+    !isRescheduling
+  ) {
     const { date, time } = formatSlotTime(bookedInterview);
     return (
       <>
@@ -255,7 +292,9 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
           {/* Scheduled Interview Card */}
           <Card className="border border-gray-200 shadow-sm">
             <CardContent className="p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">Scheduled Interview</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Scheduled Interview
+              </h2>
 
               {/* Date */}
               <div className="flex items-start gap-3 mb-4">
@@ -277,26 +316,27 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
-                {agora.callState === 'connected' ? (
-                  <Button
-                    onClick={handleLeaveMeeting}
-                    variant="destructive"
-                  >
+                {agora.callState === "connected" ? (
+                  <Button onClick={handleLeaveMeeting} variant="destructive">
                     Leave Meeting
                   </Button>
                 ) : (
                   <Button
                     onClick={handleJoinMeeting}
-                    disabled={getMeetingToken.isPending || agora.callState === 'connecting'}
+                    disabled={
+                      getMeetingToken.isPending ||
+                      agora.callState === "connecting"
+                    }
                     className="bg-[#0B31BD] hover:bg-[#0928a0] text-white"
                   >
-                    {getMeetingToken.isPending || agora.callState === 'connecting' ? (
+                    {getMeetingToken.isPending ||
+                    agora.callState === "connecting" ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Joining...
                       </>
                     ) : (
-                      'Join Meeting'
+                      "Join Meeting"
                     )}
                   </Button>
                 )}
@@ -323,13 +363,16 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
           {/* Info Banner */}
           <div className="border border-[#FFB800] bg-[#FFFBF0] rounded-xl p-4">
             <p className="text-gray-700 text-sm">
-              You can cancel or reschedule your interview up to{' '}
-              <span className="text-[#FFB800] font-medium">1 hour beforehand</span>.
+              You can cancel or reschedule your interview up to{" "}
+              <span className="text-[#FFB800] font-medium">
+                1 hour beforehand
+              </span>
+              .
             </p>
           </div>
 
           {/* Video Call UI */}
-          {agora.callState === 'connected' && (
+          {agora.callState === "connected" && (
             <ApplicantVideoCall agora={agora} onLeave={handleLeaveMeeting} />
           )}
         </div>
@@ -361,7 +404,7 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
                     Cancelling...
                   </>
                 ) : (
-                  'Cancel Interview'
+                  "Cancel Interview"
                 )}
               </Button>
             </DialogFooter>
@@ -377,7 +420,9 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
       <Card className="border border-gray-200 shadow-sm">
         <CardContent className="py-12 text-center">
           <CalendarIcon className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-          <p className="text-gray-600 font-medium">No interview slots available at the moment.</p>
+          <p className="text-gray-600 font-medium">
+            No interview slots available at the moment.
+          </p>
           <p className="text-sm text-gray-500 mt-2">Please check back later.</p>
         </CardContent>
       </Card>
@@ -390,13 +435,16 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
       <CardContent className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-900">
-            {isRescheduling ? 'Reschedule Interview' : 'Schedule Interview'}
+            {isRescheduling ? "Reschedule Interview" : "Schedule Interview"}
           </h2>
           {isRescheduling && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => { setIsRescheduling(false); reschedulingSlotIdRef.current = null; }}
+              onClick={() => {
+                setIsRescheduling(false);
+                reschedulingSlotIdRef.current = null;
+              }}
               className="text-gray-500"
             >
               Cancel
@@ -423,7 +471,7 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
                 available: availableDates,
               }}
               modifiersClassNames={{
-                available: 'bg-blue-50 text-blue-700 font-medium',
+                available: "bg-blue-50 text-blue-700 font-medium",
               }}
               className="rounded-md border border-gray-200"
             />
@@ -431,44 +479,54 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
 
           {/* Right side - Time Slots */}
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-3">Available Time Slots</p>
+            <p className="text-sm font-medium text-gray-700 mb-3">
+              Available Time Slots
+            </p>
 
             {!selectedDate ? (
               <div className="flex items-center justify-center h-48 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-                <p className="text-gray-500 text-sm">Select a date to see available slots</p>
+                <p className="text-gray-500 text-sm">
+                  Select a date to see available slots
+                </p>
               </div>
             ) : timeSlotsForDate.length === 0 ? (
               <div className="flex items-center justify-center h-48 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-                <p className="text-gray-500 text-sm">No slots available for this date</p>
+                <p className="text-gray-500 text-sm">
+                  No slots available for this date
+                </p>
               </div>
             ) : (
               <div className="space-y-3 max-h-72 overflow-y-auto pr-2">
                 {timeSlotsForDate.map((slot) => {
                   const start = new Date(slot.startTime);
                   const end = new Date(slot.endTime);
-                  const timeString = `${format(start, 'h:mma').toLowerCase()} - ${format(end, 'h:mma').toLowerCase()}`;
+                  const timeString = `${format(start, "h:mma").toLowerCase()} - ${format(end, "h:mma").toLowerCase()}`;
                   const isSelected = selectedSlotId === slot._id;
 
                   return (
                     <button
                       key={slot._id}
-                      onClick={() => setSelectedSlotId(isSelected ? null : slot._id)}
+                      onClick={() =>
+                        setSelectedSlotId(isSelected ? null : slot._id)
+                      }
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border transition-all ${
                         isSelected
-                          ? 'border-[#0B31BD] bg-blue-50 ring-2 ring-blue-100'
-                          : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                          ? "border-[#0B31BD] bg-blue-50 ring-2 ring-blue-100"
+                          : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                       }`}
                     >
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                          isSelected ? 'border-[#0B31BD]' : 'border-gray-300'
+                          isSelected ? "border-[#0B31BD]" : "border-gray-300"
                         }`}
                       >
                         {isSelected && (
                           <div className="w-2.5 h-2.5 rounded-full bg-[#0B31BD]" />
                         )}
                       </div>
-                      <span className={`text-sm ${isSelected ? 'text-[#0B31BD] font-medium' : 'text-gray-700'}`}>
+                      <span
+                        className={`text-sm ${isSelected ? "text-[#0B31BD] font-medium" : "text-gray-700"}`}
+                      >
                         {timeString}
                       </span>
                     </button>
@@ -483,16 +541,20 @@ export function InterviewBookingSection({ applicationId }: InterviewBookingSecti
         <div className="mt-8">
           <Button
             onClick={handleBookSlot}
-            disabled={!selectedSlotId || bookSlot.isPending || rescheduleSlot.isPending}
+            disabled={
+              !selectedSlotId || bookSlot.isPending || rescheduleSlot.isPending
+            }
             className="w-full bg-[#0B31BD] hover:bg-[#0928a0] text-white py-6 text-base font-medium rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {(bookSlot.isPending || rescheduleSlot.isPending) ? (
+            {bookSlot.isPending || rescheduleSlot.isPending ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                {isRescheduling ? 'Rescheduling...' : 'Scheduling...'}
+                {isRescheduling ? "Rescheduling..." : "Scheduling..."}
               </>
+            ) : isRescheduling ? (
+              "Reschedule"
             ) : (
-              isRescheduling ? 'Reschedule' : 'Schedule'
+              "Schedule"
             )}
           </Button>
         </div>
@@ -532,7 +594,7 @@ function ApplicantVideoCall({
 
   // Call duration timer
   useEffect(() => {
-    if (agora.callState !== 'connected') {
+    if (agora.callState !== "connected") {
       setCallDuration(0);
       return;
     }
@@ -547,7 +609,7 @@ function ApplicantVideoCall({
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -561,7 +623,9 @@ function ApplicantVideoCall({
             </div>
             <div>
               <h3 className="text-white font-medium">Interview Meeting</h3>
-              <p className="text-white/70 text-sm">{formatDuration(callDuration)}</p>
+              <p className="text-white/70 text-sm">
+                {formatDuration(callDuration)}
+              </p>
             </div>
           </div>
         </div>
@@ -588,7 +652,7 @@ function ApplicantVideoCall({
         <div
           ref={localVideoRef}
           className={`absolute bottom-24 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg ${
-            agora.isVideoMuted ? 'hidden' : ''
+            agora.isVideoMuted ? "hidden" : ""
           }`}
         />
         {agora.isVideoMuted && (
@@ -606,8 +670,8 @@ function ApplicantVideoCall({
             onClick={agora.toggleAudio}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               agora.isAudioMuted
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-white/20 hover:bg-white/30'
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-white/20 hover:bg-white/30"
             }`}
           >
             {agora.isAudioMuted ? (
@@ -622,8 +686,8 @@ function ApplicantVideoCall({
             onClick={agora.toggleVideo}
             className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
               agora.isVideoMuted
-                ? 'bg-red-500 hover:bg-red-600'
-                : 'bg-white/20 hover:bg-white/30'
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-white/20 hover:bg-white/30"
             }`}
           >
             {agora.isVideoMuted ? (

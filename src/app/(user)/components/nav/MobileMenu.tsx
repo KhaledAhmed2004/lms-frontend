@@ -26,7 +26,7 @@ const MobileMenu = ({ isOpen, closeMenu }: MobileMenuProps) => {
       case "SUPER_ADMIN":
         return "/admin/overview";
       case "TUTOR":
-        return "/teacher/overview";
+        return "/teacher/session";
       case "STUDENT":
         return "/student/session";
       case "APPLICANT":

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import TopNavbar from "./admin/components/TopNavbar";
 import Sidebar from "./admin/components/Sidebar";
 
-
 interface StudentLayoutProps {
   children: React.ReactNode;
 }
@@ -25,7 +24,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
 
       {/* Main Content */}
       <main className="pt-24 lg:ml-[328px] flex-1 bg-[#F8F8F8] flex flex-col">
-        <div className={isMessagesPage ? "h-full" : "w-full px-4 py-5"}>{children}</div>
+        <div className={isMessagesPage ? "h-full" : "w-full px-4 py-5"}>
+          {children}
+        </div>
       </main>
     </div>
   );

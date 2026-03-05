@@ -29,12 +29,9 @@ export const TrialProgressStepper = ({
       setProgressWidth(computeProgressWidth(step, w));
     };
 
-    const timer = setTimeout(update, 0);
+    update();
     window.addEventListener("resize", update);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", update);
-    };
+    return () => window.removeEventListener("resize", update);
   }, [step]);
 
   return (

@@ -7,20 +7,18 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Search, MoreVertical, GraduationCap, Plus, Loader2 } from "lucide-react";
+import {
+  Search,
+  MoreVertical,
+  GraduationCap,
+  Plus,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,6 +56,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { formatDateShort } from "@/lib/utils";
 import {
   useAdminGrades,
   useCreateGrade,
@@ -180,7 +179,7 @@ const GradeManagement = () => {
         isActive: !grade.isActive,
       });
       toast.success(
-        `Grade ${grade.isActive ? "deactivated" : "activated"} successfully`
+        `Grade ${grade.isActive ? "deactivated" : "activated"} successfully`,
       );
     } catch (error: any) {
       toast.error(error?.message || "Failed to update grade status");
@@ -199,14 +198,6 @@ const GradeManagement = () => {
   const openDeleteDialog = (grade: Grade) => {
     setSelectedGrade(grade);
     setIsDeleteDialogOpen(true);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    });
   };
 
   // Column definitions for TanStack Table
@@ -245,7 +236,7 @@ const GradeManagement = () => {
         header: "Created At",
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
-            {formatDate(row.getValue("createdAt"))}
+            {formatDateShort(row.getValue("createdAt"))}
           </span>
         ),
       },
@@ -280,7 +271,7 @@ const GradeManagement = () => {
         },
       },
     ],
-    []
+    [],
   );
 
   // TanStack Table instance with server-side pagination
@@ -318,9 +309,7 @@ const GradeManagement = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500">
-          Error loading grades. Please try again.
-        </p>
+        <p className="text-red-500">Error loading grades. Please try again.</p>
       </div>
     );
   }
@@ -427,7 +416,7 @@ const GradeManagement = () => {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         ))}
@@ -447,7 +436,7 @@ const GradeManagement = () => {
                             <TableCell key={cell.id} className="py-3 px-4">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </TableCell>
                           ))}
@@ -467,82 +456,14 @@ const GradeManagement = () => {
                 </Table>
               </div>
 
-              {/* Pagination */}
               {grades.length > 0 && (
-                <div className="flex items-center justify-between pt-6">
-                  <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                    {Math.min(
-                      currentPage * itemsPerPage,
-                      pagination?.total || 0
-                    )}{" "}
-                    of {pagination?.total || 0} results
-                  </p>
-                  <Pagination className="justify-end mx-0">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() =>
-                            setCurrentPage((prev) => Math.max(1, prev - 1))
-                          }
-                          className={
-                            currentPage === 1
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (page) => {
-                          if (
-                            page === 1 ||
-                            page === totalPages ||
-                            (page >= currentPage - 1 && page <= currentPage + 1)
-                          ) {
-                            return (
-                              <PaginationItem key={page}>
-                                <PaginationLink
-                                  onClick={() => setCurrentPage(page)}
-                                  isActive={page === currentPage}
-                                  className="cursor-pointer"
-                                >
-                                  {page}
-                                </PaginationLink>
-                              </PaginationItem>
-                            );
-                          } else if (
-                            (page === 2 && currentPage > 3) ||
-                            (page === totalPages - 1 &&
-                              currentPage < totalPages - 2)
-                          ) {
-                            return (
-                              <PaginationItem key={page}>
-                                <PaginationEllipsis />
-                              </PaginationItem>
-                            );
-                          }
-                          return null;
-                        }
-                      )}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() =>
-                            setCurrentPage((prev) =>
-                              Math.min(totalPages, prev + 1)
-                            )
-                          }
-                          className={
-                            currentPage === totalPages
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                <AdminPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  total={pagination?.total || 0}
+                  onPageChange={setCurrentPage}
+                />
               )}
             </TabsContent>
           </CardContent>
@@ -659,8 +580,8 @@ const GradeManagement = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete the grade &quot;{selectedGrade?.name}&quot;.
-              This action cannot be undone.
+              This will delete the grade &quot;{selectedGrade?.name}&quot;. This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

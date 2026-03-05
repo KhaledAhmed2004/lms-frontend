@@ -1,20 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import {
-  Camera,
-  CheckCircle,
-  Loader2,
-  ExternalLink,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { toast } from 'sonner';
-import { useStripeConnect } from '@/hooks/api/use-stripe';
-import { useQueryClient } from '@tanstack/react-query';
-import { apiClient } from '@/lib/api-client';
-import { useAuthStore } from '@/store/auth-store';
+import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Camera, CheckCircle, Loader2, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { useStripeConnect } from "@/hooks/api/use-stripe";
+import { useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "@/lib/api-client";
+import { useAuthStore } from "@/store/auth-store";
 
 interface ProfileSetupSectionProps {
   userEmail: string;
@@ -48,11 +43,11 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
       if (onboardingUrl) {
         window.location.href = onboardingUrl;
       } else {
-        toast.success('Stripe account is already set up!');
+        toast.success("Stripe account is already set up!");
         setIsRedirecting(false);
       }
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to start Stripe onboarding');
+      toast.error(error?.message || "Failed to start Stripe onboarding");
       setIsRedirecting(false);
     }
   };
@@ -66,14 +61,14 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image must be less than 5MB');
+      toast.error("Image must be less than 5MB");
       return;
     }
 
@@ -89,9 +84,9 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
     try {
       // Add your image upload logic here
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated delay
-      toast.success('Profile picture updated');
+      toast.success("Profile picture updated");
     } catch (error) {
-      toast.error('Failed to upload image');
+      toast.error("Failed to upload image");
     } finally {
       setIsUploadingImage(false);
     }
@@ -99,48 +94,48 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
 
   const handleDisconnectStripe = async () => {
     // TODO: Implement disconnect logic
-    toast.info('Disconnect functionality coming soon');
+    toast.info("Disconnect functionality coming soon");
   };
 
   const handleManageAccount = () => {
     // Open Stripe dashboard
-    window.open('https://dashboard.stripe.com/', '_blank');
+    window.open("https://dashboard.stripe.com/", "_blank");
   };
 
   const handleStartTutoring = async () => {
     if (!agreedToTerms || !agreedToTax) {
-      toast.error('Please agree to all terms and conditions');
+      toast.error("Please agree to all terms and conditions");
       return;
     }
 
     if (!profileImage) {
-      toast.error('Please upload a profile picture');
+      toast.error("Please upload a profile picture");
       return;
     }
 
     if (!isStripeComplete) {
-      toast.error('Please complete your Stripe setup');
+      toast.error("Please complete your Stripe setup");
       return;
     }
 
     setIsStarting(true);
     try {
       // Fetch application to get new token with TUTOR role
-      const response = await apiClient.get('/applications/my-application');
+      const response = await apiClient.get("/applications/my-application");
       const { accessToken } = response.data;
 
       // If new token is provided, update auth store with TUTOR role
       if (accessToken && currentUser) {
-        setAuth({ ...currentUser, role: 'TUTOR' }, accessToken);
+        setAuth({ ...currentUser, role: "TUTOR" }, accessToken);
       }
 
       // Invalidate all queries to refetch with new role
       await queryClient.invalidateQueries();
 
-      toast.success('Welcome! You can now start tutoring.');
-      router.push('/teacher/overview');
+      toast.success("Welcome! You can now start tutoring.");
+      router.push("/teacher/session");
     } catch (error) {
-      toast.error('Failed to complete setup');
+      toast.error("Failed to complete setup");
     } finally {
       setIsStarting(false);
     }
@@ -149,9 +144,10 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
   const isStripeComplete = stripeStatus?.isOnboardingComplete ?? false;
   const hasStripeAccount = stripeStatus?.hasStripeAccount ?? false;
   const isStripeLoading = isCreatingAccount || isGettingLink || isRedirecting;
-  const stripeAccountId = stripeStatus?.accountId || '';
+  const stripeAccountId = stripeStatus?.accountId || "";
 
-  const canStartTutoring = agreedToTerms && agreedToTax && profileImage && isStripeComplete;
+  const canStartTutoring =
+    agreedToTerms && agreedToTax && profileImage && isStripeComplete;
 
   return (
     <div className="space-y-6">
@@ -207,7 +203,8 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
 
           <div>
             <p className="text-gray-900 font-medium text-base">
-              Upload a new profile picture <span className="text-red-500">*</span>
+              Upload a new profile picture{" "}
+              <span className="text-red-500">*</span>
             </p>
             <p className="text-sm text-gray-500 mt-1">
               JPG, PNG or GIF. Max size of 5MB
@@ -218,7 +215,9 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
 
       {/* Payment Account Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment Account</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          Payment Account
+        </h2>
 
         {statusLoading ? (
           <div className="flex items-center justify-center py-8">
@@ -230,8 +229,12 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
             <div className="flex items-start gap-3">
               <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium text-gray-900">Stripe account connected</p>
-                <p className="text-sm text-gray-500">Your account is ready to receive payments</p>
+                <p className="font-medium text-gray-900">
+                  Stripe account connected
+                </p>
+                <p className="text-sm text-gray-500">
+                  Your account is ready to receive payments
+                </p>
               </div>
             </div>
 
@@ -239,7 +242,9 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
             <div className="bg-gray-50 rounded-xl border border-gray-200 p-5">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-[#635BFF] font-bold text-xl">S</span>
-                <span className="font-medium text-gray-900">{stripeAccountId || 'acct_1234567890'}</span>
+                <span className="font-medium text-gray-900">
+                  {stripeAccountId || "acct_1234567890"}
+                </span>
               </div>
               <p className="text-sm text-gray-500 ml-7">{userEmail}</p>
             </div>
@@ -275,7 +280,8 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
                     Complete Your Stripe Setup
                   </p>
                   <p className="text-sm text-yellow-700 mt-1">
-                    Your account needs additional information before you can receive payments.
+                    Your account needs additional information before you can
+                    receive payments.
                   </p>
                 </div>
               </div>
@@ -285,9 +291,12 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
                   <span className="text-[#635BFF] font-bold text-xl">S</span>
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">Connect with Stripe</p>
+                  <p className="font-medium text-gray-900">
+                    Connect with Stripe
+                  </p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Set up your payment account to receive earnings from tutoring sessions.
+                    Set up your payment account to receive earnings from
+                    tutoring sessions.
                   </p>
                 </div>
               </div>
@@ -328,8 +337,11 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
             onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
             className="mt-0.5 h-5 w-5 rounded border-gray-300 data-[state=checked]:bg-[#0B31BD] data-[state=checked]:border-[#0B31BD]"
           />
-          <label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
-            I have read and agree to the{' '}
+          <label
+            htmlFor="terms"
+            className="text-sm text-gray-700 leading-relaxed cursor-pointer"
+          >
+            I have read and agree to the{" "}
             <a
               href="/terms"
               target="_blank"
@@ -348,8 +360,12 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
             onCheckedChange={(checked) => setAgreedToTax(checked as boolean)}
             className="mt-0.5 h-5 w-5 rounded border-gray-300 data-[state=checked]:bg-[#0B31BD] data-[state=checked]:border-[#0B31BD]"
           />
-          <label htmlFor="tax" className="text-sm text-gray-700 leading-relaxed cursor-pointer">
-            I confirm that I am self-employed and responsible for all tax and business requirements in my country of residence{' '}
+          <label
+            htmlFor="tax"
+            className="text-sm text-gray-700 leading-relaxed cursor-pointer"
+          >
+            I confirm that I am self-employed and responsible for all tax and
+            business requirements in my country of residence{" "}
             <span className="text-red-500">*</span>
           </label>
         </div>
@@ -367,7 +383,7 @@ export function ProfileSetupSection({ userEmail }: ProfileSetupSectionProps) {
             Starting...
           </>
         ) : (
-          'Start Tutoring'
+          "Start Tutoring"
         )}
       </Button>
     </div>

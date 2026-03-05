@@ -1,7 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Session from '@/app/shared/Session';
+import Session from "./components/Session";
 
 export default function Dashboard() {
   return (

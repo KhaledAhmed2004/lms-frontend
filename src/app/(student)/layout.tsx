@@ -21,7 +21,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
     if (!isLoading) {
       // Student must have an active subscription to access regular dashboard
       // If no active subscription, redirect to free trial dashboard
-      if (!subscription || subscription.status !== 'ACTIVE') {
+      if (!subscription || subscription.status !== "ACTIVE") {
         router.replace("/free-trial-student-dash");
       } else {
         setIsChecking(false);
@@ -51,7 +51,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
       </div>
 
       {/* Main Content */}
-      <main className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}>
+      <main
+        className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}
+      >
         <div className={isMessagesPage ? "h-full" : "mx-auto px-4 py-5"}>
           {children}
         </div>

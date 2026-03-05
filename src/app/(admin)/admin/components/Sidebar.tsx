@@ -21,6 +21,8 @@ const menuItems = [
   { label: "All Posts", href: "/admin/posts" },
   { label: "Legal Policies", href: "/admin/terms-conditions" },
   { label: "Support", href: "/admin/support" },
+  { label: "FAQ", href: "/admin/faq" },
+  { label: "Export", href: "/admin/export" },
 ];
 
 function Sidebar() {

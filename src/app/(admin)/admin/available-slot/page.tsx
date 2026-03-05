@@ -585,10 +585,10 @@ const AvailableSlots = () => {
                 </Table>
 
                 {/* Pagination */}
-                {slotsData?.meta && slotsData.meta.totalPage > 0 && (
+                {slotsData?.pagination && slotsData.pagination.totalPage > 0 && (
                   <div className="flex items-center justify-between mt-4 pt-4 border-t">
                     <span className="text-sm text-gray-500">
-                      Showing {((slotsData.meta.page - 1) * slotsData.meta.limit) + 1} - {Math.min(slotsData.meta.page * slotsData.meta.limit, slotsData.meta.total)} of {slotsData.meta.total} slots
+                      Showing {((slotsData.pagination.page - 1) * slotsData.pagination.limit) + 1} - {Math.min(slotsData.pagination.page * slotsData.pagination.limit, slotsData.pagination.total)} of {slotsData.pagination.total} slots
                     </span>
                     <div className="flex items-center gap-2">
                       <Button
@@ -604,7 +604,7 @@ const AvailableSlots = () => {
                       {/* Page Numbers */}
                       <div className="flex items-center gap-1">
                         {(() => {
-                          const totalPages = slotsData.meta.totalPage;
+                          const totalPages = slotsData.pagination.totalPage;
                           const currentPage = page;
                           const pages: (number | string)[] = [];
 
@@ -643,7 +643,7 @@ const AvailableSlots = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => setPage((p) => p + 1)}
-                        disabled={page >= slotsData.meta.totalPage || isFetching}
+                        disabled={page >= slotsData.pagination.totalPage || isFetching}
                       >
                         Next
                         <ChevronRight className="w-4 h-4 ml-1" />

@@ -85,11 +85,6 @@ export interface SupportTicket {
   status: TICKET_STATUS;
   priority: TICKET_PRIORITY;
   adminNotes?: string;
-  assignedTo?: {
-    _id: string;
-    name: string;
-    email: string;
-  };
   resolvedAt?: string;
   closedAt?: string;
   createdAt: string;
@@ -300,29 +295,6 @@ export function useUpdateTicketPriority() {
     }) => {
       const { data } = await apiClient.patch(`/support-tickets/admin/${ticketId}/priority`, {
         priority,
-      });
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['adminTickets'] });
-    },
-  });
-}
-
-// Assign ticket (admin)
-export function useAssignTicket() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      ticketId,
-      assignedTo,
-    }: {
-      ticketId: string;
-      assignedTo: string;
-    }) => {
-      const { data } = await apiClient.patch(`/support-tickets/admin/${ticketId}/assign`, {
-        assignedTo,
       });
       return data;
     },

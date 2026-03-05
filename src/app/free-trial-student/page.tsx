@@ -15,6 +15,24 @@ import {
   type CreateTrialRequestData,
 } from "@/hooks/api";
 
+interface StudentFormData {
+  subject: string;
+  grade: string;
+  schoolType: string;
+  learningGoals: string;
+  documents: File | null;
+  studentFirstName: string;
+  studentLastName: string;
+  isUnder18: boolean;
+  guardianFirstName: string;
+  guardianLastName: string;
+  guardianPhone: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+  agreeToPolicy: boolean;
+}
+
 export default function FreeTrialStudentPage() {
   return (
     <Suspense>
@@ -45,8 +63,7 @@ function FreeTrialStudent() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<StudentFormData>({
     subject: "",
     grade: "",
     schoolType: "",
@@ -74,22 +91,19 @@ function FreeTrialStudent() {
         (s) => s.name.toLowerCase() === subjectFromUrl.toLowerCase(),
       );
       if (match) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        setFormData((prev: any) => ({ ...prev, subject: match._id }));
+        setFormData((prev) => ({ ...prev, subject: match._id }));
       }
     }
   }, [subjectFromUrl, subjects]);
 
-  /* =========================
-     Validation
-  ========================= */
+  //  Validation
 
   const isStepComplete = () => {
     if (step === 1) {
       return !!(formData.subject && formData.grade && formData.schoolType);
     }
     if (step === 2) {
-      return true; // step 2 has no required fields
+      return true;
     }
     if (step === 3) {
       const baseFields =
@@ -166,7 +180,6 @@ function FreeTrialStudent() {
     }
 
     if (step === 3) {
-      // Build the payload for the API
       const payload: CreateTrialRequestData = {
         studentInfo: {
           name: `${formData.studentFirstName} ${formData.studentLastName}`,
@@ -202,11 +215,11 @@ function FreeTrialStudent() {
           toast.success("Your request has been sent successfully!");
           router.push("/free-trial-student-dash");
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onError: (error: any) => {
+        onError: (error: unknown) => {
+          const err = error as { getFullMessage?: () => string; message?: string };
           const message =
-            error?.getFullMessage?.() ||
-            error?.message ||
+            err?.getFullMessage?.() ||
+            err?.message ||
             "Failed to submit trial request. Please try again.";
           toast.error(message);
         },

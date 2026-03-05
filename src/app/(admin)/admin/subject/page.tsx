@@ -12,15 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -58,6 +50,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { formatDateShort } from "@/lib/utils";
 import {
   useAdminSubjects,
   useCreateSubject,
@@ -180,7 +173,7 @@ const SubjectManagement = () => {
         isActive: !subject.isActive,
       });
       toast.success(
-        `Subject ${subject.isActive ? "deactivated" : "activated"} successfully`
+        `Subject ${subject.isActive ? "deactivated" : "activated"} successfully`,
       );
     } catch (error: any) {
       toast.error(error?.message || "Failed to update subject status");
@@ -199,14 +192,6 @@ const SubjectManagement = () => {
   const openDeleteDialog = (subject: Subject) => {
     setSelectedSubject(subject);
     setIsDeleteDialogOpen(true);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    });
   };
 
   // Column definitions for TanStack Table
@@ -245,7 +230,7 @@ const SubjectManagement = () => {
         header: "Created At",
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
-            {formatDate(row.getValue("createdAt"))}
+            {formatDateShort(row.getValue("createdAt"))}
           </span>
         ),
       },
@@ -280,7 +265,7 @@ const SubjectManagement = () => {
         },
       },
     ],
-    []
+    [],
   );
 
   // TanStack Table instance with server-side pagination
@@ -427,7 +412,7 @@ const SubjectManagement = () => {
                               ? null
                               : flexRender(
                                   header.column.columnDef.header,
-                                  header.getContext()
+                                  header.getContext(),
                                 )}
                           </TableHead>
                         ))}
@@ -447,7 +432,7 @@ const SubjectManagement = () => {
                             <TableCell key={cell.id} className="py-3 px-4">
                               {flexRender(
                                 cell.column.columnDef.cell,
-                                cell.getContext()
+                                cell.getContext(),
                               )}
                             </TableCell>
                           ))}
@@ -467,82 +452,14 @@ const SubjectManagement = () => {
                 </Table>
               </div>
 
-              {/* Pagination */}
               {subjects.length > 0 && (
-                <div className="flex items-center justify-between pt-6">
-                  <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                    {Math.min(
-                      currentPage * itemsPerPage,
-                      pagination?.total || 0
-                    )}{" "}
-                    of {pagination?.total || 0} results
-                  </p>
-                  <Pagination className="justify-end mx-0">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() =>
-                            setCurrentPage((prev) => Math.max(1, prev - 1))
-                          }
-                          className={
-                            currentPage === 1
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (page) => {
-                          if (
-                            page === 1 ||
-                            page === totalPages ||
-                            (page >= currentPage - 1 && page <= currentPage + 1)
-                          ) {
-                            return (
-                              <PaginationItem key={page}>
-                                <PaginationLink
-                                  onClick={() => setCurrentPage(page)}
-                                  isActive={page === currentPage}
-                                  className="cursor-pointer"
-                                >
-                                  {page}
-                                </PaginationLink>
-                              </PaginationItem>
-                            );
-                          } else if (
-                            (page === 2 && currentPage > 3) ||
-                            (page === totalPages - 1 &&
-                              currentPage < totalPages - 2)
-                          ) {
-                            return (
-                              <PaginationItem key={page}>
-                                <PaginationEllipsis />
-                              </PaginationItem>
-                            );
-                          }
-                          return null;
-                        }
-                      )}
-
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() =>
-                            setCurrentPage((prev) =>
-                              Math.min(totalPages, prev + 1)
-                            )
-                          }
-                          className={
-                            currentPage === totalPages
-                              ? "pointer-events-none opacity-50"
-                              : "cursor-pointer"
-                          }
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                <AdminPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  itemsPerPage={itemsPerPage}
+                  total={pagination?.total || 0}
+                  onPageChange={setCurrentPage}
+                />
               )}
             </TabsContent>
           </CardContent>

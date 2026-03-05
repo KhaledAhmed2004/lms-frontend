@@ -1,7 +1,13 @@
 import { Input } from "@/components/ui/input";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const GoalsDocumentsStep = ({ formData, setFormData }: { formData: any; setFormData: any }) => {
+export const GoalsDocumentsStep = ({
+  formData,
+  setFormData,
+}: {
+  formData: any;
+  setFormData: any;
+}) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

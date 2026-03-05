@@ -43,7 +43,7 @@ export interface TutorFilters {
 }
 
 export interface TutorsResponse {
-  meta: {
+  pagination: {
     total: number;
     page: number;
     limit: number;
@@ -58,9 +58,8 @@ export function useTutors(filters: TutorFilters = {}) {
     queryKey: ['tutors', filters],
     queryFn: async () => {
       const { data } = await apiClient.get('/user/tutors', { params: filters });
-      // Backend returns { success: true, data: [...], pagination: {...} }
       return {
-        meta: data.pagination,
+        pagination: data.pagination,
         data: data.data,
       } as TutorsResponse;
     },
