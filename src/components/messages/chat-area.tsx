@@ -46,8 +46,7 @@ import { Textarea } from "../ui/textarea";
 import ScheduleModal from "./schedule-modal";
 import SessionProposalWithFeedback from "./SessionProposalWithFeedback";
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5001";
+const BACKEND_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
 /** Resolve attachment URLs - backend stores relative paths like /doc/file.pdf */
 function resolveAttachmentUrl(url: string): string {

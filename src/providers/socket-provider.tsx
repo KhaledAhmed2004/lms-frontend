@@ -93,7 +93,7 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5001', {
+    const socketInstance = io(process.env.NEXT_PUBLIC_SOCKET_URL!, {
       auth: {
         token,
       },
