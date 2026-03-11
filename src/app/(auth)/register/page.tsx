@@ -84,7 +84,7 @@ const RegisterPage = () => {
               <div className="border border-gray-200 rounded-xl p-8 flex flex-col items-center text-center space-y-5 hover:shadow-lg transition-shadow">
                 <div className="w-36 h-36 rounded-full overflow-hidden">
                   <Image
-                    src="/girl-student.png"
+                    src="/images/home/6.webp"
                     alt="Set up a trial session"
                     width={144}
                     height={144}
@@ -106,7 +106,7 @@ const RegisterPage = () => {
               <div className="border border-gray-200 rounded-xl p-8 flex flex-col items-center text-center space-y-5 hover:shadow-lg transition-shadow">
                 <div className="w-36 h-36 rounded-full overflow-hidden">
                   <Image
-                    src="/teacher.png"
+                    src="/images/home/7.webp"
                     alt="Become a tutor"
                     width={144}
                     height={144}

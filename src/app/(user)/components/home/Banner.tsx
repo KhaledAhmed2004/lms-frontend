@@ -93,7 +93,7 @@ const Banner = () => {
           {/* RIGHT IMAGE */}
           <div className="hidden md:block absolute right-0 bottom-0">
             <img
-              src="/images/home/bannerimg.png"
+              src="/images/home/1.webp"
               alt="Girl student"
               className="w-[350px] lg:w-[466px] h-full object-cover object-bottom"
             />

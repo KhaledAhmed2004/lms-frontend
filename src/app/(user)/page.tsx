@@ -25,7 +25,7 @@ const cards = [
     step: "1.",
     title: "Send your Request",
     description: "Tell us the subject you need help with and when you're available.",
-    image: "/boy1.png",
+    image: "/images/home/2.webp",
     bgColor: "bg-[#8396DE]",
   },
   {
