@@ -2,6 +2,7 @@ import Link from "next/link";
 
 /* ──────────────────────────── data ──────────────────────────── */
 
+
 const commitments = [
   {
     title: "FAIR PRICING",
