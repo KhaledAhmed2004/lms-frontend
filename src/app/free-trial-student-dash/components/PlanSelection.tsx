@@ -12,6 +12,7 @@ import {
   type SubscriptionTier,
 } from "@/hooks/api/use-subscription-payment";
 import { TrialProgressStepper } from "./TrialProgressStepper";
+import { useAuthStore } from "@/store/auth-store";
 
 type PlanId = "flexible" | "regular" | "longterm";
 
@@ -23,11 +24,13 @@ const PLAN_TO_TIER: Record<PlanId, SubscriptionTier> = {
 
 const PlanSelection = () => {
   const router = useRouter();
+  const { user } = useAuthStore();
+  const isSpecialStudent = user?.studentProfile?.isSpecialStudent === true;
   const [selectedPlan, setSelectedPlan] = useState<PlanId>("flexible");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [subscriptionId, setSubscriptionId] = useState<string | null>(null);
-  const [paymentAmount, setPaymentAmount] = useState<number>(30);
+  const [paymentAmount, setPaymentAmount] = useState<number>(isSpecialStudent ? 25 : 30);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
 
   const createPaymentIntent = useCreateSubscriptionPaymentIntent();
@@ -37,8 +40,8 @@ const PlanSelection = () => {
     {
       id: "flexible" as PlanId,
       name: "Flexibel",
-      pricePerHour: "30€",
-      totalPrice: 30,
+      pricePerHour: isSpecialStudent ? "25€" : "30€",
+      totalPrice: isSpecialStudent ? 25 : 30,
       courseDuration: "Keine",
       selectedHours: "Anzahl wählbar",
       selectedHoursDetails: "Keine Mindestanzahl",
@@ -197,6 +200,11 @@ const PlanSelection = () => {
                   <p className="text-3xl font-bold text-gray-900">
                     {plan.pricePerHour}
                   </p>
+                  {isSpecialStudent && plan.id === "flexible" && (
+                    <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-300">
+                      Sonderpreis für dich!
+                    </span>
+                  )}
                 </div>
 
                 <hr className="border-gray-200 mb-5" />

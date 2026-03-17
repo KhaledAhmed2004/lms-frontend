@@ -112,12 +112,16 @@ export function useLogin() {
       // Fetch profile to get full user data including name
       let userName = '';
       let userAvatar = '';
+      let studentProfile: { isSpecialStudent?: boolean } | undefined;
       try {
-        const { data: profileData } = await apiClient.get<{ success: boolean; data: { name: string; profilePicture?: string } }>('/user/profile', {
+        const { data: profileData } = await apiClient.get<{ success: boolean; data: { name: string; profilePicture?: string; studentProfile?: { isSpecialStudent?: boolean } } }>('/user/profile', {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         userName = profileData.data?.name || '';
         userAvatar = profileData.data?.profilePicture || '';
+        studentProfile = profileData.data?.studentProfile
+          ? { isSpecialStudent: profileData.data.studentProfile.isSpecialStudent }
+          : undefined;
       } catch {
         // If profile fetch fails, continue without name
         console.warn('Failed to fetch profile data');
@@ -130,6 +134,7 @@ export function useLogin() {
         name: userName,
         avatar: userAvatar,
         isVerified: true,
+        studentProfile,
       };
 
       setAuth(user, accessToken);

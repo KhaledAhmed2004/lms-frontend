@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Edit } from 'lucide-react';
+import { ArrowLeft, Loader2, Edit, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -18,6 +18,7 @@ import {
   useStudent,
   useBlockStudent,
   useUnblockStudent,
+  useToggleSpecialStudent,
 } from '@/hooks/api';
 
 const StudentDetailsContent = () => {
@@ -31,8 +32,9 @@ const StudentDetailsContent = () => {
   // Mutations
   const { mutate: blockStudent, isPending: isBlocking } = useBlockStudent();
   const { mutate: unblockStudent, isPending: isUnblocking } = useUnblockStudent();
+  const { mutate: toggleSpecial, isPending: isTogglingSpecial } = useToggleSpecialStudent();
 
-  const isActionPending = isBlocking || isUnblocking;
+  const isActionPending = isBlocking || isUnblocking || isTogglingSpecial;
 
   // Handlers
   const handleBlock = () => {
@@ -53,6 +55,17 @@ const StudentDetailsContent = () => {
       },
       onError: (error: any) => {
         toast.error(error?.getFullMessage?.() || error?.message || 'Failed to unblock student');
+      },
+    });
+  };
+
+  const handleToggleSpecial = () => {
+    toggleSpecial(id, {
+      onSuccess: (data: any) => {
+        toast.success(data?.message || 'Special status updated');
+      },
+      onError: (error: any) => {
+        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to update special status');
       },
     });
   };
@@ -142,6 +155,12 @@ const StudentDetailsContent = () => {
           <Badge className={`${getStatusColor(student.status)} border-0 text-sm px-3 py-1`}>
             {getStatusLabel(student.status)}
           </Badge>
+          {student.studentProfile?.isSpecialStudent && (
+            <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300 text-sm px-3 py-1">
+              <Star className="w-3 h-3 mr-1 fill-yellow-500 text-yellow-500" />
+              Special (€25/hr)
+            </Badge>
+          )}
           <Button
             variant="outline"
             onClick={() => router.push(`/admin/edit-student?id=${id}`)}
@@ -242,6 +261,23 @@ const StudentDetailsContent = () => {
         >
           <Edit className="mr-2 h-4 w-4" />
           Edit Profile
+        </Button>
+        <Button
+          onClick={handleToggleSpecial}
+          disabled={isActionPending}
+          variant="outline"
+          className={
+            student.studentProfile?.isSpecialStudent
+              ? 'border-yellow-500 text-yellow-700 hover:bg-yellow-50 px-8'
+              : 'border-yellow-400 text-yellow-600 hover:bg-yellow-50 px-8'
+          }
+        >
+          {isTogglingSpecial ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Star className={`mr-2 h-4 w-4 ${student.studentProfile?.isSpecialStudent ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+          )}
+          {student.studentProfile?.isSpecialStudent ? 'Remove Special' : 'Mark as Special'}
         </Button>
         {student.status === 'ACTIVE' ? (
           <Button

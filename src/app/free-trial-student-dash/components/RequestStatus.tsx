@@ -7,7 +7,6 @@ import { useTrialSession, SESSION_STATUS } from "@/hooks/api/use-sessions";
 import { useMySubscription } from "@/hooks/api/use-subscription";
 import { useAuthStore } from "@/store/auth-store";
 import TutorChat from "./TutorChat";
-import PlanSelection from "./PlanSelection";
 import { TrialProgressStepper } from "./TrialProgressStepper";
 
 const SCHOOL_TYPE_LABELS: Record<string, string> = {
@@ -90,6 +89,13 @@ const RequestStatus = () => {
     }
   }, [mounted, isLoadingSubscription, subscription, router]);
 
+  // Redirect to choose-plan page when trial session is completed
+  useEffect(() => {
+    if (mounted && !isLoading && trialSession?.status === SESSION_STATUS.COMPLETED) {
+      router.replace("/free-trial-student-dash/choose-plan");
+    }
+  }, [mounted, isLoading, trialSession?.status, router]);
+
   // Loading state
   if (!mounted || isLoading) {
     return (
@@ -122,11 +128,6 @@ const RequestStatus = () => {
         </div>
       </div>
     );
-  }
-
-  // Show PlanSelection when trial session is completed
-  if (trialSession?.status === SESSION_STATUS.COMPLETED) {
-    return <PlanSelection />;
   }
 
   // Show TutorChat with chat when request is accepted

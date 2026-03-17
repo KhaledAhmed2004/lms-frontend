@@ -76,6 +76,7 @@ export {
   useBlockStudent,
   useUnblockStudent,
   useAdminUpdateStudentProfile,
+  useToggleSpecialStudent,
 } from './use-students';
 
 // Tutor Hooks

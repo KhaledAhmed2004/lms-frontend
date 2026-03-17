@@ -1,17 +1,19 @@
 "use client";
 
-import { Upload, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Upload, X, Loader2 } from "lucide-react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Editon from "./Editon";
+import { useCreateBlog } from "@/hooks/api/use-blogs";
 import type { PostRecord, PostStatus } from "./types";
 
 type PostFormProps = {
   title: string;
-  post: PostRecord;
+  post?: PostRecord;
 };
 
-const statusOptions: PostStatus[] = ["Draft", "Published", "Scheduled"];
-const ctaOptions: PostRecord["cta"][] = ["Book Free Trial", "Apply as Tutor"];
+const statusOptions: PostStatus[] = ["Draft", "Published"];
 
 function StatusPill({
   status,
@@ -38,33 +40,24 @@ function StatusPill({
 }
 
 export default function PostForm({ title, post }: PostFormProps) {
-  const [postTitle, setPostTitle] = useState(post.title);
-  const [status, setStatus] = useState<PostStatus>(post.status);
-  const [category, setCategory] = useState(post.category);
-  const [tags, setTags] = useState<string[]>(post.tags || []);
-  const [tagInput, setTagInput] = useState("");
-  const [cta, setCta] = useState<PostRecord["cta"]>(post.cta);
-  const [seoTitle, setSeoTitle] = useState(post.seoTitle);
-  const [seoDescription, setSeoDescription] = useState(post.seoDescription);
-  const [slug, setSlug] = useState(post.slug);
-  const [content, setContent] = useState("");
+  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const createBlog = useCreateBlog();
 
-  useEffect(() => {
-    setPostTitle(post.title);
-    setStatus(post.status);
-    setCategory(post.category);
-    setTags(post.tags || []);
-    setCta(post.cta);
-    setSeoTitle(post.seoTitle);
-    setSeoDescription(post.seoDescription);
-    setSlug(post.slug);
-  }, [post]);
+  const [postTitle, setPostTitle] = useState(post?.title ?? "");
+  const [status, setStatus] = useState<PostStatus>(post?.status ?? "Draft");
+  const [category, setCategory] = useState(post?.category ?? "");
+  const [tags, setTags] = useState<string[]>(post?.tags ?? []);
+  const [tagInput, setTagInput] = useState("");
+  const [content, setContent] = useState("");
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const primaryActionLabel = useMemo(() => {
+    if (createBlog.isPending) return status === "Draft" ? "Saving..." : "Publishing...";
     if (status === "Draft") return "Save Draft";
-    if (status === "Scheduled") return "Schedule Post";
     return "Publish Now";
-  }, [status]);
+  }, [status, createBlog.isPending]);
 
   const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
@@ -83,6 +76,60 @@ export default function PostForm({ title, post }: PostFormProps) {
 
   const handleRemoveTag = (tagToRemove: string) => {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
+  };
+
+  const handleImageSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+
+    setFeaturedImage(file);
+    const url = URL.createObjectURL(file);
+    setImagePreview(url);
+  }, []);
+
+  const handleRemoveImage = useCallback(() => {
+    setFeaturedImage(null);
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, [imagePreview]);
+
+  const handleSubmit = async () => {
+    if (!postTitle.trim()) {
+      toast.error("Post title is required");
+      return;
+    }
+    if (!content.trim()) {
+      toast.error("Post content is required");
+      return;
+    }
+    if (!category.trim()) {
+      toast.error("Category is required");
+      return;
+    }
+
+    try {
+      await createBlog.mutateAsync({
+        title: postTitle.trim(),
+        content,
+        status: status.toLowerCase() as "draft" | "published",
+        category: category.trim(),
+        tags,
+        featuredImage: featuredImage ?? undefined,
+      });
+
+      toast.success(
+        status === "Draft" ? "Draft saved successfully" : "Post published successfully"
+      );
+      router.push("/admin/posts");
+    } catch {
+      toast.error("Failed to save post. Please try again.");
+    }
   };
 
   return (
@@ -135,8 +182,11 @@ export default function PostForm({ title, post }: PostFormProps) {
             </div>
             <button
               type="button"
-              className="mt-3 w-full bg-[#0B31BD] hover:bg-[#0929a3] text-white font-semibold py-2.5 rounded-lg transition-colors"
+              disabled={createBlog.isPending}
+              onClick={handleSubmit}
+              className="mt-3 w-full bg-[#0B31BD] hover:bg-[#0929a3] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
+              {createBlog.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
               {primaryActionLabel}
             </button>
           </div>
@@ -188,79 +238,42 @@ export default function PostForm({ title, post }: PostFormProps) {
             <label className="text-sm font-semibold text-gray-700">
               Featured Image
             </label>
-            <div className="border mt-2 border-dashed border-gray-300 rounded-lg p-6 text-center text-sm text-gray-500">
-              <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
-              <p className="font-semibold text-gray-700">
-                Click to upload or drag and drop
-              </p>
-              <p className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB</p>
-            </div>
-          </div>
-
-          {/* <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700">
-              SEO Settings
-            </h3>
-            <div>
-              <label className="text-xs font-semibold text-gray-500">
-                SEO Title
-              </label>
-              <input
-                value={seoTitle}
-                onChange={(event) => setSeoTitle(event.target.value)}
-                className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-gray-500">
-                Meta Description
-              </label>
-              <textarea
-                value={seoDescription}
-                onChange={(event) => setSeoDescription(event.target.value)}
-                placeholder="Short description for search engines..."
-                className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm min-h-20"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-gray-500">
-                URL Slug
-              </label>
-              <div className="mt-1 flex items-center gap-2">
-                <span className="text-xs text-gray-500">/blog/</span>
-                <input
-                  value={slug}
-                  onChange={(event) => setSlug(event.target.value)}
-                  className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm"
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+            {imagePreview ? (
+              <div className="relative mt-2">
+                <img
+                  src={imagePreview}
+                  alt="Featured preview"
+                  className="w-full h-40 object-cover rounded-lg"
                 />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
-            <h3 className="text-sm font-semibold text-gray-700">CTA Button</h3>
-            <div className="space-y-2">
-              {ctaOptions.map((option) => (
                 <button
-                  key={option}
                   type="button"
-                  onClick={() => setCta(option)}
-                  className={`w-full text-left px-3 py-2 rounded-lg border text-sm font-semibold transition-colors ${
-                    cta === option
-                      ? "border-[#0B31BD] bg-blue-50 text-[#0B31BD]"
-                      : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                  }`}
+                  onClick={handleRemoveImage}
+                  className="absolute top-2 right-2 bg-white/80 hover:bg-white rounded-full p-1"
                 >
-                  {option}
-                  <span className="block text-xs font-normal text-gray-500">
-                    {option === "Book Free Trial"
-                      ? "For student-focused posts"
-                      : "For tutor recruitment posts"}
-                  </span>
+                  <X className="w-4 h-4 text-gray-700" />
                 </button>
-              ))}
-            </div>
-          </div> */}
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full border mt-2 border-dashed border-gray-300 rounded-lg p-6 text-center text-sm text-gray-500 hover:border-gray-400 transition-colors cursor-pointer"
+              >
+                <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
+                <p className="font-semibold text-gray-700">
+                  Click to upload or drag and drop
+                </p>
+                <p className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB</p>
+              </button>
+            )}
+          </div>
         </aside>
       </div>
     </div>

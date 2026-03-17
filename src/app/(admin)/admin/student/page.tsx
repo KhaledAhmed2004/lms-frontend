@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, MoreVertical, Users } from "lucide-react";
+import { Search, MoreVertical, Users, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -215,7 +215,12 @@ const StudentManagement = () => {
                           className={`border-b border-gray-100 hover:bg-gray-50 ${isFetching ? "opacity-50" : ""}`}
                         >
                           <TableCell className="py-3 px-4 text-gray-900 font-medium">
-                            {student.name}
+                            <span className="flex items-center gap-1.5">
+                              {student.name}
+                              {student.studentProfile?.isSpecialStudent && (
+                                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" title="Special student (€25/hr)" />
+                              )}
+                            </span>
                           </TableCell>
                           <TableCell className="py-3 px-4 text-gray-600">
                             {student.email}

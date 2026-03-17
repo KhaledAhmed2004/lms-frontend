@@ -16,6 +16,7 @@ export interface Student {
     hasCompletedTrial: boolean;
     trialRequestsCount: number;
     sessionRequestsCount: number;
+    isSpecialStudent?: boolean;
   };
   createdAt: string;
   updatedAt: string;
@@ -127,6 +128,22 @@ export function useAdminUpdateStudentProfile() {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['students'] });
       queryClient.invalidateQueries({ queryKey: ['students', variables.studentId] });
+    },
+  });
+}
+
+// Toggle Special Student - Admin Only
+export function useToggleSpecialStudent() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (studentId: string) => {
+      const { data } = await apiClient.patch(`/user/students/${studentId}/toggle-special`);
+      return data;
+    },
+    onSuccess: (_, studentId) => {
+      queryClient.invalidateQueries({ queryKey: ['students'] });
+      queryClient.invalidateQueries({ queryKey: ['students', studentId] });
     },
   });
 }

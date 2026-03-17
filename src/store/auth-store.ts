@@ -10,6 +10,9 @@ export interface User {
   isVerified?: boolean;
   phone?: string;
   address?: string;
+  studentProfile?: {
+    isSpecialStudent?: boolean;
+  };
 }
 
 interface AuthState {
