@@ -1,11 +1,5 @@
-"use client";
+import MessagesPageContent from "./components/MessagesPageContent";
 
-import Messages from "@/components/messages/Messages";
-
-export default function AdminMessagesPage() {
-  return (
-    <div className="h-full">
-      <Messages />
-    </div>
-  );
+export default function Page() {
+  return <MessagesPageContent />;
 }

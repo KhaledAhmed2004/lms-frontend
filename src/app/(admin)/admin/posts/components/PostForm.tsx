@@ -1,11 +1,12 @@
 "use client";
 
-import { Upload, X, Loader2 } from "lucide-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCreateBlog } from "@/hooks/api/use-blogs";
+import { Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import Editon from "./Editon";
-import { useCreateBlog } from "@/hooks/api/use-blogs";
 import type { PostRecord, PostStatus } from "./types";
 
 type PostFormProps = {
@@ -54,7 +55,8 @@ export default function PostForm({ title, post }: PostFormProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const primaryActionLabel = useMemo(() => {
-    if (createBlog.isPending) return status === "Draft" ? "Saving..." : "Publishing...";
+    if (createBlog.isPending)
+      return status === "Draft" ? "Saving..." : "Publishing...";
     if (status === "Draft") return "Save Draft";
     return "Publish Now";
   }, [status, createBlog.isPending]);
@@ -78,19 +80,22 @@ export default function PostForm({ title, post }: PostFormProps) {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleImageSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleImageSelect = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5MB");
-      return;
-    }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image must be under 5MB");
+        return;
+      }
 
-    setFeaturedImage(file);
-    const url = URL.createObjectURL(file);
-    setImagePreview(url);
-  }, []);
+      setFeaturedImage(file);
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+    },
+    [],
+  );
 
   const handleRemoveImage = useCallback(() => {
     setFeaturedImage(null);
@@ -124,7 +129,9 @@ export default function PostForm({ title, post }: PostFormProps) {
       });
 
       toast.success(
-        status === "Draft" ? "Draft saved successfully" : "Post published successfully"
+        status === "Draft"
+          ? "Draft saved successfully"
+          : "Post published successfully",
       );
       router.push("/admin/posts");
     } catch {
@@ -186,7 +193,9 @@ export default function PostForm({ title, post }: PostFormProps) {
               onClick={handleSubmit}
               className="mt-3 w-full bg-[#0B31BD] hover:bg-[#0929a3] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
-              {createBlog.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              {createBlog.isPending && (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              )}
               {primaryActionLabel}
             </button>
           </div>
@@ -247,11 +256,14 @@ export default function PostForm({ title, post }: PostFormProps) {
             />
             {imagePreview ? (
               <div className="relative mt-2">
-                <img
+                <Image
                   src={imagePreview}
                   alt="Featured preview"
+                  height={50}
+                  width={50}
                   className="w-full h-40 object-cover rounded-lg"
                 />
+
                 <button
                   type="button"
                   onClick={handleRemoveImage}

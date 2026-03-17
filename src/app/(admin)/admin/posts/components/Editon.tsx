@@ -152,7 +152,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
           “
         </button>
       </div>
-      <div className="px-3 py-2 min-h-[320px]">
+      <div className="px-3 py-2 min-h-80">
         <EditorContent editor={editor} />
       </div>
     </div>
