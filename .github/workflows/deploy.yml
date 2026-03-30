@@ -37,14 +37,17 @@ jobs:
             echo ">>> Installing dependencies..."
             npm install
 
+            echo ">>> Stopping PM2 process..."
+            sudo pm2 stop lms-frontend || echo "WARNING: PM2 stop failed - process may not be running"
+
             echo ">>> Cleaning old build..."
             rm -rf .next
 
             echo ">>> Building..."
             npm run build
 
-            echo ">>> Reloading PM2..."
-            sudo pm2 reload lms-frontend || sudo pm2 restart lms-frontend || echo "WARNING: PM2 reload failed - check 'sudo pm2 list' for correct app name"
+            echo ">>> Starting PM2..."
+            sudo pm2 start lms-frontend || sudo pm2 restart lms-frontend || echo "WARNING: PM2 start failed - check 'sudo pm2 list' for correct app name"
 
             sudo pm2 save
 
