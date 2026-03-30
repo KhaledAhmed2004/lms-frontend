@@ -41,7 +41,7 @@ jobs:
             sudo pm2 stop lms-frontend || echo "WARNING: PM2 stop failed - process may not be running"
 
             echo ">>> Cleaning old build..."
-            rm -rf .next
+            sudo rm -rf .next
 
             echo ">>> Building..."
             npm run build
