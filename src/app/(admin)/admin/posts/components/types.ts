@@ -1,9 +1,7 @@
-export type PostStatus = "Published" | "Draft";
-
 export type PostRecord = {
   _id: string;
   title: string;
-  status: 'draft' | 'published';
+  status: 'draft' | 'published' | 'scheduled';
   category: string;
   tags: string[];
   featuredImage: string;
