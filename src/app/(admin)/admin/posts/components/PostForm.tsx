@@ -48,7 +48,8 @@ export default function PostForm({ title, post }: PostFormProps) {
   const isEditMode = !!post;
 
   const [postTitle, setPostTitle] = useState(post?.title ?? "");
-  const [status, setStatus] = useState<FormStatus>(post?.status ?? "draft");
+  const initialStatus: FormStatus = post?.status === "published" ? "published" : "draft";
+  const [status, setStatus] = useState<FormStatus>(initialStatus);
   const [category, setCategory] = useState(post?.category ?? "");
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState("");

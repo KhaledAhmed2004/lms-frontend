@@ -1,6 +1,4 @@
-import type { PostRecord } from "./types";
-
-export const postsData: PostRecord[] = [
+export const postsData = [
   {
     id: "1",
     title: "How to Ace Your Abitur: A Complete 8-Week Study Plan",
@@ -80,7 +78,7 @@ export const postsData: PostRecord[] = [
   },
 ];
 
-export const newPostDefaults: PostRecord = {
+export const newPostDefaults = {
   id: "new",
   title: "",
   status: "published",
