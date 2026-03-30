@@ -1,10 +1,9 @@
-import { CheckCircle2, Eye, FileText, FileWarning } from "lucide-react";
+import { CheckCircle2, FileText, FileWarning } from "lucide-react";
 
 type PostsStatsProps = {
   totalPosts: number;
   published: number;
   drafts: number;
-  totalViews: number;
 };
 
 function StatCard({
@@ -33,18 +32,12 @@ export default function PostsStats({
   totalPosts,
   published,
   drafts,
-  totalViews,
 }: PostsStatsProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <StatCard label="Total Posts" value={totalPosts} icon={FileText} />
       <StatCard label="Published" value={published} icon={CheckCircle2} />
       <StatCard label="Drafts" value={drafts} icon={FileWarning} />
-      <StatCard
-        label="Total Views"
-        value={totalViews.toLocaleString()}
-        icon={Eye}
-      />
     </div>
   );
 }

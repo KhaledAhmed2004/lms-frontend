@@ -1,16 +1,25 @@
 "use client";
 
 import { useParams } from "next/navigation";
+import { useBlog } from "@/hooks/api/use-blogs";
 import PostForm from "../../components/PostForm";
-import { postsData } from "../../components/posts-data";
 
 export default function EditPostPage() {
   const params = useParams();
   const rawId = params?.id;
   const id = Array.isArray(rawId) ? rawId[0] : rawId;
-  const post = postsData.find((item) => item.id === id);
 
-  if (!id || !post) {
+  const { data: post, isLoading, isError } = useBlog(id);
+
+  if (isLoading) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-xl p-6 text-center text-gray-500">
+        Loading post...
+      </div>
+    );
+  }
+
+  if (isError || !post) {
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-6">
         <h1 className="text-2xl font-bold text-gray-900">Post not found</h1>
