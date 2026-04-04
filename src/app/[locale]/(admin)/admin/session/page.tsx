@@ -122,6 +122,8 @@ const SessionManagement = () => {
     return `${dateStr} - ${startTimeStr} - ${endTimeStr}`;
   };
 
+  const ts = useTranslations("status");
+
   const getPaymentStatusColor = (status: string) => {
     switch (status) {
       case "FREE_TRIAL":
@@ -161,13 +163,28 @@ const SessionManagement = () => {
   };
 
   const formatStatusLabel = (status: string) => {
-    if (status === "FREE_TRIAL") return t("detail.freeTrial");
-    // Check if we have specific status translations, else format the string
-    // For now keeping simple formatting as fallback
-    return status
-      .split("_")
-      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-      .join(" ");
+    switch (status) {
+      case "FREE_TRIAL": return ts("freeTrial");
+      case "PAID": return ts("paid");
+      case "PENDING": return ts("pending");
+      case "FAILED": return ts("failed");
+      case "REFUNDED": return ts("refunded");
+      case SESSION_STATUS.COMPLETED: return ts("completed");
+      case SESSION_STATUS.SCHEDULED: return ts("scheduled");
+      case SESSION_STATUS.STARTING_SOON: return ts("startingSoon");
+      case SESSION_STATUS.IN_PROGRESS: return ts("inProgress");
+      case SESSION_STATUS.CANCELLED: return ts("cancelled");
+      case SESSION_STATUS.EXPIRED: return ts("expired");
+      case SESSION_STATUS.NO_SHOW: return ts("noShow");
+      case SESSION_STATUS.AWAITING_RESPONSE: return ts("awaitingResponse");
+      case SESSION_STATUS.RESCHEDULE_REQUESTED: return ts("rescheduleRequested");
+      case "ACCEPTED": return ts("accepted");
+      default:
+        return status
+          .split("_")
+          .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+          .join(" ");
+    }
   };
 
   // Stats cards data

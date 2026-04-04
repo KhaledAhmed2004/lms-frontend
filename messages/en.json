@@ -200,5 +200,29 @@
       "totalPrice": "Total Price",
       "description": "Description"
     }
+  },
+  "status": {
+    "freeTrial": "Free Trial",
+    "paid": "Paid",
+    "pending": "Pending",
+    "failed": "Failed",
+    "refunded": "Refunded",
+    "completed": "Completed",
+    "scheduled": "Scheduled",
+    "startingSoon": "Starting Soon",
+    "inProgress": "In Progress",
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "noShow": "No Show",
+    "awaitingResponse": "Awaiting Response",
+    "rescheduleRequested": "Reschedule Requested",
+    "accepted": "Accepted",
+    "open": "Open",
+    "resolved": "Resolved",
+    "closed": "Closed",
+    "available": "Available",
+    "booked": "Booked",
+    "processing": "Processing",
+    "free": "Free"
   }
 }

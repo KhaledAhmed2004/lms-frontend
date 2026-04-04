@@ -200,5 +200,29 @@
       "totalPrice": "Gesamtpreis",
       "description": "Beschreibung"
     }
+  },
+  "status": {
+    "freeTrial": "Kostenlose Probestunde",
+    "paid": "Bezahlt",
+    "pending": "Ausstehend",
+    "failed": "Fehlgeschlagen",
+    "refunded": "Erstattet",
+    "completed": "Abgeschlossen",
+    "scheduled": "Geplant",
+    "startingSoon": "Beginnt bald",
+    "inProgress": "Läuft",
+    "cancelled": "Abgesagt",
+    "expired": "Abgelaufen",
+    "noShow": "Nicht erschienen",
+    "awaitingResponse": "Wartet auf Antwort",
+    "rescheduleRequested": "Terminverschiebung angefragt",
+    "accepted": "Angenommen",
+    "open": "Offen",
+    "resolved": "Gelöst",
+    "closed": "Geschlossen",
+    "available": "Verfügbar",
+    "booked": "Gebucht",
+    "processing": "In Bearbeitung",
+    "free": "Kostenlos"
   }
 }
