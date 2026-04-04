@@ -16,6 +16,36 @@
       "errorEmpty": "Please enter email and password",
       "success": "Login successful!",
       "errorFallback": "Login failed. Please try again."
+    },
+    "register": {
+      "heading": "I want to...",
+      "trialSession": "...set up a trial session",
+      "requestButton": "REQUEST",
+      "becomeTutor": "...become a tutor",
+      "applyButton": "APPLY",
+      "hasAccount": "Already have an account?",
+      "login": "Login",
+      "back": "Back",
+      "createAccount": "Create an Account",
+      "signUpSubtitle": "Sign up to get started",
+      "fullNameLabel": "Full Name",
+      "fullNamePlaceholder": "Enter your Full Name",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "Enter your E-Mail",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your Password",
+      "agreePolicy": "I agree to the",
+      "privacyPolicy": "Privacy Policy",
+      "agreePolicySuffix": "",
+      "signUpButton": "Sign Up",
+      "creatingAccount": "Creating account...",
+      "errorAllFields": "Please fill in all fields",
+      "errorPasswordMismatch": "Passwords do not match",
+      "errorAgreePolicy": "Please agree to the Privacy Policy",
+      "success": "Account created! Please verify your email.",
+      "errorFallback": "Registration failed. Please try again."
     }
   }
 }

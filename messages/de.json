@@ -15,7 +15,37 @@
       "signUp": "Registrieren",
       "errorEmpty": "Bitte E-Mail und Passwort eingeben",
       "success": "Anmeldung erfolgreich!",
-      "errorFallback": "Anmeldung fehgeschlagen. Bitte versuche es erneut."
+      "errorFallback": "Anmeldung fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "register": {
+      "heading": "Ich möchte...",
+      "trialSession": "...eine Probestunde vereinbaren",
+      "requestButton": "ANFRAGEN",
+      "becomeTutor": "Tutor werden",
+      "applyButton": "BEWERBEN",
+      "hasAccount": "Du hast bereits ein Konto?",
+      "login": "Anmelden",
+      "back": "Zurück",
+      "createAccount": "Konto erstellen",
+      "signUpSubtitle": "Registriere dich, um loszulegen",
+      "fullNameLabel": "Vollständiger Name",
+      "fullNamePlaceholder": "Vollständigen Namen eingeben",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "E-Mail eingeben",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "confirmPasswordLabel": "Passwort bestätigen",
+      "confirmPasswordPlaceholder": "Passwort eingeben",
+      "agreePolicy": "Ich stimme der",
+      "privacyPolicy": "Datenschutzerklärung",
+      "agreePolicySuffix": "zu",
+      "signUpButton": "Registrieren",
+      "creatingAccount": "Konto wird erstellt...",
+      "errorAllFields": "Bitte fülle alle Felder aus",
+      "errorPasswordMismatch": "Passwörter stimmen nicht überein",
+      "errorAgreePolicy": "Bitte stimme der Datenschutzerklärung zu",
+      "success": "Konto erstellt! Bitte bestätige deine E-Mail-Adresse.",
+      "errorFallback": "Registrierung fehlgeschlagen. Bitte versuche es erneut."
     }
   }
 }

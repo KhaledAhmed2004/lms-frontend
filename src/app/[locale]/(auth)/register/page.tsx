@@ -3,15 +3,17 @@
 import { useState, FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useRegister } from "@/hooks/api";
 import { toast } from "sonner";
 import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 import { AuthNavbar } from "@/components/auth-navbar";
 
 const RegisterPage = () => {
+  const t = useTranslations("auth.register");
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,17 +29,17 @@ const RegisterPage = () => {
     e.preventDefault();
 
     if (!name || !email || !password || !confirmPassword) {
-      toast.error("Please fill in all fields");
+      toast.error(t("errorAllFields"));
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error(t("errorPasswordMismatch"));
       return;
     }
 
     if (!agreeToPolicy) {
-      toast.error("Please agree to the Privacy Policy");
+      toast.error(t("errorAgreePolicy"));
       return;
     }
 
@@ -45,13 +47,13 @@ const RegisterPage = () => {
       { name, email, password, role: "STUDENT" },
       {
         onSuccess: () => {
-          toast.success("Account created! Please verify your email.");
+          toast.success(t("success"));
         },
         onError: (error: any) => {
           const message =
             error?.getFullMessage?.() ||
             error?.message ||
-            "Registration failed. Please try again.";
+            t("errorFallback");
           toast.error(message);
         },
       },
@@ -67,7 +69,7 @@ const RegisterPage = () => {
           <div className="w-full max-w-[800px] space-y-10">
             {/* Heading */}
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              I want to...
+              {t("heading")}
             </h2>
 
             {/* Cards */}
@@ -77,21 +79,22 @@ const RegisterPage = () => {
                 <div className="w-36 h-36 rounded-full overflow-hidden">
                   <Image
                     src="/images/home/6.webp"
-                    alt="Set up a trial session"
+                    alt={t("trialSession")}
                     width={144}
                     height={144}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <p className="text-gray-800 text-lg font-medium">
-                  ...set up a trial session
+                  {t("trialSession")}
                 </p>
-                <Link
-                  href="/free-trial-student"
+                <button
+                  type="button"
+                  onClick={() => setShowForm(true)}
                   className="bg-[#0B31BD] hover:bg-blue-800 text-white font-semibold py-2.5 px-10 rounded-lg text-base transition-colors"
                 >
-                  REQUEST
-                </Link>
+                  {t("requestButton")}
+                </button>
               </div>
 
               {/* Card 2: Become a Tutor */}
@@ -99,20 +102,20 @@ const RegisterPage = () => {
                 <div className="w-36 h-36 rounded-full overflow-hidden">
                   <Image
                     src="/images/home/7.webp"
-                    alt="Become a tutor"
+                    alt={t("becomeTutor")}
                     width={144}
                     height={144}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <p className="text-gray-800 text-lg font-medium">
-                  ...become a tutor
+                  {t("becomeTutor")}
                 </p>
                 <Link
                   href="/free-trial-teacher"
                   className="bg-[#6366F1] hover:bg-indigo-600 text-white font-semibold py-2.5 px-10 rounded-lg text-base transition-colors"
                 >
-                  APPLY
+                  {t("applyButton")}
                 </Link>
               </div>
             </div>
@@ -120,12 +123,12 @@ const RegisterPage = () => {
             {/* Bottom Links */}
             <div className="text-center space-y-2">
               <p className="text-gray-700 text-sm">
-                Already have an account?{" "}
+                {t("hasAccount")}{" "}
                 <Link
                   href="/login"
                   className="text-[#0B31BD] hover:text-blue-700 font-semibold"
                 >
-                  Login
+                  {t("login")}
                 </Link>
               </p>
             </div>
@@ -139,16 +142,16 @@ const RegisterPage = () => {
               className="flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm font-medium transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              {t("back")}
             </button>
 
             {/* Heading Section */}
             <div className="text-center space-y-2">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                Create an Account
+                {t("createAccount")}
               </h2>
               <p className="text-gray-600 text-sm sm:text-base">
-                Sign up to get started
+                {t("signUpSubtitle")}
               </p>
             </div>
 
@@ -160,11 +163,11 @@ const RegisterPage = () => {
               {/* Name Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-900 block">
-                  Full Name
+                  {t("fullNameLabel")}
                 </label>
                 <Input
                   type="text"
-                  placeholder="Enter your Full Name"
+                  placeholder={t("fullNamePlaceholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -175,11 +178,11 @@ const RegisterPage = () => {
               {/* Email Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-900 block">
-                  E-Mail
+                  {t("emailLabel")}
                 </label>
                 <Input
                   type="email"
-                  placeholder="Enter your E-Mail"
+                  placeholder={t("emailPlaceholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -190,12 +193,12 @@ const RegisterPage = () => {
               {/* Password Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-900 block">
-                  Password
+                  {t("passwordLabel")}
                 </label>
                 <div className="relative">
                   <Input
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your Password"
+                    placeholder={t("passwordPlaceholder")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-4 py-5 pr-12 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -218,12 +221,12 @@ const RegisterPage = () => {
               {/* Confirm Password Field */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-900 block">
-                  Confirm Password
+                  {t("confirmPasswordLabel")}
                 </label>
                 <div className="relative">
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your Password"
+                    placeholder={t("confirmPasswordPlaceholder")}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full px-4 py-5 pr-12 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -257,13 +260,14 @@ const RegisterPage = () => {
                   htmlFor="policy"
                   className="text-sm text-gray-700 cursor-pointer"
                 >
-                  I agree to the{" "}
+                  {t("agreePolicy")}{" "}
                   <Link
                     href="/privacy"
                     className="text-[#0B31BD] hover:underline font-medium"
                   >
-                    Privacy Policy
+                    {t("privacyPolicy")}
                   </Link>
+                  {t("agreePolicySuffix") && ` ${t("agreePolicySuffix")}`}
                 </label>
               </div>
 
@@ -276,10 +280,10 @@ const RegisterPage = () => {
                 {isPending ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    Creating account...
+                    {t("creatingAccount")}
                   </>
                 ) : (
-                  "Sign Up"
+                  t("signUpButton")
                 )}
               </button>
             </form>
@@ -287,12 +291,12 @@ const RegisterPage = () => {
             {/* Login Link */}
             <div className="text-center">
               <p className="text-gray-700 text-sm">
-                Already have an account?{" "}
+                {t("hasAccount")}{" "}
                 <Link
                   href="/login"
                   className="text-[#0B31BD] hover:text-blue-700 font-semibold"
                 >
-                  Login
+                  {t("login")}
                 </Link>
               </p>
             </div>
