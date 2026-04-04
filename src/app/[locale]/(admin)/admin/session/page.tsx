@@ -34,10 +34,13 @@ import {
   SESSION_STATUS,
 } from "@/hooks/api";
 import type { UnifiedSession } from "@/hooks/api";
+import { useTranslations, useLocale } from "next-intl";
 
 type TabFilter = "all" | "COMPLETED" | "CANCELLED" | "SCHEDULED";
 
 const SessionManagement = () => {
+  const t = useTranslations("sessions");
+  const locale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
@@ -86,35 +89,35 @@ const SessionManagement = () => {
 
   const formatDateTime = (dateString?: string) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleString("en-US", {
+    return new Date(dateString).toLocaleString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true,
+      hour12: locale !== "de",
     });
   };
 
   const formatScheduledTime = (startTime?: string, endTime?: string) => {
-    if (!startTime) return "Not scheduled yet";
+    if (!startTime) return t("notScheduled");
     const start = new Date(startTime);
-    const dateStr = start.toLocaleDateString("en-US", {
+    const dateStr = start.toLocaleDateString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
     });
-    const startTimeStr = start.toLocaleTimeString("en-US", {
+    const startTimeStr = start.toLocaleTimeString(locale === "de" ? "de-DE" : "en-US", {
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
+      hour12: locale !== "de",
     });
     if (!endTime) return `${dateStr} - ${startTimeStr}`;
     const end = new Date(endTime);
-    const endTimeStr = end.toLocaleTimeString("en-US", {
+    const endTimeStr = end.toLocaleTimeString(locale === "de" ? "de-DE" : "en-US", {
       hour: "numeric",
       minute: "2-digit",
-      hour12: true,
+      hour12: locale !== "de",
     });
     return `${dateStr} - ${startTimeStr} - ${endTimeStr}`;
   };
@@ -158,7 +161,9 @@ const SessionManagement = () => {
   };
 
   const formatStatusLabel = (status: string) => {
-    if (status === "FREE_TRIAL") return "Free Trial";
+    if (status === "FREE_TRIAL") return t("detail.freeTrial");
+    // Check if we have specific status translations, else format the string
+    // For now keeping simple formatting as fallback
     return status
       .split("_")
       .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
@@ -168,19 +173,19 @@ const SessionManagement = () => {
   // Stats cards data
   const stats = [
     {
-      label: "Total Sessions",
+      label: t("totalSessions"),
       value: statsData?.totalSessions?.toLocaleString() || "0",
       icon: <Clock className="text-blue-600" size={24} />,
       bgColor: "bg-blue-50",
     },
     {
-      label: "Pending Sessions",
+      label: t("pendingSessions"),
       value: statsData?.pendingSessions?.toLocaleString() || "0",
       icon: <AlertCircle className="text-yellow-600" size={24} />,
       bgColor: "bg-yellow-50",
     },
     {
-      label: "Completed Sessions",
+      label: t("completedSessions"),
       value: statsData?.completedSessions?.toLocaleString() || "0",
       icon: <CheckCircle className="text-green-600" size={24} />,
       bgColor: "bg-green-50",
@@ -225,7 +230,7 @@ const SessionManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search by name, subject..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -243,27 +248,27 @@ const SessionManagement = () => {
             <TabsList className="grid w-1/2 grid-cols-4 bg-transparent p-0 h-auto">
               <TabsTrigger
                 value="all"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                All Sessions
+                {t("tabAll")}
               </TabsTrigger>
               <TabsTrigger
                 value="COMPLETED"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                Completed
+                {t("tabCompleted")}
               </TabsTrigger>
               <TabsTrigger
                 value="CANCELLED"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                Cancelled
+                {t("tabCancelled")}
               </TabsTrigger>
               <TabsTrigger
                 value="SCHEDULED"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                Scheduled
+                {t("tabScheduled")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -277,22 +282,22 @@ const SessionManagement = () => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Student Name
+                          {t("colStudentName")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Subject
+                          {t("colSubject")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Booking Date
+                          {t("colBookingDate")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Payment Status
+                          {t("colPaymentStatus")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Lesson Status
+                          {t("colLessonStatus")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Action
+                          {t("sessions.colAction", { defaultValue: "Action" })}
                         </th>
                       </tr>
                     </thead>
@@ -305,7 +310,7 @@ const SessionManagement = () => {
                             colSpan={6}
                             className="py-8 text-center text-gray-500"
                           >
-                            No sessions found
+                            {t("noSessions")}
                           </td>
                         </tr>
                       ) : (
@@ -319,7 +324,7 @@ const SessionManagement = () => {
                                 {session.studentName || "N/A"}
                                 {session.type === "TRIAL_REQUEST" && (
                                   <Badge className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
-                                    Trial Request
+                                    {t("trialRequest")}
                                   </Badge>
                                 )}
                               </div>
@@ -359,7 +364,7 @@ const SessionManagement = () => {
                                   <DropdownMenuItem
                                     onClick={() => handleViewDetails(session)}
                                   >
-                                    View Details
+                                    {t("viewDetails", { defaultValue: "View Details" })}
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
@@ -392,11 +397,11 @@ const SessionManagement = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {selectedSession?.type === "TRIAL_REQUEST"
-                ? "Trial Request Details"
-                : "Session Details"}
+                ? t("detail.trialTitle")
+                : t("detail.sessionTitle")}
               {selectedSession?.isTrial && (
                 <Badge className="bg-purple-100 text-purple-800 border-0">
-                  Free Trial
+                  {t("detail.freeTrial")}
                 </Badge>
               )}
             </DialogTitle>
@@ -408,7 +413,7 @@ const SessionManagement = () => {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <p className="text-xs font-medium text-gray-600 mb-1">
-                    Booking Date & Time of Request
+                    {t("detail.bookingDateTime")}
                   </p>
                   <p className="text-sm text-gray-900 font-medium">
                     {formatDateTime(selectedSession.createdAt)}
@@ -416,7 +421,7 @@ const SessionManagement = () => {
                 </div>
                 <div>
                   <p className="text-xs font-medium text-gray-600 mb-1">
-                    Scheduled Lesson Date & Time
+                    {t("detail.scheduledDateTime")}
                   </p>
                   <p className="text-sm text-gray-900 font-medium">
                     {formatScheduledTime(
@@ -430,23 +435,23 @@ const SessionManagement = () => {
               {/* Student Information */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                  Student Information
+                  {t("detail.studentInfo")}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Student Name</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.studentName")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.studentName || "N/A"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Student Email</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.studentEmail")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.studentEmail || "N/A"}
                     </p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-xs text-gray-600 mb-1">Student Phone</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.studentPhone")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.studentPhone || "N/A"}
                     </p>
@@ -457,23 +462,23 @@ const SessionManagement = () => {
               {/* Tutor Information */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                  Tutor Information
+                  {t("detail.tutorInfo")}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Tutor Name</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.tutorName")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.tutorName || "N/A"}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Tutor Email</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.tutorEmail")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.tutorEmail || "N/A"}
                     </p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-xs text-gray-600 mb-1">Tutor Phone</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.tutorPhone")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.tutorPhone || "N/A"}
                     </p>
@@ -484,17 +489,17 @@ const SessionManagement = () => {
               {/* Session Information */}
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">
-                  Session Information
+                  {t("detail.sessionInfo")}
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Subject</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("colSubject")}</p>
                     <p className="text-sm text-gray-900">
                       {selectedSession.subject}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Type</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("detail.type")}</p>
                     <Badge
                       className={
                         selectedSession.isTrial
@@ -503,12 +508,12 @@ const SessionManagement = () => {
                       }
                     >
                       {selectedSession.isTrial
-                        ? "Trial Session"
-                        : "Paid Session"}
+                        ? t("detail.trialSession")
+                        : t("detail.paidSession")}
                     </Badge>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Payment Status</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("colPaymentStatus")}</p>
                     <Badge
                       className={`${getPaymentStatusColor(selectedSession.paymentStatus)} border-0 w-fit`}
                     >
@@ -516,7 +521,7 @@ const SessionManagement = () => {
                     </Badge>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-600 mb-1">Lesson Status</p>
+                    <p className="text-xs text-gray-600 mb-1">{t("colLessonStatus")}</p>
                     <Badge
                       className={`${getLessonStatusColor(selectedSession.status)} border-0 w-fit`}
                     >
@@ -527,7 +532,7 @@ const SessionManagement = () => {
                     selectedSession.totalPrice > 0 && (
                       <div className="col-span-2">
                         <p className="text-xs text-gray-600 mb-1">
-                          Total Price
+                          {t("detail.totalPrice")}
                         </p>
                         <p className="text-sm text-gray-900 font-medium">
                           €{selectedSession.totalPrice.toFixed(2)}
@@ -536,7 +541,7 @@ const SessionManagement = () => {
                     )}
                   {selectedSession.description && (
                     <div className="col-span-2">
-                      <p className="text-xs text-gray-600 mb-1">Description</p>
+                      <p className="text-xs text-gray-600 mb-1">{t("detail.description")}</p>
                       <p className="text-sm text-gray-900">
                         {selectedSession.description}
                       </p>
