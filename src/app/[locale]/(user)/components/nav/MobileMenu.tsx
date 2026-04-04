@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth-store";
 import { useLogout } from "@/hooks/api/use-auth";
+import { LanguageToggle } from "@/components/language-toggle";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -39,10 +40,15 @@ const MobileMenu = ({ isOpen, closeMenu }: MobileMenuProps) => {
   return (
     <div
       className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-        isOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
+        isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
       }`}
     >
       <div className="py-6 space-y-4 border-t border-gray-200">
+        <div className="px-4 flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-500">Language</span>
+          <LanguageToggle />
+        </div>
+        
         {!mounted ? (
           // Loading skeleton while hydrating
           <div className="px-4 py-2 space-y-3">

@@ -3,6 +3,8 @@
 import React, { FormEvent, useState } from 'react';
 import { Input } from '@/components/ui/input';
 
+import { AuthNavbar } from '@/components/auth-navbar';
+
 const SetNewPasswordPage = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -18,13 +20,7 @@ const SetNewPasswordPage = () => {
 
   return (
     <>
-      <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
-        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="flex items-center justify-center w-full">
-            <h1 className="text-3xl font-bold text-[#0B31BD]">Schäfer Tutoring</h1>
-          </div>
-        </div>
-      </nav>
+      <AuthNavbar />
 
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">
         <div className="w-full max-w-[696px] space-y-8">

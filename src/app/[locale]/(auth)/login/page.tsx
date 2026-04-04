@@ -9,7 +9,7 @@ import { useLogin } from "@/hooks/api";
 import { toast } from "sonner";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LanguageToggle } from "@/components/language-toggle";
+import { AuthNavbar } from "@/components/auth-navbar";
 
 const LoginPage = () => {
   const t = useTranslations("auth.login");
@@ -47,19 +47,7 @@ const LoginPage = () => {
 
   return (
     <>
-      {/* Navbar */}
-      <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
-        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
-          <div className="flex-1 flex justify-center translate-x-8">
-            <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
-              Schäfer Tutoring
-            </Link>
-          </div>
-          <div className="flex items-center">
-            <LanguageToggle />
-          </div>
-        </div>
-      </nav>
+      <AuthNavbar />
 
       {/* Login Container */}
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">

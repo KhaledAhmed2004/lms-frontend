@@ -9,6 +9,8 @@ import { useRegister } from "@/hooks/api";
 import { toast } from "sonner";
 import { Loader2, Eye, EyeOff, ArrowLeft } from "lucide-react";
 
+import { AuthNavbar } from "@/components/auth-navbar";
+
 const RegisterPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
@@ -55,19 +57,9 @@ const RegisterPage = () => {
       },
     );
   };
-
   return (
     <>
-      {/* Navbar */}
-      <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
-        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="flex items-center justify-center w-full">
-            <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
-              Schäfer Tutoring
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <AuthNavbar />
 
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">
         {!showForm ? (

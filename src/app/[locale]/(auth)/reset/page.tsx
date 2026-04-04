@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { FormEvent } from 'react';
 import { Input } from '@/components/ui/input';
-import Link from 'next/link';
+import { AuthNavbar } from '@/components/auth-navbar';
+import { Link } from '@/i18n/routing';
 
 const ResetPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -12,19 +13,9 @@ const ResetPasswordPage = () => {
     e.preventDefault();
     console.log('Reset password attempt:', { email });
   };
-
   return (
     <>
-      {/* Navbar */}
-      <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
-        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="flex items-center justify-center w-full">
-            <h1 className="text-3xl font-bold text-[#0B31BD]">
-              Schäfer Tutoring
-            </h1>
-          </div>
-        </div>
-      </nav>
+      <AuthNavbar />
 
       {/* Reset Password Container */}
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">

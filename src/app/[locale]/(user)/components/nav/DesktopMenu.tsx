@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import { useAuthStore } from "@/store/auth-store";
+import { LanguageToggle } from "@/components/language-toggle";
 
 const DesktopMenu = () => {
   const [mounted, setMounted] = useState(false);
@@ -42,7 +43,8 @@ const DesktopMenu = () => {
   // Logged in user - show Dashboard + Avatar
   if (isAuthenticated && user) {
     return (
-      <div className="hidden md:flex items-center gap-8 lg:gap-14">
+      <div className="hidden md:flex items-center gap-6 lg:gap-10">
+        <LanguageToggle />
         <Link
           href={getDashboardLink()}
           className="text-[#0B31BD] text-lg font-medium hover:text-[#092A9E] transition-colors"
@@ -65,7 +67,8 @@ const DesktopMenu = () => {
 
   // Not logged in - show Become Tutor + Login
   return (
-    <div className="hidden md:flex items-center gap-8 lg:gap-14">
+    <div className="hidden md:flex items-center gap-6 lg:gap-10">
+      <LanguageToggle />
       <Link
         href="/free-trial-teacher"
         className="text-[#0B31BD] text-lg font-medium hover:text-[#092A9E] transition-colors"
@@ -77,4 +80,4 @@ const DesktopMenu = () => {
   );
 };
 
-export default DesktopMenu;
+export default DesktopMenu;
