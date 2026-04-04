@@ -89,6 +89,14 @@
     "support": "Support",
     "allPosts": "All Posts",
     "faq": "FAQ",
-    "export": "Export"
+    "export": "Export",
+    "notifications": "Notifications",
+    "viewAll": "View All",
+    "noNotifications": "No notifications",
+    "markAllRead": "Mark all as read",
+    "profile": "Profile",
+    "logout": "Logout",
+    "loggingOut": "Logging out...",
+    "admin": "Admin"
   }
 }

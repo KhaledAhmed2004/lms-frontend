@@ -89,6 +89,14 @@
     "support": "Support",
     "allPosts": "Alle Beiträge",
     "faq": "FAQ",
-    "export": "Export"
+    "export": "Export",
+    "notifications": "Benachrichtigungen",
+    "viewAll": "Alle anzeigen",
+    "noNotifications": "Keine Benachrichtigungen",
+    "markAllRead": "Alle als gelesen markieren",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "loggingOut": "Abmeldung läuft...",
+    "admin": "Administrator"
   }
 }

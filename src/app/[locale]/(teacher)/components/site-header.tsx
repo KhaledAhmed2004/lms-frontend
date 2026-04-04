@@ -2,13 +2,15 @@
 
 import { Bell, Menu } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import MobileMenuTutor from "@/components/dashboard/MobileMenuTutor";
 import { LanguageToggle } from "@/components/language-toggle";
 import { useLogout } from "@/hooks/api/use-auth";
 import { useAuthStore } from "@/store/auth-store";
+import { useTranslations } from "next-intl";
 
 export function SiteHeader() {
+  const t = useTranslations("nav");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
@@ -107,13 +109,13 @@ export function SiteHeader() {
               <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-[480px] flex flex-col">
                 {/* Header */}
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-                  <h3 className="font-semibold text-lg">Notifications</h3>
+                  <h3 className="font-semibold text-lg">{t("notifications")}</h3>
                   <Link
                     href="/teacher/notification"
                     className="text-sm text-[#0B31BD] hover:underline"
                     onClick={() => setNotificationMenuOpen(false)}
                   >
-                    View All
+                    {t("viewAll")}
                   </Link>
                 </div>
 
@@ -148,7 +150,7 @@ export function SiteHeader() {
                   ) : (
                     <div className="p-8 text-center text-gray-500">
                       <Bell className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                      <p>No notifications</p>
+                      <p>{t("noNotifications")}</p>
                     </div>
                   )}
                 </div>
@@ -157,7 +159,7 @@ export function SiteHeader() {
                 {notifications.length > 0 && (
                   <div className="p-3 border-t border-gray-200 text-center">
                     <button className="text-sm text-[#0B31BD] hover:underline font-medium">
-                      Mark all as read
+                      {t("markAllRead")}
                     </button>
                   </div>
                 )}
@@ -181,7 +183,7 @@ export function SiteHeader() {
               <h3 className="font-semibold text-sm lg:text-base whitespace-nowrap">
                 {user?.name || "Teacher"}
               </h3>
-              <p className="text-xs lg:text-sm whitespace-nowrap">Tutor</p>
+              <p className="text-xs lg:text-sm whitespace-nowrap">{t("tutor")}</p>
             </div>
 
             {/* Dropdown Menu */}
@@ -191,7 +193,7 @@ export function SiteHeader() {
                   href="/teacher/profile"
                   className="block px-4 py-2 text-sm hover:bg-gray-100 rounded-t-lg"
                 >
-                  Profile
+                  {t("profile")}
                 </Link>
                 <button
                   className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg"
@@ -201,7 +203,7 @@ export function SiteHeader() {
                     logout();
                   }}
                 >
-                  {isLoggingOut ? "Logging out..." : "Logout"}
+                  {isLoggingOut ? t("loggingOut") : t("logout")}
                 </button>
               </div>
             )}
