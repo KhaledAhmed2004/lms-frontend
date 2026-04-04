@@ -2,10 +2,12 @@
 
 import React, { FormEvent, useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { useTranslations } from 'next-intl';
 
 import { AuthNavbar } from '@/components/auth-navbar';
 
 const SetNewPasswordPage = () => {
+  const t = useTranslations("auth.newPassword");
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -25,16 +27,16 @@ const SetNewPasswordPage = () => {
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">
         <div className="w-full max-w-[696px] space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Set New Password</h2>
-            <p className="text-gray-600 text-sm sm:text-base">Enter your new password to complete the reset.</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("title")}</h2>
+            <p className="text-gray-600 text-sm sm:text-base">{t("subtitle")}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-900 block">New Password</label>
+              <label className="text-sm font-medium text-gray-900 block">{t("label")}</label>
               <Input
                 type="password"
-                placeholder="Enter new password"
+                placeholder={t("placeholder")}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -43,10 +45,10 @@ const SetNewPasswordPage = () => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-900 block">Confirm New Password</label>
+              <label className="text-sm font-medium text-gray-900 block">{t("confirmLabel")}</label>
               <Input
                 type="password"
-                placeholder="Confirm new password"
+                placeholder={t("confirmPlaceholder")}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -58,7 +60,7 @@ const SetNewPasswordPage = () => {
               type="submit"
               className="w-full bg-[#0B31BD] hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg text-base transition-colors"
             >
-              Set Password
+              {t("button")}
             </button>
           </form>
         </div>

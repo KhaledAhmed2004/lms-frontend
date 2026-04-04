@@ -46,6 +46,29 @@
       "errorAgreePolicy": "Please agree to the Privacy Policy",
       "success": "Account created! Please verify your email.",
       "errorFallback": "Registration failed. Please try again."
+    },
+    "otp": {
+      "title": "Verify Code",
+      "subtitle": "Enter the 6-digit code sent to your email",
+      "resend": "Resend code",
+      "verify": "Verify",
+      "backToLogin": "Back to login"
+    },
+    "reset": {
+      "title": "Reset Password",
+      "subtitle": "Enter the email and we will send you a link to reset your password",
+      "emailPlaceholder": "Enter your email",
+      "button": "Request Reset Link",
+      "backToLogin": "Back to login"
+    },
+    "newPassword": {
+      "title": "Set New Password",
+      "subtitle": "Enter your new password to complete the reset.",
+      "label": "New Password",
+      "placeholder": "Enter new password",
+      "confirmLabel": "Confirm New Password",
+      "confirmPlaceholder": "Confirm new password",
+      "button": "Set Password"
     }
   }
 }

@@ -46,6 +46,29 @@
       "errorAgreePolicy": "Bitte stimme der Datenschutzerklärung zu",
       "success": "Konto erstellt! Bitte bestätige deine E-Mail-Adresse.",
       "errorFallback": "Registrierung fehlgeschlagen. Bitte versuche es erneut."
+    },
+    "otp": {
+      "title": "Code bestätigen",
+      "subtitle": "Gib 6-stelligen Code ein, der an deine E-Mail gesendet wurde",
+      "resend": "Code erneut senden",
+      "verify": "Bestätigen",
+      "backToLogin": "Zurück zur Anmeldung"
+    },
+    "reset": {
+      "title": "Passwort zurücksetzen",
+      "subtitle": "Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen",
+      "emailPlaceholder": "E-Mail eingeben",
+      "button": "Link anfordern",
+      "backToLogin": "Zurück zur Anmeldung"
+    },
+    "newPassword": {
+      "title": "Neues Passwort festlegen",
+      "subtitle": "Lege ein neues Passwort fest.",
+      "label": "Neues Passwort",
+      "placeholder": "Neues Passwort eingeben",
+      "confirmLabel": "Neues Passwort wiederholen",
+      "confirmPlaceholder": "Neues Passwort eingeben",
+      "button": "Passwort festlegen"
     }
   }
 }

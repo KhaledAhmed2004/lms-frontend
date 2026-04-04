@@ -4,8 +4,10 @@ import React, { FormEvent, useRef, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { AuthNavbar } from '@/components/auth-navbar';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 const OTPPage = () => {
+  const t = useTranslations("auth.otp");
   const length = 6;
   const [code, setCode] = useState<string[]>(Array(length).fill(''));
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
@@ -61,8 +63,8 @@ const OTPPage = () => {
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12 bg-white">
         <div className="w-full max-w-[696px] space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Verify Code</h2>
-            <p className="text-gray-600 text-sm sm:text-base">Enter the 6-digit code sent to your email</p>
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{t("title")}</h2>
+            <p className="text-gray-600 text-sm sm:text-base">{t("subtitle")}</p>
           </div>
 
           <form onSubmit={handleVerify} className="space-y-6">
@@ -89,7 +91,7 @@ const OTPPage = () => {
                 className="text-sm text-[#0B31BD] hover:text-blue-800 font-semibold"
                 onClick={() => setCode(Array(length).fill(''))}
               >
-                Resend code
+                {t("resend")}
               </button>
             </div>
 
@@ -98,14 +100,14 @@ const OTPPage = () => {
               type="submit"
               className="w-full bg-[#0B31BD] hover:bg-blue-800 text-white font-semibold py-2.5 rounded-lg text-base transition-colors"
             >
-              Verify
+              {t("verify")}
             </button>
             </Link>
           </form>
 
           <div className="text-center">
             <Link href="/login" className="text-[#0B31BD] hover:text-blue-700 font-semibold text-sm">
-              Back to login
+              {t("backToLogin")}
             </Link>
           </div>
         </div>
