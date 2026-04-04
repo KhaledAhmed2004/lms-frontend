@@ -143,5 +143,23 @@
     "errorLoading": "Error loading students. Please try again.",
     "blockedSuccess": "Student blocked successfully",
     "unblockedSuccess": "Student unblocked successfully"
+  },
+  "tutors": {
+    "totalTutors": "Total Tutors",
+    "searchPlaceholder": "Search by name, email...",
+    "tabAll": "All Tutors",
+    "tabBlocked": "Blocked Tutors",
+    "viewDetails": "View Details",
+    "blockTutor": "Block Tutor",
+    "unblockTutor": "Unblock Tutor",
+    "noTutors": "No tutors found",
+    "blockedSuccess": "Tutor blocked successfully",
+    "unblockedSuccess": "Tutor unblocked successfully",
+    "colName": "Name",
+    "colEmail": "Email",
+    "colSubject": "Subject",
+    "colRegistration": "Registration Date",
+    "colSessions": "Sessions",
+    "colAction": "Action"
   }
 }

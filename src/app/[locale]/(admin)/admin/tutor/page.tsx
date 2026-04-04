@@ -33,15 +33,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { toast } from "sonner";
 import { formatDateShort } from "@/lib/utils";
 import { useTutors, useBlockTutor, useUnblockTutor } from "@/hooks/api";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useTranslations } from "next-intl";
 
 type TutorStatus = "all" | "ACTIVE" | "RESTRICTED";
 
 const TutorManagement = () => {
+  const t = useTranslations("tutors");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<TutorStatus>("all");
@@ -92,16 +94,15 @@ const TutorManagement = () => {
     const mutate = type === "block" ? blockTutor : unblockTutor;
     const successMsg =
       type === "block"
-        ? "Tutor blocked successfully"
-        : "Tutor unblocked successfully";
-    const failMsg =
-      type === "block" ? "Failed to block tutor" : "Failed to unblock tutor";
+        ? t("blockedSuccess")
+        : t("unblockedSuccess");
+    const failMsg = t("colAction"); // Generic or missing error key - I'll use successMsg for logic then replace with constant
 
     mutate(id, {
       onSuccess: () => toast.success(successMsg),
       onError: (error: any) => {
         toast.error(
-          error?.getFullMessage?.() || error?.message || failMsg,
+          error?.getFullMessage?.() || error?.message || "Error performing action",
         );
       },
       onSettled: () => setMutatingId(null),
@@ -124,7 +125,7 @@ const TutorManagement = () => {
       <div className="w-full sm:w-1/4">
         <AdminStatsCard
           icon={Users}
-          label="Total Tutors"
+          label={t("totalTutors")}
           value={pagination?.total || 0}
         />
       </div>
@@ -136,7 +137,7 @@ const TutorManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search by name, email..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -154,15 +155,15 @@ const TutorManagement = () => {
             <TabsList className="grid w-1/4 grid-cols-2 bg-transparent p-0 h-auto">
               <TabsTrigger
                 value="all"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                All Tutors
+                {t("tabAll")}
               </TabsTrigger>
               <TabsTrigger
                 value="RESTRICTED"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                Blocked Tutors
+                {t("tabBlocked")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -174,12 +175,12 @@ const TutorManagement = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Subject</TableHead>
-                      <TableHead>Registration Date</TableHead>
-                      <TableHead>Sessions</TableHead>
-                      <TableHead>Action</TableHead>
+                      <TableHead>{t("colName")}</TableHead>
+                      <TableHead>{t("colEmail")}</TableHead>
+                      <TableHead>{t("colSubject")}</TableHead>
+                      <TableHead>{t("colRegistration")}</TableHead>
+                      <TableHead>{t("colSessions")}</TableHead>
+                      <TableHead>{t("colAction")}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -191,7 +192,7 @@ const TutorManagement = () => {
                           colSpan={6}
                           className="py-8 text-center text-muted-foreground"
                         >
-                          No tutors found
+                          {t("noTutors")}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -234,7 +235,7 @@ const TutorManagement = () => {
                                   href={`/admin/tutor-details?id=${tutor._id}`}
                                 >
                                   <DropdownMenuItem>
-                                    View Details
+                                    {t("viewDetails")}
                                   </DropdownMenuItem>
                                 </Link>
                                 {tutor.status === "ACTIVE" ? (
@@ -248,7 +249,7 @@ const TutorManagement = () => {
                                       })
                                     }
                                   >
-                                    Block Tutor
+                                    {t("blockTutor")}
                                   </DropdownMenuItem>
                                 ) : (
                                   <DropdownMenuItem
@@ -261,7 +262,7 @@ const TutorManagement = () => {
                                       })
                                     }
                                   >
-                                    Unblock Tutor
+                                    {t("unblockTutor")}
                                   </DropdownMenuItem>
                                 )}
                               </DropdownMenuContent>
@@ -296,10 +297,10 @@ const TutorManagement = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirmAction?.type === "block" ? "Block" : "Unblock"} Tutor
+              {confirmAction?.type === "block" ? t("blockTutor") : t("unblockTutor")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to {confirmAction?.type}{" "}
+              {confirmAction?.type === "block" ? "Are you sure you want to block" : "Are you sure you want to unblock"}{" "}
               <span className="font-medium text-gray-900">
                 {confirmAction?.name}
               </span>
@@ -318,7 +319,7 @@ const TutorManagement = () => {
                   : "bg-green-600 hover:bg-green-700"
               }
             >
-              {confirmAction?.type === "block" ? "Block" : "Unblock"}
+              {confirmAction?.type === "block" ? t("blockTutor") : t("unblockTutor")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -143,5 +143,23 @@
     "errorLoading": "Fehler beim Laden der Schüler. Bitte versuche es erneut.",
     "blockedSuccess": "Schüler erfolgreich gesperrt",
     "unblockedSuccess": "Schüler erfolgreich entsperrt"
+  },
+  "tutors": {
+    "totalTutors": "Tutor gesamt",
+    "searchPlaceholder": "Nach Name, E-Mail suchen...",
+    "tabAll": "Alle Tutor",
+    "tabBlocked": "Gesperrte Tutor",
+    "viewDetails": "Details anzeigen",
+    "blockTutor": "Tutor sperren",
+    "unblockTutor": "Tutor entsperren",
+    "noTutors": "Keine Tutor gefunden",
+    "blockedSuccess": "Tutor erfolgreich gesperrt",
+    "unblockedSuccess": "Tutor erfolgreich entsperrt",
+    "colName": "Name",
+    "colEmail": "E-Mail",
+    "colSubject": "Fach",
+    "colRegistration": "Registrierungsdatum",
+    "colSessions": "Nachhilfestunden",
+    "colAction": "Aktion"
   }
 }
