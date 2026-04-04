@@ -1,0 +1,21 @@
+{
+  "auth": {
+    "login": {
+      "title": "Willkommen zurück!",
+      "subtitle": "Bitte melde dich an, um fortzufahren",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "E-Mail eingeben",
+      "passwordLabel": "Passwort",
+      "passwordPlaceholder": "Passwort eingeben",
+      "rememberMe": "Angemeldet bleiben",
+      "forgotPassword": "Passwort vergessen?",
+      "button": "Anmelden",
+      "loggingIn": "Anmeldung läuft...",
+      "noAccount": "Noch kein Konto?",
+      "signUp": "Registrieren",
+      "errorEmpty": "Bitte E-Mail und Passwort eingeben",
+      "success": "Anmeldung erfolgreich!",
+      "errorFallback": "Anmeldung fehgeschlagen. Bitte versuche es erneut."
+    }
+  }
+}

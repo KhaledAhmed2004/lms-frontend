@@ -4,12 +4,15 @@ import { useState } from "react";
 import { FormEvent } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useLogin } from "@/hooks/api";
 import { toast } from "sonner";
-import { Loader2, Eye, EyeOff, HelpCircle } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageToggle } from "@/components/language-toggle";
 
 const LoginPage = () => {
+  const t = useTranslations("auth.login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberPassword, setRememberPassword] = useState(false);
@@ -21,7 +24,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     if (!email || !password) {
-      toast.error("Please enter email and password");
+      toast.error(t("errorEmpty"));
       return;
     }
 
@@ -29,13 +32,13 @@ const LoginPage = () => {
       { email, password },
       {
         onSuccess: () => {
-          toast.success("Login successful!");
+          toast.success(t("success"));
         },
         onError: (error: any) => {
           const message =
             error?.getFullMessage?.() ||
             error?.message ||
-            "Login failed. Please try again.";
+            t("errorFallback");
           toast.error(message);
         },
       },
@@ -46,11 +49,14 @@ const LoginPage = () => {
     <>
       {/* Navbar */}
       <nav className="bg-[#FBFCFC] h-20 shadow-sm border-b border-gray-200">
-        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="flex items-center justify-center w-full">
+        <div className="px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+          <div className="flex-1 flex justify-center translate-x-8">
             <Link href="/" className="text-3xl font-bold text-[#0B31BD]">
               Schäfer Tutoring
             </Link>
+          </div>
+          <div className="flex items-center">
+            <LanguageToggle />
           </div>
         </div>
       </nav>
@@ -61,10 +67,10 @@ const LoginPage = () => {
           {/* Heading Section */}
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              Hello Again!
+              {t("title")}
             </h2>
             <p className="text-gray-600 text-sm sm:text-base">
-              Please login to continue
+              {t("subtitle")}
             </p>
           </div>
 
@@ -76,11 +82,11 @@ const LoginPage = () => {
             {/* Email Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 block">
-                E-Mail
+                {t("emailLabel")}
               </label>
               <Input
                 type="email"
-                placeholder="Enter your E-Mail"
+                placeholder={t("emailPlaceholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-5 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -91,13 +97,13 @@ const LoginPage = () => {
             {/* Password Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 block">
-                Password
+                {t("passwordLabel")}
               </label>
 
               <div className="relative">
                 <Input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your Password"
+                  placeholder={t("passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-5 pr-12 border border-gray-300 rounded-lg focus:border-gray-400 focus:ring-0 focus:outline-none"
@@ -134,7 +140,7 @@ const LoginPage = () => {
                   htmlFor="remember"
                   className="text-sm text-gray-700 cursor-pointer"
                 >
-                  Remember Me
+                  {t("rememberMe")}
                 </label>
               </div>
               <div>
@@ -142,7 +148,7 @@ const LoginPage = () => {
                   href="/reset"
                   className="text-sm text-[#0B31BD] hover:text-[#0B31BD] hover:underline font-medium"
                 >
-                  Forgot Password?
+                  {t("forgotPassword")}
                 </Link>
               </div>
             </div>
@@ -156,10 +162,10 @@ const LoginPage = () => {
               {isPending ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Logging in...
+                  {t("loggingIn")}
                 </>
               ) : (
-                "Login"
+                t("button")
               )}
             </button>
           </form>
@@ -167,12 +173,12 @@ const LoginPage = () => {
           {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-gray-700 text-sm">
-              Don&apos;t have an account?{" "}
+              {t("noAccount")}{" "}
               <Link
                 href="/register"
                 className="text-[#0B31BD] hover:text-blue-700 font-semibold"
               >
-                Sign up
+                {t("signUp")}
               </Link>
             </p>
           </div>

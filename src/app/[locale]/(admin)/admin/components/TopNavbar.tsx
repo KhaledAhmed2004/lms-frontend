@@ -1,11 +1,13 @@
-"use client";
+// src/components/dashboard/TopNavbar.tsx
+'use client';
 
-import MobileMenuStudent from "@/components/dashboard/MobileMenuStudent";
+import { Bell, Menu } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
+import MobileMenuAdmin from "@/components/dashboard/MobileMenuAdmin";
+import { LanguageToggle } from "@/components/language-toggle";
 import { useLogout } from "@/hooks/api";
 import { useAuthStore } from "@/store/auth-store";
-import { Bell, Menu } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 
 export default function TopNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,7 +19,7 @@ export default function TopNavbar() {
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const { user } = useAuthStore();
 
-  // Close dropdowns on outside click
+  // Close user dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -41,61 +43,64 @@ export default function TopNavbar() {
   const notifications = [
     {
       id: 1,
-      title: "Session Confirmed",
-      message: "Your math session with Prof. Smith is confirmed for tomorrow",
+      title: "New Session Request",
+      message: "Sarah Johnson requested a math tutoring session",
       time: "5 min ago",
-      unread: true,
+      unread: true
     },
     {
       id: 2,
-      title: "New Message",
-      message: "You have a new message from your tutor",
+      title: "Payment Received",
+      message: "Payment of $50 received from John Smith",
       time: "1 hour ago",
-      unread: true,
+      unread: true
     },
     {
       id: 3,
-      title: "Session Reminder",
-      message: "Physics session starts in 30 minutes",
+      title: "Session Completed",
+      message: "Physics session with Mike Davis has been completed",
       time: "2 hours ago",
-      unread: false,
+      unread: false
     },
     {
       id: 4,
-      title: "Payment Successful",
-      message: "Your subscription payment was successful",
+      title: "New Message",
+      message: "You have a new message from Emma Wilson",
       time: "Yesterday",
-      unread: false,
-    },
+      unread: false
+    }
   ];
 
   return (
     <>
-      <header className="h-16 sm:h-20 lg:h-24 bg-white fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-3 sm:px-4 md:px-16 max-w-full">
-        {/* Left: Hamburger + Title */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-shrink">
+      <header className="h-20 md:h-24 bg-white fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-3 sm:px-4 md:px-16">
+        
+        {/* Left: Hamburger (mobile) + Page Title */}
+        <div className="flex items-center gap-3 md:gap-4">
+          {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(true)}
-            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg lg:hidden flex-shrink-0"
+            className="p-2 hover:bg-gray-100 rounded-lg lg:hidden"
           >
-            <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
+            <Menu className="w-6 h-6 text-gray-700" />
           </button>
 
-          <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[#0B31BD] truncate">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-[#0B31BD] whitespace-nowrap">
             Schäfer Tutoring
           </h2>
         </div>
 
         {/* Right: Notification + Avatar */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
+        <div className="flex items-center gap-3 sm:gap-4">
           {/* Notification Dropdown */}
-          <div ref={notificationMenuRef} className="relative">
-            <button
-              onClick={() => setNotificationMenuOpen((prev) => !prev)}
-              className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition flex-shrink-0"
+          <div ref={notificationMenuRef} className="relative flex items-center gap-2">
+            <LanguageToggle />
+            <button 
+              onClick={() => setNotificationMenuOpen(prev => !prev)}
+              className="relative p-2 hover:bg-gray-100 rounded-full transition"
             >
-              <Bell className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-gray-700" />
-              <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-orange-500 rounded-full border-2 border-white"></span>
+              <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" />
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
             </button>
 
             {/* Notification Dropdown Menu */}
@@ -104,8 +109,8 @@ export default function TopNavbar() {
                 {/* Header */}
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-lg">Notifications</h3>
-                  <Link
-                    href="/student/notification"
+                  <Link 
+                    href="/admin/notification"
                     className="text-sm text-[#0B31BD] hover:underline"
                     onClick={() => setNotificationMenuOpen(false)}
                   >
@@ -164,30 +169,26 @@ export default function TopNavbar() {
           {/* Avatar + Dropdown */}
           <div
             ref={userMenuRef}
-            className="relative flex items-center gap-1.5 sm:gap-2 flex-shrink-0 cursor-pointer"
-            onClick={() => setUserMenuOpen((prev) => !prev)}
+            className="relative flex items-center gap-2 cursor-pointer"
+            onClick={() => setUserMenuOpen(prev => !prev)}
           >
-            <div className="hidden sm:block">
-              <h3 className="text-end font-semibold text-sm lg:text-base whitespace-nowrap">
-                {user?.name || "Student"}
-              </h3>
-              <p className="text-xs lg:text-sm whitespace-nowrap text-end">
-                Student
-              </p>
-            </div>
-            <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD] flex-shrink-0">
-              <div className="w-full h-full bg-[#0B31BD] flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg">
-                {user?.name?.charAt(0)?.toUpperCase() ||
-                  user?.email?.charAt(0)?.toUpperCase() ||
-                  "S"}
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD]">
+              <div className="w-full h-full bg-[#0B31BD] flex items-center justify-center text-white font-bold text-base sm:text-lg">
+                {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "A"}
               </div>
+            </div>
+
+            {/* Hide text on mobile */}
+            <div className="hidden sm:block">
+              <h3 className="font-semibold leading-tight">{user?.name || "Admin"}</h3>
+              <p className="text-sm text-gray-500">Admin</p>
             </div>
 
             {/* Dropdown Menu */}
             {userMenuOpen && (
               <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                 <Link
-                  href="/student/profile"
+                  href="/admin/profile"
                   className="block px-4 py-2 text-sm hover:bg-gray-100 rounded-t-lg"
                 >
                   Profile
@@ -209,7 +210,7 @@ export default function TopNavbar() {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenuStudent
+      <MobileMenuAdmin
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />

@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { Bell, Menu } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import MobileMenuTutor from "@/components/dashboard/MobileMenuTutor";
-import { useLogout } from "@/hooks/api/use-auth";
+import MobileMenuStudent from "@/components/dashboard/MobileMenuStudent";
+import { useLogout } from "@/hooks/api";
 import { useAuthStore } from "@/store/auth-store";
+import { Bell, Menu } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { LanguageToggle } from "@/components/language-toggle";
 
-export function SiteHeader() {
+export default function TopNavbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
@@ -41,29 +42,29 @@ export function SiteHeader() {
   const notifications = [
     {
       id: 1,
-      title: "New Student Request",
-      message: "Emma Wilson has requested a chemistry tutoring session",
+      title: "Session Confirmed",
+      message: "Your math session with Prof. Smith is confirmed for tomorrow",
       time: "5 min ago",
       unread: true,
     },
     {
       id: 2,
-      title: "Session Reminder",
-      message: "You have a math session with John Smith in 30 minutes",
+      title: "New Message",
+      message: "You have a new message from your tutor",
       time: "1 hour ago",
       unread: true,
     },
     {
       id: 3,
-      title: "Payment Received",
-      message: "Payment of $75 has been credited to your account",
+      title: "Session Reminder",
+      message: "Physics session starts in 30 minutes",
       time: "2 hours ago",
       unread: false,
     },
     {
       id: 4,
-      title: "New Message",
-      message: "Sarah Johnson sent you a message",
+      title: "Payment Successful",
+      message: "Your subscription payment was successful",
       time: "Yesterday",
       unread: false,
     },
@@ -72,7 +73,6 @@ export function SiteHeader() {
   return (
     <>
       <header className="h-16 sm:h-20 lg:h-24 bg-white fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-3 sm:px-4 md:px-16 max-w-full">
-
         {/* Left: Hamburger + Title */}
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0 flex-shrink">
           <button
@@ -91,12 +91,14 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 flex-shrink-0">
           {/* Notification Dropdown */}
           <div ref={notificationMenuRef} className="relative">
+            <LanguageToggle />
+
             <button
-              onClick={() => setNotificationMenuOpen(prev => !prev)}
+              onClick={() => setNotificationMenuOpen((prev) => !prev)}
               className="relative p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition flex-shrink-0"
             >
               <Bell className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-gray-700" />
-              <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              <span className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-orange-500 rounded-full border-2 border-white"></span>
             </button>
 
             {/* Notification Dropdown Menu */}
@@ -106,7 +108,7 @@ export function SiteHeader() {
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-lg">Notifications</h3>
                   <Link
-                    href="/teacher/notification"
+                    href="/student/notification"
                     className="text-sm text-[#0B31BD] hover:underline"
                     onClick={() => setNotificationMenuOpen(false)}
                   >
@@ -166,26 +168,29 @@ export function SiteHeader() {
           <div
             ref={userMenuRef}
             className="relative flex items-center gap-1.5 sm:gap-2 flex-shrink-0 cursor-pointer"
-            onClick={() => setUserMenuOpen(prev => !prev)}
+            onClick={() => setUserMenuOpen((prev) => !prev)}
           >
+            <div className="hidden sm:block">
+              <h3 className="text-end font-semibold text-sm lg:text-base whitespace-nowrap">
+                {user?.name || "Student"}
+              </h3>
+              <p className="text-xs lg:text-sm whitespace-nowrap text-end">
+                Student
+              </p>
+            </div>
             <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD] flex-shrink-0">
               <div className="w-full h-full bg-[#0B31BD] flex items-center justify-center text-white font-bold text-sm sm:text-base lg:text-lg">
-                {user?.name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "T"}
+                {user?.name?.charAt(0)?.toUpperCase() ||
+                  user?.email?.charAt(0)?.toUpperCase() ||
+                  "S"}
               </div>
-            </div>
-
-            <div className="hidden sm:block">
-              <h3 className="font-semibold text-sm lg:text-base whitespace-nowrap">
-                {user?.name || "Teacher"}
-              </h3>
-              <p className="text-xs lg:text-sm whitespace-nowrap">Tutor</p>
             </div>
 
             {/* Dropdown Menu */}
             {userMenuOpen && (
               <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                 <Link
-                  href="/teacher/profile"
+                  href="/student/profile"
                   className="block px-4 py-2 text-sm hover:bg-gray-100 rounded-t-lg"
                 >
                   Profile
@@ -207,7 +212,7 @@ export function SiteHeader() {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenuTutor
+      <MobileMenuStudent
         isOpen={mobileMenuOpen}
         onClose={() => setMobileMenuOpen(false)}
       />

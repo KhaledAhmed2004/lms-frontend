@@ -1,0 +1,21 @@
+{
+  "auth": {
+    "login": {
+      "title": "Hello Again!",
+      "subtitle": "Please login to continue",
+      "emailLabel": "E-Mail",
+      "emailPlaceholder": "Enter your E-Mail",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your Password",
+      "rememberMe": "Remember Me",
+      "forgotPassword": "Forgot Password?",
+      "button": "Login",
+      "loggingIn": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "errorEmpty": "Please enter email and password",
+      "success": "Login successful!",
+      "errorFallback": "Login failed. Please try again."
+    }
+  }
+}
