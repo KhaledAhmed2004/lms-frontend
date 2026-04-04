@@ -44,8 +44,10 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 const Overview = () => {
+  const t = useTranslations("overview");
   const [timeRange, setTimeRange] = useState("monthly");
   const [isMounted, setIsMounted] = useState(false);
   const currentYear = new Date().getFullYear();
@@ -87,12 +89,12 @@ const Overview = () => {
 
   // Transform user distribution for pie chart
   const userDistribution = userDistributionData?.byRole?.map((item) => ({
-    name: item.role === 'STUDENT' ? 'Students' : item.role === 'TUTOR' ? 'Tutors' : item.role,
+    name: item.role === 'STUDENT' ? t('students') : item.role === 'TUTOR' ? t('tutors') : item.role,
     value: item.count,
     color: item.role === 'STUDENT' ? '#002AC8' : '#e5e7eb',
-  })).filter(item => item.name === 'Students' || item.name === 'Tutors') || [
-    { name: "Students", value: 0, color: "#002AC8" },
-    { name: "Tutors", value: 0, color: "#e5e7eb" },
+  })).filter(item => item.name === t('students') || item.name === t('tutors')) || [
+    { name: t("students"), value: 0, color: "#002AC8" },
+    { name: t("tutors"), value: 0, color: "#e5e7eb" },
   ];
 
   // Format relative time (e.g., "2 hours ago")
@@ -101,10 +103,10 @@ const Overview = () => {
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
-    if (diffInSeconds < 60) return 'Just now';
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} min ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diffInSeconds < 60) return t('justNow');
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} ${t('minAgo')}`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} ${t('hoursAgo')}`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ${t('daysAgo')}`;
 
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
@@ -130,7 +132,7 @@ const Overview = () => {
   // Stats cards config
   const statsConfig = [
     {
-      label: "Total Revenue",
+      label: t("totalRevenue"),
       value: overviewStats?.revenue?.total ?? 0,
       growth: overviewStats?.revenue?.growth ?? 0,
       growthType: overviewStats?.revenue?.growthType ?? 'neutral',
@@ -139,7 +141,7 @@ const Overview = () => {
       isCurrency: true,
     },
     {
-      label: "Total Students",
+      label: t("totalStudents"),
       value: overviewStats?.students?.total ?? 0,
       growth: overviewStats?.students?.growth ?? 0,
       growthType: overviewStats?.students?.growthType ?? 'neutral',
@@ -148,7 +150,7 @@ const Overview = () => {
       isCurrency: false,
     },
     {
-      label: "Total Tutors",
+      label: t("totalTutors"),
       value: overviewStats?.tutors?.total ?? 0,
       growth: overviewStats?.tutors?.growth ?? 0,
       growthType: overviewStats?.tutors?.growthType ?? 'neutral',
@@ -204,7 +206,7 @@ const Overview = () => {
                           <ArrowDown className="w-4 h-4" />
                         ) : null}
                         <span>{stat.growth > 0 ? '+' : ''}{stat.growth.toFixed(1)}%</span>
-                        <span className="text-gray-500">vs last month</span>
+                        <span className="text-gray-500">{t("vsLastMonth")}</span>
                       </div>
                     )}
                   </div>
@@ -222,17 +224,17 @@ const Overview = () => {
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Revenue Trend</CardTitle>
-                <CardDescription>Monthly revenue performance</CardDescription>
+                <CardTitle>{t("revenueTrend")}</CardTitle>
+                <CardDescription>{t("monthlyPerformance")}</CardDescription>
               </div>
               <Select value={timeRange} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="yearly">Yearly</SelectItem>
+                  <SelectItem value="monthly">{t("monthly")}</SelectItem>
+                  <SelectItem value="weekly">{t("weekly")}</SelectItem>
+                  <SelectItem value="yearly">{t("yearly")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -274,7 +276,7 @@ const Overview = () => {
               </ResponsiveContainer>
             ) : (
               <div className="flex items-center justify-center h-[300px] text-gray-500">
-                No revenue data available
+                {t("noRevenueData")}
               </div>
             )}
           </CardContent>
@@ -289,13 +291,13 @@ const Overview = () => {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle>Recent Activity</CardTitle>
+                      <CardTitle>{t("recentActivity")}</CardTitle>
                       <CardDescription>
-                        Latest platform activities
+                        {t("latestActivities")}
                       </CardDescription>
                     </div>
                     <Button variant="outline" size="sm">
-                      View All
+                      {t("viewAll")}
                     </Button>
                   </div>
                 </CardHeader>
@@ -338,7 +340,7 @@ const Overview = () => {
                     </div>
                   ) : (
                     <div className="flex items-center justify-center py-8 text-gray-500">
-                      No recent activities
+                      {t("noRecentActivities")}
                     </div>
                   )}
                 </CardContent>
@@ -349,8 +351,8 @@ const Overview = () => {
           {/* Right Section - Users Distribution (1/3 width) */}
           <Card className="border-gray-200 w-1/3">
             <CardHeader>
-              <CardTitle>User Distribution</CardTitle>
-              <CardDescription>Platform users breakdown</CardDescription>
+              <CardTitle>{t("userDistribution")}</CardTitle>
+              <CardDescription>{t("usersBreakdown")}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center justify-center">
               {!isMounted || distributionLoading ? (
@@ -384,7 +386,7 @@ const Overview = () => {
                 </ResponsiveContainer>
               ) : (
                 <div className="flex items-center justify-center h-[250px] text-gray-500">
-                  No user data available
+                  {t("noUserData")}
                 </div>
               )}
 
@@ -398,19 +400,19 @@ const Overview = () => {
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 bg-[#002AC8] rounded-full"></span>
-                        Students
+                        {t("students")}
                       </span>
                       <span className="font-semibold text-gray-900">
-                        {formatNumber(userDistribution.find(u => u.name === 'Students')?.value || 0)}
+                        {formatNumber(userDistribution.find(u => u.name === t('students'))?.value || 0)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2 text-sm">
                         <span className="w-2 h-2 bg-gray-300 rounded-full"></span>
-                        Tutors
+                        {t("tutors")}
                       </span>
                       <span className="font-semibold text-gray-900">
-                        {formatNumber(userDistribution.find(u => u.name === 'Tutors')?.value || 0)}
+                        {formatNumber(userDistribution.find(u => u.name === t('tutors'))?.value || 0)}
                       </span>
                     </div>
                   </>

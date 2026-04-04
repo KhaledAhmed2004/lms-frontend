@@ -1,15 +1,12 @@
-export type PostStatus = "Published" | "Draft";
-
 export type PostRecord = {
-  id: string;
+  _id: string;
   title: string;
-  status: PostStatus;
+  status: 'draft' | 'published' | 'scheduled';
   category: string;
-  views: number;
-  publishedAt?: string;
   tags: string[];
+  featuredImage: string;
   slug: string;
-  seoTitle: string;
-  seoDescription: string;
-  cta: "Book Free Trial" | "Apply as Tutor";
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 };

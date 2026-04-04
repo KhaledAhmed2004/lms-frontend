@@ -1,18 +1,41 @@
-import { Pencil, Trash2 } from "lucide-react";
+"use client";
+
+import { Loader2, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useDeleteBlog } from "@/hooks/api/use-blogs";
 import type { PostRecord } from "./types";
 
 type PostsTableProps = {
   posts: PostRecord[];
 };
 
-const statusStyles: Record<PostRecord["status"], string> = {
-  Published: "bg-green-50 text-green-700",
-  Draft: "bg-gray-100 text-gray-700",
-  Scheduled: "bg-orange-50 text-orange-700",
+const statusStyles: Record<string, string> = {
+  published: "bg-green-50 text-green-700",
+  draft: "bg-gray-100 text-gray-700",
 };
 
+function formatDate(dateString: string) {
+  if (!dateString) return "-";
+  return new Date(dateString).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default function PostsTable({ posts }: PostsTableProps) {
+  const deleteBlog = useDeleteBlog();
+
+  const handleDelete = (post: PostRecord) => {
+    if (!confirm(`Are you sure you want to delete "${post.title}"?`)) return;
+
+    deleteBlog.mutate(post._id, {
+      onSuccess: () => toast.success("Post deleted successfully"),
+      onError: () => toast.error("Failed to delete post"),
+    });
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
@@ -29,7 +52,7 @@ export default function PostsTable({ posts }: PostsTableProps) {
                 Category
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Views
+                Created
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
                 Actions
@@ -38,22 +61,23 @@ export default function PostsTable({ posts }: PostsTableProps) {
           </thead>
           <tbody>
             {posts.map((post, index) => {
-              const showViews = post.status === "Published";
               const rowBorder =
                 index !== posts.length - 1 ? "border-b border-gray-200" : "";
 
               return (
-                <tr key={post.id} className="hover:bg-gray-50">
+                <tr key={post._id} className="hover:bg-gray-50">
                   <td className={`px-6 py-4 text-sm ${rowBorder}`}>
                     <p className="font-semibold text-gray-900">{post.title}</p>
                     <p className="text-xs text-gray-500 mt-1">
-                      Published: {post.publishedAt || "-"}
+                      {post.tags.length > 0
+                        ? post.tags.slice(0, 3).join(", ")
+                        : "-"}
                     </p>
                   </td>
                   <td className={`px-6 py-4 text-sm ${rowBorder}`}>
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        statusStyles[post.status]
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${
+                        statusStyles[post.status] ?? "bg-gray-100 text-gray-700"
                       }`}
                     >
                       {post.status}
@@ -67,12 +91,12 @@ export default function PostsTable({ posts }: PostsTableProps) {
                   <td
                     className={`px-6 py-4 text-sm text-gray-700 ${rowBorder}`}
                   >
-                    {showViews ? post.views.toLocaleString() : "-"}
+                    {formatDate(post.createdAt)}
                   </td>
                   <td className={`px-6 py-4 text-sm ${rowBorder}`}>
                     <div className="flex items-center gap-2">
                       <Link
-                        href={`/admin/posts/edit/${post.id}`}
+                        href={`/admin/posts/edit/${post._id}`}
                         className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-[#0B31BD] rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors"
                       >
                         <Pencil className="w-3.5 h-3.5" />
@@ -80,10 +104,16 @@ export default function PostsTable({ posts }: PostsTableProps) {
                       </Link>
                       <button
                         type="button"
-                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors"
+                        onClick={() => handleDelete(post)}
+                        disabled={deleteBlog.isPending}
+                        className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
                         aria-label="Delete post"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {deleteBlog.isPending ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </td>

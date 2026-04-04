@@ -1,10 +1,8 @@
-import type { PostRecord } from "./types";
-
-export const postsData: PostRecord[] = [
+export const postsData = [
   {
     id: "1",
     title: "How to Ace Your Abitur: A Complete 8-Week Study Plan",
-    status: "Published",
+    status: "published",
     category: "Abitur",
     views: 4821,
     publishedAt: "Feb 18, 2026",
@@ -25,7 +23,7 @@ export const postsData: PostRecord[] = [
   {
     id: "2",
     title: "Understanding Derivatives: The Visual Way",
-    status: "Published",
+    status: "published",
     category: "Math",
     views: 3102,
     publishedAt: "Feb 14, 2026",
@@ -39,7 +37,7 @@ export const postsData: PostRecord[] = [
   {
     id: "3",
     title: "5 Proven Techniques to Build English Vocabulary Fast",
-    status: "Draft",
+    status: "draft",
     category: "Languages",
     views: 1983,
     publishedAt: "",
@@ -53,7 +51,7 @@ export const postsData: PostRecord[] = [
   {
     id: "4",
     title: "The Pomodoro Technique: Does It Actually Work?",
-    status: "Scheduled",
+    status: "scheduled",
     category: "Study Tips",
     views: 1983,
     publishedAt: "Mar 1, 2026",
@@ -67,7 +65,7 @@ export const postsData: PostRecord[] = [
   {
     id: "5",
     title: "How to Write a Perfect Essay Under Exam Conditions",
-    status: "Published",
+    status: "published",
     category: "Exam Prep",
     views: 2311,
     publishedAt: "Jan 28, 2026",
@@ -80,10 +78,10 @@ export const postsData: PostRecord[] = [
   },
 ];
 
-export const newPostDefaults: PostRecord = {
+export const newPostDefaults = {
   id: "new",
   title: "",
-  status: "Published",
+  status: "published",
   category: "Abitur",
   views: 0,
   publishedAt: "",

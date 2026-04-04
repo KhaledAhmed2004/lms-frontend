@@ -98,5 +98,29 @@
     "logout": "Logout",
     "loggingOut": "Logging out...",
     "admin": "Admin"
+  },
+  "overview": {
+    "totalRevenue": "Total Revenue",
+    "totalStudents": "Total Students",
+    "totalTutors": "Total Tutors",
+    "vsLastMonth": "vs last month",
+    "revenueTrend": "Revenue Trend",
+    "monthlyPerformance": "Monthly revenue performance",
+    "monthly": "Monthly",
+    "weekly": "Weekly",
+    "yearly": "Yearly",
+    "noRevenueData": "No revenue data available",
+    "recentActivity": "Recent Activity",
+    "latestActivities": "Latest platform activities",
+    "noRecentActivities": "No recent activities",
+    "userDistribution": "User Distribution",
+    "usersBreakdown": "Platform users breakdown",
+    "students": "Students",
+    "tutors": "Tutors",
+    "noUserData": "No user data available",
+    "justNow": "Just now",
+    "minAgo": "min ago",
+    "hoursAgo": "hours ago",
+    "daysAgo": "days ago"
   }
 }

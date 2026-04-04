@@ -5,22 +5,23 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Editon from "./Editon";
-import { useCreateBlog } from "@/hooks/api/use-blogs";
-import type { PostRecord, PostStatus } from "./types";
+import { useCreateBlog, useUpdateBlog } from "@/hooks/api/use-blogs";
+import type { PostRecord } from "./types";
 
 type PostFormProps = {
   title: string;
   post?: PostRecord;
 };
 
-const statusOptions: PostStatus[] = ["Draft", "Published"];
+type FormStatus = "draft" | "published";
+const statusOptions: FormStatus[] = ["draft", "published"];
 
 function StatusPill({
   status,
   active,
   onClick,
 }: {
-  status: PostStatus;
+  status: FormStatus;
   active: boolean;
   onClick: () => void;
 }) {
@@ -28,7 +29,7 @@ function StatusPill({
     <button
       type="button"
       onClick={onClick}
-      className={`px-3 flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+      className={`px-3 flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${
         active
           ? "bg-[#0B31BD] text-white"
           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -43,21 +44,30 @@ export default function PostForm({ title, post }: PostFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createBlog = useCreateBlog();
+  const updateBlog = useUpdateBlog();
+  const isEditMode = !!post;
 
   const [postTitle, setPostTitle] = useState(post?.title ?? "");
-  const [status, setStatus] = useState<PostStatus>(post?.status ?? "Draft");
+  const initialStatus: FormStatus = post?.status === "published" ? "published" : "draft";
+  const [status, setStatus] = useState<FormStatus>(initialStatus);
   const [category, setCategory] = useState(post?.category ?? "");
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState(post?.content ?? "");
   const [featuredImage, setFeaturedImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    post?.featuredImage || null,
+  );
+
+  const isPending = createBlog.isPending || updateBlog.isPending;
 
   const primaryActionLabel = useMemo(() => {
-    if (createBlog.isPending) return status === "Draft" ? "Saving..." : "Publishing...";
-    if (status === "Draft") return "Save Draft";
+    if (isPending)
+      return status === "draft" ? "Saving..." : "Publishing...";
+    if (isEditMode) return status === "draft" ? "Update Draft" : "Update & Publish";
+    if (status === "draft") return "Save Draft";
     return "Publish Now";
-  }, [status, createBlog.isPending]);
+  }, [status, isPending, isEditMode]);
 
   const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
@@ -78,23 +88,27 @@ export default function PostForm({ title, post }: PostFormProps) {
     setTags((prev) => prev.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleImageSelect = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+  const handleImageSelect = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5MB");
-      return;
-    }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image must be under 5MB");
+        return;
+      }
 
-    setFeaturedImage(file);
-    const url = URL.createObjectURL(file);
-    setImagePreview(url);
-  }, []);
+      setFeaturedImage(file);
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+    },
+    [],
+  );
 
   const handleRemoveImage = useCallback(() => {
     setFeaturedImage(null);
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    if (imagePreview && imagePreview.startsWith("blob:"))
+      URL.revokeObjectURL(imagePreview);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, [imagePreview]);
@@ -114,18 +128,32 @@ export default function PostForm({ title, post }: PostFormProps) {
     }
 
     try {
-      await createBlog.mutateAsync({
-        title: postTitle.trim(),
-        content,
-        status: status.toLowerCase() as "draft" | "published",
-        category: category.trim(),
-        tags,
-        featuredImage: featuredImage ?? undefined,
-      });
-
-      toast.success(
-        status === "Draft" ? "Draft saved successfully" : "Post published successfully"
-      );
+      if (isEditMode) {
+        await updateBlog.mutateAsync({
+          id: post._id,
+          title: postTitle.trim(),
+          content,
+          status,
+          category: category.trim(),
+          tags,
+          featuredImage: featuredImage ?? undefined,
+        });
+        toast.success("Post updated successfully");
+      } else {
+        await createBlog.mutateAsync({
+          title: postTitle.trim(),
+          content,
+          status,
+          category: category.trim(),
+          tags,
+          featuredImage: featuredImage ?? undefined,
+        });
+        toast.success(
+          status === "draft"
+            ? "Draft saved successfully"
+            : "Post published successfully",
+        );
+      }
       router.push("/admin/posts");
     } catch {
       toast.error("Failed to save post. Please try again.");
@@ -182,11 +210,11 @@ export default function PostForm({ title, post }: PostFormProps) {
             </div>
             <button
               type="button"
-              disabled={createBlog.isPending}
+              disabled={isPending}
               onClick={handleSubmit}
               className="mt-3 w-full bg-[#0B31BD] hover:bg-[#0929a3] disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-2.5 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
-              {createBlog.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
               {primaryActionLabel}
             </button>
           </div>

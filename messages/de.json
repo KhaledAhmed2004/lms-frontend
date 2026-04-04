@@ -98,5 +98,29 @@
     "logout": "Abmelden",
     "loggingOut": "Abmeldung läuft...",
     "admin": "Administrator"
+  },
+  "overview": {
+    "totalRevenue": "Gesamtumsatz",
+    "totalStudents": "Schüler gesamt",
+    "totalTutors": "Tutoren gesamt",
+    "vsLastMonth": "ggü. Vormonat",
+    "revenueTrend": "Umsatzentwicklung",
+    "monthlyPerformance": "Monatliche Umsatzentwicklung",
+    "monthly": "Monatlich",
+    "weekly": "Wöchentlich",
+    "yearly": "Jährlich",
+    "noRevenueData": "Keine Umsatzdaten verfügbar",
+    "recentActivity": "Recent Activity",
+    "latestActivities": "Neueste Plattform-Aktivitäten",
+    "noRecentActivities": "Keine aktuellen Aktivitäten",
+    "userDistribution": "Benutzerverteilung",
+    "usersBreakdown": "Benutzeraufschlüsselung",
+    "students": "Schüler",
+    "tutors": "Tutoren",
+    "noUserData": "Keine Benutzerdaten verfügbar",
+    "justNow": "Gerade eben",
+    "minAgo": "Min. zuvor",
+    "hoursAgo": "Std. zuvor",
+    "daysAgo": "Tage zuvor"
   }
 }

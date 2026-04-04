@@ -218,7 +218,7 @@ const StudentManagement = () => {
                             <span className="flex items-center gap-1.5">
                               {student.name}
                               {student.studentProfile?.isSpecialStudent && (
-                                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" title="Special student (€25/hr)" />
+                                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400 shrink-0" aria-label="Special student (€25/hr)" />
                               )}
                             </span>
                           </TableCell>
