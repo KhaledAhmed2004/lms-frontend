@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { toast } from "sonner";
 import { formatDateShort } from "@/lib/utils";
 import {
@@ -37,8 +37,11 @@ import {
   type AdminApplicationStatus,
 } from "@/hooks/api";
 import { useApplicationStats } from "@/hooks/api/use-admin-stats";
+import { useTranslations } from "next-intl";
 
 const ApplicationManagement = () => {
+  const t = useTranslations("applications");
+  const ts = useTranslations("status");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | AdminApplicationStatus>(
@@ -86,7 +89,7 @@ const ApplicationManagement = () => {
     selectForInterview(
       { id },
       {
-        onSuccess: () => toast.success("Application selected for interview"),
+        onSuccess: () => toast.success(t("selectedSuccess")),
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
@@ -102,7 +105,7 @@ const ApplicationManagement = () => {
     approveApplication(
       { id },
       {
-        onSuccess: () => toast.success("Application approved successfully"),
+        onSuccess: () => toast.success(t("approvedSuccess")),
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
@@ -115,13 +118,13 @@ const ApplicationManagement = () => {
   };
 
   const handleReject = (id: string) => {
-    const reason = prompt("Enter rejection reason:");
+    const reason = prompt(t("enterRejectionReason"));
     if (!reason) return;
 
     rejectApplication(
       { id, rejectionReason: reason },
       {
-        onSuccess: () => toast.success("Application rejected"),
+        onSuccess: () => toast.success(t("rejectedSuccess")),
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
@@ -155,17 +158,17 @@ const ApplicationManagement = () => {
   const getStatusLabel = (status: AdminApplicationStatus) => {
     switch (status) {
       case "SUBMITTED":
-        return "Pending";
+        return t("pending");
       case "SELECTED_FOR_INTERVIEW":
-        return "Interview";
+        return t("interview");
       case "APPROVED":
-        return "Approved";
+        return ts("accepted");
       case "REJECTED":
-        return "Rejected";
+        return t("rejected");
       case "REVISION":
-        return "Revision";
+        return t("revision");
       case "RESUBMITTED":
-        return "Resubmitted";
+        return t("resubmitted");
       default:
         return status;
     }
@@ -186,35 +189,35 @@ const ApplicationManagement = () => {
   // Stats cards configuration
   const statsConfig = [
     {
-      label: "Total",
+      label: t("total"),
       data: stats?.total,
       icon: FileText,
       bgColor: "bg-blue-50",
       iconColor: "text-blue-600",
     },
     {
-      label: "Pending",
+      label: t("pending"),
       data: stats?.pending,
       icon: Clock,
       bgColor: "bg-yellow-50",
       iconColor: "text-yellow-600",
     },
     {
-      label: "Interview",
+      label: t("interview"),
       data: stats?.interview,
       icon: UserCheck,
       bgColor: "bg-indigo-50",
       iconColor: "text-indigo-600",
     },
     {
-      label: "Approved",
+      label: t("approved"),
       data: stats?.approved,
       icon: CheckCircle,
       bgColor: "bg-green-50",
       iconColor: "text-green-600",
     },
     {
-      label: "Rejected",
+      label: t("rejected"),
       data: stats?.rejected,
       icon: XCircle,
       bgColor: "bg-red-50",
@@ -223,16 +226,16 @@ const ApplicationManagement = () => {
   ];
 
   const tabTriggerClassName =
-    "bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black";
+    "bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap";
 
   const tabs = [
     { value: "all", label: "All" },
-    { value: "SUBMITTED", label: "Pending" },
-    { value: "SELECTED_FOR_INTERVIEW", label: "Interview" },
-    { value: "APPROVED", label: "Approved" },
-    { value: "REJECTED", label: "Rejected" },
-    { value: "REVISION", label: "Revision" },
-    { value: "RESUBMITTED", label: "Resubmitted" },
+    { value: "SUBMITTED", label: t("pending") },
+    { value: "SELECTED_FOR_INTERVIEW", label: t("interview") },
+    { value: "APPROVED", label: t("approved") },
+    { value: "REJECTED", label: t("rejected") },
+    { value: "REVISION", label: t("revision") },
+    { value: "RESUBMITTED", label: t("resubmitted") },
   ] as const;
 
   const canSelectForInterview = (status: AdminApplicationStatus) =>
@@ -310,7 +313,7 @@ const ApplicationManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search by name, email, phone..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -347,22 +350,22 @@ const ApplicationManagement = () => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Applicant Name
+                          {t("colApplicantName")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Subject
+                          {t("tutors.colSubject", { defaultValue: "Subject" })}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Application Date
+                          {t("colApplicationDate")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Phone Number
+                          {t("colPhoneNumber")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
                           Status
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Action
+                          {t("tutors.colAction", { defaultValue: "Action" })}
                         </th>
                       </tr>
                     </thead>
@@ -375,7 +378,7 @@ const ApplicationManagement = () => {
                             colSpan={6}
                             className="py-8 text-center text-gray-500"
                           >
-                            No applications found
+                            {t("noApplications")}
                           </td>
                         </tr>
                       ) : (
@@ -423,7 +426,7 @@ const ApplicationManagement = () => {
                                     href={`/admin/application-details?id=${app._id}`}
                                   >
                                     <DropdownMenuItem>
-                                      View Details
+                                      {t("tutors.viewDetails", { defaultValue: "View Details" })}
                                     </DropdownMenuItem>
                                   </Link>
 
@@ -434,7 +437,7 @@ const ApplicationManagement = () => {
                                         handleSelectForInterview(app._id)
                                       }
                                     >
-                                      Select for Interview
+                                      {t("selectForInterview")}
                                     </DropdownMenuItem>
                                   )}
 
@@ -443,7 +446,7 @@ const ApplicationManagement = () => {
                                       className="text-green-600"
                                       onClick={() => handleApprove(app._id)}
                                     >
-                                      Approve
+                                      {t("approve")}
                                     </DropdownMenuItem>
                                   )}
 
@@ -452,7 +455,7 @@ const ApplicationManagement = () => {
                                       className="text-red-600"
                                       onClick={() => handleReject(app._id)}
                                     >
-                                      Reject
+                                      {t("reject")}
                                     </DropdownMenuItem>
                                   )}
                                 </DropdownMenuContent>

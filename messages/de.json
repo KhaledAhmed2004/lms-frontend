@@ -224,5 +224,29 @@
     "booked": "Gebucht",
     "processing": "In Bearbeitung",
     "free": "Kostenlos"
+  },
+  "applications": {
+    "total": "Gesamt",
+    "pending": "Ausstehend",
+    "interview": "Interview",
+    "approved": "Genehmigt",
+    "rejected": "Abgelehnt",
+    "revision": "Überarbeitung",
+    "resubmitted": "Erneut eingereicht",
+    "searchPlaceholder": "Nach Name, E-Mail, Telefon suchen...",
+    "colApplicantName": "Bewerbername",
+    "colApplicationDate": "Bewerbungsdatum",
+    "colPhoneNumber": "Telefonnummer",
+    "selectForInterview": "Zum Interview einladen",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "noApplications": "Keine Bewerbungen gefunden",
+    "enterRejectionReason": "Ablehnungsgrund eingeben:",
+    "selectedSuccess": "Bewerbung zum Interview ausgewählt",
+    "approvedSuccess": "Bewerbung erfolgreich genehmigt",
+    "rejectedSuccess": "Bewerbung abgelehnt",
+    "approvedAsTutor": "Bewerbung genehmigt – Benutzer ist jetzt Tutor",
+    "sentForRevision": "Bewerbung zur Überarbeitung gesendet",
+    "revisionMinChars": "Die Überarbeitungsnotiz muss mindestens 10 Zeichen lang sein"
   }
 }

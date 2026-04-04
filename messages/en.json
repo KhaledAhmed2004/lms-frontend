@@ -224,5 +224,29 @@
     "booked": "Booked",
     "processing": "Processing",
     "free": "Free"
+  },
+  "applications": {
+    "total": "Total",
+    "pending": "Pending",
+    "interview": "Interview",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "revision": "Revision",
+    "resubmitted": "Resubmitted",
+    "searchPlaceholder": "Search by name, email, phone...",
+    "colApplicantName": "Applicant Name",
+    "colApplicationDate": "Application Date",
+    "colPhoneNumber": "Phone Number",
+    "selectForInterview": "Select for Interview",
+    "approve": "Approve",
+    "reject": "Reject",
+    "noApplications": "No applications found",
+    "enterRejectionReason": "Enter rejection reason:",
+    "selectedSuccess": "Application selected for interview",
+    "approvedSuccess": "Application approved successfully",
+    "rejectedSuccess": "Application rejected",
+    "approvedAsTutor": "Application approved - User is now a Tutor",
+    "sentForRevision": "Application sent for revision",
+    "revisionMinChars": "Revision note must be at least 10 characters"
   }
 }
