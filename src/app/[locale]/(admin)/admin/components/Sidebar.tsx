@@ -1,31 +1,33 @@
 // src/components/dashboard/Sidebar.tsx
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const menuItems = [
-  { label: "Overview", href: "/admin/overview" },
-  { label: "Student", href: "/admin/student" },
-  { label: "Tutor", href: "/admin/tutor" },
-  { label: "Session", href: "/admin/session" },
-  { label: "Application", href: "/admin/application" },
-  { label: "Subject", href: "/admin/subject" },
-  { label: "Grade", href: "/admin/grade" },
-  { label: "School Type", href: "/admin/school-type" },
-  { label: "Pricing", href: "/admin/pricing" },
-  { label: "Transaction", href: "/admin/transaction" },
-  { label: "Forfeited Payments", href: "/admin/forfeit" },
-  { label: "Meeting List", href: "/admin/meeting-list" },
-  { label: "Available Slot", href: "/admin/available-slot" },
-  { label: "All Posts", href: "/admin/posts" },
-  { label: "Legal Policies", href: "/admin/terms-conditions" },
-  { label: "Support", href: "/admin/support" },
-  { label: "FAQ", href: "/admin/faq" },
-  { label: "Export", href: "/admin/export" },
+  { key: "overview", href: "/admin/overview" },
+  { key: "student", href: "/admin/student" },
+  { key: "tutor", href: "/admin/tutor" },
+  { key: "session", href: "/admin/session" },
+  { key: "application", href: "/admin/application" },
+  { key: "subject", href: "/admin/subject" },
+  { key: "grade", href: "/admin/grade" },
+  { key: "schoolType", href: "/admin/school-type" },
+  { key: "pricing", href: "/admin/pricing" },
+  { key: "transaction", href: "/admin/transaction" },
+  { key: "forfeitedPayments", href: "/admin/forfeit" },
+  { key: "meetingList", href: "/admin/meeting-list" },
+  { key: "availableSlot", href: "/admin/available-slot" },
+  { key: "allPosts", href: "/admin/posts" },
+  { key: "legalPolicies", href: "/admin/terms-conditions" },
+  { key: "support", href: "/admin/support" },
+  { key: "faq", href: "/admin/faq" },
+  { key: "export", href: "/admin/export" },
 ];
 
 function Sidebar() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
 
   return (
@@ -33,7 +35,7 @@ function Sidebar() {
       {/* Centered Menu Items (248px width) */}
       <nav className="flex-1 flex flex-col items-center py-5 space-y-4">
         {menuItems.map((item) => {
-          const isActive = pathname.startsWith(item.href);
+          const isActive = pathname.includes(item.href);
 
           return (
             <Link
@@ -45,7 +47,7 @@ function Sidebar() {
                   : "text-gray-700 hover:bg-gray-100"
               }`}
             >
-              {item.label}
+              {t(item.key)}
             </Link>
           );
         })}

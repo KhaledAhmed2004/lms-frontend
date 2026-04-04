@@ -70,5 +70,25 @@
       "confirmPlaceholder": "Neues Passwort eingeben",
       "button": "Passwort festlegen"
     }
+  },
+  "nav": {
+    "overview": "Übersicht",
+    "student": "Schüler",
+    "tutor": "Tutoren",
+    "session": "Einheiten",
+    "application": "Bewerbungen",
+    "subject": "Fächer",
+    "grade": "Klassenstufen",
+    "schoolType": "Schulformen",
+    "pricing": "Preisgestaltung",
+    "transaction": "Transaktionen",
+    "forfeitedPayments": "Verfallene Zahlungen",
+    "meetingList": "Terminliste",
+    "availableSlot": "Verfügbare Termine",
+    "legalPolicies": "Rechtliche Dokumente",
+    "support": "Support",
+    "allPosts": "Alle Beiträge",
+    "faq": "FAQ",
+    "export": "Export"
   }
 }

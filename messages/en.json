@@ -70,5 +70,25 @@
       "confirmPlaceholder": "Confirm new password",
       "button": "Set Password"
     }
+  },
+  "nav": {
+    "overview": "Overview",
+    "student": "Student",
+    "tutor": "Tutor",
+    "session": "Session",
+    "application": "Application",
+    "subject": "Subject",
+    "grade": "Grade",
+    "schoolType": "School Type",
+    "pricing": "Pricing",
+    "transaction": "Transaction",
+    "forfeitedPayments": "Forfeited Payments",
+    "meetingList": "Meeting List",
+    "availableSlot": "Available Slot",
+    "legalPolicies": "Legal Policies",
+    "support": "Support",
+    "allPosts": "All Posts",
+    "faq": "FAQ",
+    "export": "Export"
   }
 }
