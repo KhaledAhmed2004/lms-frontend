@@ -122,5 +122,26 @@
     "minAgo": "min ago",
     "hoursAgo": "hours ago",
     "daysAgo": "days ago"
+  },
+  "students": {
+    "totalStudents": "Total Students",
+    "searchPlaceholder": "Search by name, email...",
+    "tabAll": "All Students",
+    "tabBlocked": "Blocked Students",
+    "colName": "Name",
+    "colEmail": "Email",
+    "colRegistration": "Registration Date",
+    "colSessions": "Sessions",
+    "colTrialStatus": "Trial Status",
+    "colAction": "Action",
+    "trialDone": "Trial Done",
+    "trialPending": "Trial Pending",
+    "viewDetails": "View Details",
+    "blockStudent": "Block Student",
+    "unblockStudent": "Unblock Student",
+    "noStudents": "No students found",
+    "errorLoading": "Error loading students. Please try again.",
+    "blockedSuccess": "Student blocked successfully",
+    "unblockedSuccess": "Student unblocked successfully"
   }
 }

@@ -122,5 +122,26 @@
     "minAgo": "Min. zuvor",
     "hoursAgo": "Std. zuvor",
     "daysAgo": "Tage zuvor"
+  },
+  "students": {
+    "totalStudents": "Schüler gesamt",
+    "searchPlaceholder": "Nach Name, E-Mail suchen...",
+    "tabAll": "Alle Schüler",
+    "tabBlocked": "Gesperrte Schüler",
+    "colName": "Name",
+    "colEmail": "E-Mail",
+    "colRegistration": "Registrierungsdatum",
+    "colSessions": "Nachhilfestunden",
+    "colTrialStatus": "Probestunde-Status",
+    "colAction": "Aktion",
+    "trialDone": "Probestunde absolviert",
+    "trialPending": "Probestunde ausstehend",
+    "viewDetails": "Details anzeigen",
+    "blockStudent": "Schüler sperren",
+    "unblockStudent": "Schüler entsperren",
+    "noStudents": "Keine Schüler gefunden",
+    "errorLoading": "Fehler beim Laden der Schüler. Bitte versuche es erneut.",
+    "blockedSuccess": "Schüler erfolgreich gesperrt",
+    "unblockedSuccess": "Schüler erfolgreich entsperrt"
   }
 }

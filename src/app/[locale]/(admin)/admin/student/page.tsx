@@ -33,15 +33,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { toast } from "sonner";
 import { formatDateShort } from "@/lib/utils";
 import { useStudents, useBlockStudent, useUnblockStudent } from "@/hooks/api";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useTranslations } from "next-intl";
 
 type StudentStatus = "all" | "ACTIVE" | "RESTRICTED";
 
 const StudentManagement = () => {
+  const t = useTranslations("students");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<StudentStatus>("all");
@@ -92,12 +94,9 @@ const StudentManagement = () => {
     const mutate = type === "block" ? blockStudent : unblockStudent;
     const successMsg =
       type === "block"
-        ? "Student blocked successfully"
-        : "Student unblocked successfully";
-    const failMsg =
-      type === "block"
-        ? "Failed to block student"
-        : "Failed to unblock student";
+        ? t("blockedSuccess")
+        : t("unblockedSuccess");
+    const failMsg = t("errorLoading");
 
     mutate(id, {
       onSuccess: () => toast.success(successMsg),
@@ -114,7 +113,7 @@ const StudentManagement = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <p className="text-red-500">
-          Error loading students. Please try again.
+          {t("errorLoading")}
         </p>
       </div>
     );
@@ -126,7 +125,7 @@ const StudentManagement = () => {
       <div className="w-full sm:w-1/4">
         <AdminStatsCard
           icon={Users}
-          label="Total Students"
+          label={t("totalStudents")}
           value={pagination?.total || 0}
         />
       </div>
@@ -138,7 +137,7 @@ const StudentManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search by name, email..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -156,15 +155,15 @@ const StudentManagement = () => {
             <TabsList className="grid w-1/4 grid-cols-2 bg-transparent p-0 h-auto">
               <TabsTrigger
                 value="all"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                All Students
+                {t("tabAll")}
               </TabsTrigger>
               <TabsTrigger
                 value="RESTRICTED"
-                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
+                className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap"
               >
-                Blocked Students
+                {t("tabBlocked")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -177,22 +176,22 @@ const StudentManagement = () => {
                   <TableHeader>
                     <TableRow className="border-b border-gray-200">
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Name
+                        {t("colName")}
                       </TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Email
+                        {t("colEmail")}
                       </TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Registration Date
+                        {t("colRegistration")}
                       </TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Sessions
+                        {t("colSessions")}
                       </TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Trial Status
+                        {t("colTrialStatus")}
                       </TableHead>
                       <TableHead className="py-3 px-4 font-semibold text-gray-700">
-                        Action
+                        {t("colAction")}
                       </TableHead>
                     </TableRow>
                   </TableHeader>
@@ -205,7 +204,7 @@ const StudentManagement = () => {
                           colSpan={6}
                           className="py-8 text-center text-gray-500"
                         >
-                          No students found
+                          {t("noStudents")}
                         </TableCell>
                       </TableRow>
                     ) : (
@@ -234,11 +233,11 @@ const StudentManagement = () => {
                           <TableCell className="py-3 px-4">
                             {student.studentProfile?.hasCompletedTrial ? (
                               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                                Trial Done
+                                {t("trialDone")}
                               </span>
                             ) : (
                               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">
-                                Trial Pending
+                                {t("trialPending")}
                               </span>
                             )}
                           </TableCell>
@@ -259,7 +258,7 @@ const StudentManagement = () => {
                                   href={`/admin/student-details?id=${student._id}`}
                                 >
                                   <DropdownMenuItem>
-                                    View Details
+                                    {t("viewDetails")}
                                   </DropdownMenuItem>
                                 </Link>
                                 {student.status === "ACTIVE" ? (
@@ -273,7 +272,7 @@ const StudentManagement = () => {
                                       })
                                     }
                                   >
-                                    Block Student
+                                    {t("blockStudent")}
                                   </DropdownMenuItem>
                                 ) : (
                                   <DropdownMenuItem
@@ -286,7 +285,7 @@ const StudentManagement = () => {
                                       })
                                     }
                                   >
-                                    Unblock Student
+                                    {t("unblockStudent")}
                                   </DropdownMenuItem>
                                 )}
                               </DropdownMenuContent>
@@ -321,10 +320,10 @@ const StudentManagement = () => {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirmAction?.type === "block" ? "Block" : "Unblock"} Student
+              {confirmAction?.type === "block" ? t("blockStudent") : t("unblockStudent")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to {confirmAction?.type}{" "}
+              {confirmAction?.type === "block" ? "Are you sure you want to block" : "Are you sure you want to unblock"}{" "}
               <span className="font-medium text-gray-900">
                 {confirmAction?.name}
               </span>
@@ -343,7 +342,7 @@ const StudentManagement = () => {
                   : "bg-green-600 hover:bg-green-700"
               }
             >
-              {confirmAction?.type === "block" ? "Block" : "Unblock"}
+              {confirmAction?.type === "block" ? t("blockStudent") : t("unblockStudent")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
