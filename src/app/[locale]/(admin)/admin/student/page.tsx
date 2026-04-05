@@ -38,12 +38,13 @@ import { toast } from "sonner";
 import { formatDateShort } from "@/lib/utils";
 import { useStudents, useBlockStudent, useUnblockStudent } from "@/hooks/api";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 type StudentStatus = "all" | "ACTIVE" | "RESTRICTED";
 
 const StudentManagement = () => {
   const t = useTranslations("students");
+  const locale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<StudentStatus>("all");
