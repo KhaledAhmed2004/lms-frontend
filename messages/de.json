@@ -524,5 +524,30 @@
     "colAction": "Aktion",
     "download": "Herunterladen",
     "noHistory": "Keine Verdiensthistorie gefunden"
+  },
+  "contact": {
+    "contactDetails": "Kontaktdaten",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "availability": "Verfügbarkeit",
+    "monSun": "Mo - So",
+    "sendUsMessage": "Sende uns eine Nachricht",
+    "firstName": "Vorname",
+    "firstNamePlaceholder": "Vornamen eingeben",
+    "lastName": "Nachname",
+    "lastNamePlaceholder": "Nachnamen eingeben",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "E-Mail eingeben",
+    "message": "Nachricht",
+    "messagePlaceholder": "Wie können wir dir helfen?",
+    "sendMessage": "Nachricht senden",
+    "requiredFields": "Bitte fülle alle Pflichtfelder aus.",
+    "messageSent": "Nachricht gesendet! Wir melden uns in Kürze bei dir.",
+    "topicGeneralInquiry": "Allgemeine Anfrage",
+    "topicFreeTrial": "Kostenlose Probestunde",
+    "topicPricing": "Preise & Tarife",
+    "topicBecomeTutor": "Tutor werden",
+    "topicTechSupport": "Technischer Support",
+    "topicOther": "Sonstiges"
   }
 }

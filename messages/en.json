@@ -524,5 +524,30 @@
     "colAction": "Action",
     "download": "Download",
     "noHistory": "No earnings history found"
+  },
+  "contact": {
+    "contactDetails": "Contact Details",
+    "phone": "Phone",
+    "email": "Email",
+    "availability": "Availability",
+    "monSun": "Mon - Sun",
+    "sendUsMessage": "Send us a message",
+    "firstName": "First Name",
+    "firstNamePlaceholder": "Enter your First Name",
+    "lastName": "Last Name",
+    "lastNamePlaceholder": "Enter your Last Name",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "Enter your E-Mail",
+    "message": "Message",
+    "messagePlaceholder": "How can we help you?",
+    "sendMessage": "Send Message",
+    "requiredFields": "Please fill in all required fields.",
+    "messageSent": "Message sent! We'll get back to you soon.",
+    "topicGeneralInquiry": "General Inquiry",
+    "topicFreeTrial": "Free Trial Session",
+    "topicPricing": "Pricing & Plans",
+    "topicBecomeTutor": "Become a Tutor",
+    "topicTechSupport": "Technical Support",
+    "topicOther": "Other"
   }
 }

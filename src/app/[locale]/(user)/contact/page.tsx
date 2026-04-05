@@ -13,37 +13,41 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-
-const contactInfo = [
-  {
-    icon: Phone,
-    label: "Phone",
-    value: "+49 162 7477536",
-    href: "tel:+491627477536",
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    value: "support@schaefer-tutoring.com",
-    href: "mailto:support@schaefer-tutoring.com",
-  },
-  {
-    icon: CalendarDays,
-    label: "Availability",
-    value: "Mon - Sun",
-  },
-];
-
-const topics = [
-  "General Inquiry",
-  "Free Trial Session",
-  "Pricing & Plans",
-  "Become a Tutor",
-  "Technical Support",
-  "Other",
-];
+import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
+  const t = useTranslations("contact");
+
+  const contactInfo = [
+    {
+      icon: Phone,
+      label: t("phone"),
+      value: "+49 162 7477536",
+      href: "tel:+491627477536",
+    },
+    {
+      icon: Mail,
+      label: t("email"),
+      value: "support@schaefer-tutoring.com",
+      href: "mailto:support@schaefer-tutoring.com",
+    },
+    {
+      icon: CalendarDays,
+      label: t("availability"),
+      value: t("monSun"),
+    },
+  ];
+
+  const topics = [
+    t("topicGeneralInquiry"),
+    t("topicFreeTrial"),
+    t("topicPricing"),
+    t("topicBecomeTutor"),
+    t("topicTechSupport"),
+    t("topicOther"),
+  ];
+
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -55,10 +59,10 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.firstName || !formData.email || !formData.message) {
-      toast.error("Please fill in all required fields.");
+      toast.error(t("requiredFields"));
       return;
     }
-    toast.success("Message sent! We'll get back to you soon.");
+    toast.success(t("messageSent"));
     setFormData({
       firstName: "",
       lastName: "",
@@ -76,7 +80,7 @@ export default function ContactPage() {
           <div className="md:col-span-1">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 h-full">
               <h2 className="text-xl font-bold text-gray-900 mb-8">
-                Contact Details
+                {t("contactDetails")}
               </h2>
               <div className="space-y-8">
                 {contactInfo.map((item) => (
@@ -109,18 +113,18 @@ export default function ContactPage() {
           <div className="md:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-900 mb-2">
-                Send us a message
+                {t("sendUsMessage")}
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      First Name
+                      {t("firstName")}
                     </label>
                     <Input
                       type="text"
-                      placeholder="Enter your First Name"
+                      placeholder={t("firstNamePlaceholder")}
                       value={formData.firstName}
                       onChange={(e) =>
                         setFormData({ ...formData, firstName: e.target.value })
@@ -129,11 +133,11 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                      Last Name
+                      {t("lastName")}
                     </label>
                     <Input
                       type="text"
-                      placeholder="Enter your Last Name"
+                      placeholder={t("lastNamePlaceholder")}
                       value={formData.lastName}
                       onChange={(e) =>
                         setFormData({ ...formData, lastName: e.target.value })
@@ -144,11 +148,11 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    E-Mail
+                    {t("emailLabel")}
                   </label>
                   <Input
                     type="email"
-                    placeholder="Enter your E-Mail"
+                    placeholder={t("emailPlaceholder")}
                     value={formData.email}
                     onChange={(e) =>
                       setFormData({ ...formData, email: e.target.value })
@@ -158,11 +162,11 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Message
+                    {t("message")}
                   </label>
                   <Textarea
                     rows={5}
-                    placeholder="How can we help you?"
+                    placeholder={t("messagePlaceholder")}
                     value={formData.message}
                     onChange={(e) =>
                       setFormData({ ...formData, message: e.target.value })
@@ -174,7 +178,7 @@ export default function ContactPage() {
                   type="submit"
                   className="w-full bg-[#0B31BD] text-white py-3 h-12 rounded-lg font-medium hover:bg-[#062183]"
                 >
-                  Send Message
+                  {t("sendMessage")}
                 </Button>
               </form>
             </div>
