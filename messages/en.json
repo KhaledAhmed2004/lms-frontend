@@ -424,5 +424,12 @@
     "completedSuccess": "Interview marked as completed",
     "cancelledSuccess": "Slot cancelled successfully",
     "cancelReason": "Please provide a cancellation reason"
+  },
+  "editStudent": {
+    "updateSuccess": "Student profile updated successfully",
+    "updateFailed": "Failed to update student profile"
+  },
+  "editTutor": {
+    "updateSuccess": "Tutor profile updated successfully"
   }
 }

@@ -424,5 +424,12 @@
     "completedSuccess": "Interview als abgeschlossen markiert",
     "cancelledSuccess": "Termin erfolgreich abgesagt",
     "cancelReason": "Bitte gib einen Absagegrund an"
+  },
+  "editStudent": {
+    "updateSuccess": "Schülerprofil erfolgreich aktualisiert",
+    "updateFailed": "Schülerprofil konnte nicht aktualisiert werden"
+  },
+  "editTutor": {
+    "updateSuccess": "Tutor-Profil erfolgreich aktualisiert"
   }
 }
