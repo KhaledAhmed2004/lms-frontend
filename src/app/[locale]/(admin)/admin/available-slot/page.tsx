@@ -65,6 +65,7 @@ import { useTranslations } from 'next-intl';
 const AvailableSlots = () => {
   const t = useTranslations('slots');
   const ts = useTranslations('status');
+  const te = useTranslations('error');
   // Calendar state
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -187,7 +188,7 @@ const AvailableSlots = () => {
             onError: (error: unknown) => {
               errorCount++;
               const errorMessage = error instanceof ApiError
-                ? error.getFullMessage()
+                ? error.getLocalizedMessage(te)
                 : 'Failed to create slot';
               toast.error(`Failed to create slot at ${timeSlots[hour].label}: ${errorMessage}`);
               resolve();
@@ -218,7 +219,7 @@ const AvailableSlots = () => {
       },
       onError: (error: unknown) => {
         const errorMessage = error instanceof ApiError
-          ? error.getFullMessage()
+          ? error.getLocalizedMessage(te)
           : 'Failed to delete slot';
         toast.error(errorMessage);
       },
@@ -234,7 +235,7 @@ const AvailableSlots = () => {
       },
       onError: (error: unknown) => {
         const errorMessage = error instanceof ApiError
-          ? error.getFullMessage()
+          ? error.getLocalizedMessage(te)
           : 'Failed to complete slot';
         toast.error(errorMessage);
       },

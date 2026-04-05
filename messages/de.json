@@ -568,5 +568,25 @@
     "sessionAccepted": "Stunde angenommen! Überprüfe deine anstehenden Stunden.",
     "reviewSubmitted": "Bewertung eingereicht!",
     "feedbackSubmitted": "Feedback eingereicht!"
+  },
+  "error": {
+    "userNotFound": "Benutzer nicht gefunden",
+    "invalidField": "Ungültiges Feld {field}: {value}",
+    "entityNotFound": "{entity} nicht gefunden ({id})",
+    "validTokenRequired": "Ein gültiger Token ist erforderlich",
+    "invalidTokenPayload": "Ungültige Token-Daten",
+    "sessionNotFound": "Stunde nicht gefunden",
+    "reviewNotFound": "Bewertung nicht gefunden",
+    "tutorNotFound": "Tutor nicht gefunden",
+    "userIdRequired": "Benutzer-ID ist erforderlich",
+    "invalidWebhookEvent": "Ungültiges Webhook-Event",
+    "bidIdRequired": "Angebots-ID ist erforderlich",
+    "paymentIdRequired": "Zahlungs-ID ist erforderlich",
+    "failedToDeleteAccount": "Konto konnte nicht gelöscht werden",
+    "paymentReleased": "Zahlung erfolgreich freigegeben und an Tutor überwiesen",
+    "paymentRefunded": "Zahlung erfolgreich erstattet",
+    "allNotificationsRead": "Alle Benachrichtigungen als gelesen markiert",
+    "verificationSuccessful": "Verifizierung erfolgreich: Bitte bewahre diesen Code sicher auf und verwende ihn zum Zurücksetzen des Passworts",
+    "googleCalendarNotConfigured": "Google Kalender OAuth2-Client nicht konfiguriert"
   }
 }

@@ -58,6 +58,7 @@ import {
   useDeleteSubject,
   Subject,
 } from "@/hooks/api";
+import { ApiError } from "@/lib/api-client";
 import { useTranslations } from "next-intl";
 
 type SubjectTab = "all" | "active" | "inactive";
@@ -65,6 +66,7 @@ type SubjectTab = "all" | "active" | "inactive";
 const SubjectManagement = () => {
   const t = useTranslations("subjects");
   const ts = useTranslations("status");
+  const te = useTranslations("error");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<SubjectTab>("all");
@@ -128,7 +130,11 @@ const SubjectManagement = () => {
       setIsCreateModalOpen(false);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to create subject");
+      toast.error(
+        error instanceof ApiError
+          ? error.getLocalizedMessage(te)
+          : error?.message || "Failed to create subject",
+      );
     }
   };
 
@@ -150,7 +156,11 @@ const SubjectManagement = () => {
       setSelectedSubject(null);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update subject");
+      toast.error(
+        error instanceof ApiError
+          ? error.getLocalizedMessage(te)
+          : error?.message || "Failed to update subject",
+      );
     }
   };
 
@@ -164,7 +174,11 @@ const SubjectManagement = () => {
       setIsDeleteDialogOpen(false);
       setSelectedSubject(null);
     } catch (error: any) {
-      toast.error(error?.message || "Failed to delete subject");
+      toast.error(
+        error instanceof ApiError
+          ? error.getLocalizedMessage(te)
+          : error?.message || "Failed to delete subject",
+      );
     }
   };
 

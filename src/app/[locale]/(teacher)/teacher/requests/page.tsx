@@ -27,6 +27,7 @@ import {
 } from "@/hooks/api/use-trial-requests";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { ApiError } from "@/lib/api-client";
 
 // Helper function to calculate days ago
 const getDaysAgo = (dateString: string) => {
@@ -46,6 +47,7 @@ const getStudentName = (request: UnifiedRequest, t: any) => {
 
 export default function RequestsPage() {
   const t = useTranslations("requests");
+  const te = useTranslations("error");
   const [activeTab, setActiveTab] = useState<"open" | "accepted">("open");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,7 +112,11 @@ export default function RequestsPage() {
           setCurrentPage(1);
         },
         onError: (error: any) => {
-          toast.error(error?.response?.data?.message || t("acceptFailed"));
+          toast.error(
+            error instanceof ApiError
+              ? error.getLocalizedMessage(te)
+              : error?.response?.data?.message || t("acceptFailed"),
+          );
         },
       }
     );

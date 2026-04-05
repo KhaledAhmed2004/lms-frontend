@@ -568,5 +568,25 @@
     "sessionAccepted": "Session accepted! Check your upcoming sessions.",
     "reviewSubmitted": "Review submitted successfully!",
     "feedbackSubmitted": "Feedback submitted successfully!"
+  },
+  "error": {
+    "userNotFound": "User not found",
+    "invalidField": "Invalid {field}: {value}",
+    "entityNotFound": "{entity} not found ({id})",
+    "validTokenRequired": "Valid token is required",
+    "invalidTokenPayload": "Invalid token payload",
+    "sessionNotFound": "Session not found",
+    "reviewNotFound": "Review not found",
+    "tutorNotFound": "Tutor not found",
+    "userIdRequired": "User ID is required",
+    "invalidWebhookEvent": "Invalid webhook event",
+    "bidIdRequired": "Bid ID is required",
+    "paymentIdRequired": "Payment ID is required",
+    "failedToDeleteAccount": "Failed to delete account",
+    "paymentReleased": "Payment released and transferred to freelancer successfully",
+    "paymentRefunded": "Payment refunded successfully",
+    "allNotificationsRead": "All notifications marked as read",
+    "verificationSuccessful": "Verification Successful: Please securely store and utilize this code for reset password",
+    "googleCalendarNotConfigured": "Google Calendar OAuth2 client not configured"
   }
 }

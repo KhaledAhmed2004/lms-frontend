@@ -14,6 +14,7 @@ import { AuthNavbar } from "@/components/auth-navbar";
 
 const RegisterPage = () => {
   const t = useTranslations("auth.register");
+  const te = useTranslations("error");
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -51,7 +52,7 @@ const RegisterPage = () => {
         },
         onError: (error: any) => {
           const message =
-            error?.getFullMessage?.() ||
+            error?.getLocalizedMessage?.(te) ||
             error?.message ||
             t("errorFallback");
           toast.error(message);
