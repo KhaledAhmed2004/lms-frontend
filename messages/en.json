@@ -549,5 +549,17 @@
     "topicBecomeTutor": "Become a Tutor",
     "topicTechSupport": "Technical Support",
     "topicOther": "Other"
+  },
+  "chat": {
+    "sendAttachmentFailed": "Failed to send attachment",
+    "fileTooLarge": "{name} is too large. Max size is 10MB",
+    "fileNotSupported": "{name} is not supported. Use images, videos, audio, or PDF",
+    "counterProposalFailed": "Failed to send counter-proposal",
+    "proposalFailed": "Failed to send proposal",
+    "acceptFailed": "Failed to accept session",
+    "declineFailed": "Failed to decline session",
+    "cancelFailed": "Failed to cancel session",
+    "supportTicket": "📩 Support Ticket",
+    "category": "Category:"
   }
 }

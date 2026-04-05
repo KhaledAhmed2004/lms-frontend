@@ -108,6 +108,7 @@ const SupportTicketManagement = () => {
   const addNotesMutation = useAddAdminNotes();
   const createChatMutation = useCreateChat();
   const sendMessageMutation = useSendMessage();
+  const tChat = useTranslations('chat');
 
   const tickets = data?.data || [];
   const pagination = data?.pagination;
@@ -188,7 +189,7 @@ const SupportTicketManagement = () => {
       // Send the ticket message as the first message if provided
       if (ticketMessage) {
         const categoryLabel = category ? TICKET_CATEGORY_LABELS[category as keyof typeof TICKET_CATEGORY_LABELS] : '';
-        const formattedMessage = `📩 Support Ticket ${ticketNumber ? `#${ticketNumber}` : ''}\n${categoryLabel ? `Category: ${categoryLabel}\n` : ''}\n${ticketMessage}`;
+        const formattedMessage = `${tChat('supportTicket')} ${ticketNumber ? `#${ticketNumber}` : ''}\n${categoryLabel ? `${tChat('category')} ${categoryLabel}\n` : ''}\n${ticketMessage}`;
 
         await sendMessageMutation.mutateAsync({
           chatId: chat._id,

@@ -549,5 +549,17 @@
     "topicBecomeTutor": "Tutor werden",
     "topicTechSupport": "Technischer Support",
     "topicOther": "Sonstiges"
+  },
+  "chat": {
+    "sendAttachmentFailed": "Anhang konnte nicht gesendet werden",
+    "fileTooLarge": "{name} ist zu groß. Maximale Größe ist 10 MB",
+    "fileNotSupported": "{name} wird nicht unterstützt. Verwende Bilder, Videos, Audio oder PDF",
+    "counterProposalFailed": "Gegenangvorschlag konnte nicht gesendet werden",
+    "proposalFailed": "Vorschlag konnte nicht gesendet werden",
+    "acceptFailed": "Stunde konnte nicht angenommen werden",
+    "declineFailed": "Stunde konnte nicht abgelehnt werden",
+    "cancelFailed": "Stunde konnte nicht abgesagt werden",
+    "supportTicket": "📩 Support-Ticket",
+    "category": "Kategorie:"
   }
 }
