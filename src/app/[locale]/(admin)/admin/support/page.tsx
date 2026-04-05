@@ -73,8 +73,10 @@ import {
   TICKET_PRIORITY_COLORS,
   type SupportTicket,
 } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 const SupportTicketManagement = () => {
+  const t = useTranslations('support');
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
@@ -130,7 +132,7 @@ const SupportTicketManagement = () => {
         status: newStatus,
         adminNotes: adminNotes || undefined,
       });
-      toast.success('Ticket status updated successfully');
+      toast.success(t('statusUpdated'));
       setShowStatusModal(false);
       setSelectedTicket(null);
       setNewStatus('');
@@ -148,7 +150,7 @@ const SupportTicketManagement = () => {
         ticketId: selectedTicket._id,
         adminNotes: adminNotes.trim(),
       });
-      toast.success('Notes added successfully');
+      toast.success(t('notesAdded'));
       setShowNotesModal(false);
       setSelectedTicket(null);
       setAdminNotes('');
@@ -160,7 +162,7 @@ const SupportTicketManagement = () => {
   const handleUpdatePriority = async (ticketId: string, priority: TICKET_PRIORITY) => {
     try {
       await updatePriorityMutation.mutateAsync({ ticketId, priority });
-      toast.success('Priority updated');
+      toast.success(t('priorityUpdated'));
     } catch (error: any) {
       toast.error(error?.response?.data?.message || 'Failed to update priority');
     }
@@ -210,31 +212,36 @@ const SupportTicketManagement = () => {
     });
   };
 
+  const getStatusLabel = (status: string) => {
+    if (status === 'IN_PROGRESS') return t('inProgress');
+    return t(status.toLowerCase() as any);
+  };
+
   // Stats cards configuration
   const statsConfig = [
     {
-      label: 'Total Tickets',
+      label: t('totalTickets'),
       value: stats?.total ?? 0,
       icon: Ticket,
       bgColor: 'bg-blue-50',
       iconColor: 'text-blue-600',
     },
     {
-      label: 'Open',
+      label: t('open'),
       value: stats?.open ?? 0,
       icon: AlertCircle,
       bgColor: 'bg-yellow-50',
       iconColor: 'text-yellow-600',
     },
     {
-      label: 'In Progress',
+      label: t('inProgress'),
       value: stats?.inProgress ?? 0,
       icon: Clock,
       bgColor: 'bg-indigo-50',
       iconColor: 'text-indigo-600',
     },
     {
-      label: 'Resolved',
+      label: t('resolved'),
       value: stats?.resolved ?? 0,
       icon: CheckCircle,
       bgColor: 'bg-green-50',
@@ -293,7 +300,7 @@ const SupportTicketManagement = () => {
       <div className="relative w-1/3">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
         <Input
-          placeholder="Search by ticket number, message..."
+          placeholder={t('searchPlaceholder')}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -315,25 +322,25 @@ const SupportTicketManagement = () => {
                 value={TICKET_STATUS.OPEN}
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Open
+                {t('open')}
               </TabsTrigger>
               <TabsTrigger
                 value={TICKET_STATUS.IN_PROGRESS}
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                In Progress
+                {t('inProgress')}
               </TabsTrigger>
               <TabsTrigger
                 value={TICKET_STATUS.RESOLVED}
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Resolved
+                {t('resolved')}
               </TabsTrigger>
               <TabsTrigger
                 value={TICKET_STATUS.CLOSED}
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Closed
+                {t('closed')}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -346,14 +353,14 @@ const SupportTicketManagement = () => {
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Ticket #</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">User</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Category</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Message</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Status</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Priority</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Created</th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">Action</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colTicket')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colUser')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colCategory')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colMessage')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colStatus')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colPriority')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colCreated')}</th>
+                        <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">{t('colAction')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -362,7 +369,7 @@ const SupportTicketManagement = () => {
                       ) : tickets.length === 0 ? (
                         <tr>
                           <td colSpan={8} className="py-8 text-center text-gray-500">
-                            No support tickets found
+                            {t('noTickets')}
                           </td>
                         </tr>
                       ) : (
@@ -393,7 +400,7 @@ const SupportTicketManagement = () => {
                             </td>
                             <td className="py-3 px-4">
                               <Badge className={`${TICKET_STATUS_COLORS[ticket.status]} border-0`}>
-                                {TICKET_STATUS_LABELS[ticket.status]}
+                                {getStatusLabel(ticket.status)}
                               </Badge>
                             </td>
                             <td className="py-3 px-4">
@@ -433,11 +440,11 @@ const SupportTicketManagement = () => {
                                 <DropdownMenuContent align="end">
                                   <DropdownMenuItem onClick={() => setSelectedTicket(ticket)}>
                                     <Eye className="w-4 h-4 mr-2" />
-                                    View Details
+                                    {t('viewDetails')}
                                   </DropdownMenuItem>
                                   <DropdownMenuItem onClick={() => openStatusModal(ticket)}>
                                     <CheckCircle className="w-4 h-4 mr-2" />
-                                    Update Status
+                                    {t('updateStatus')}
                                   </DropdownMenuItem>
                                   <DropdownMenuSeparator />
                                   <DropdownMenuItem
@@ -445,7 +452,7 @@ const SupportTicketManagement = () => {
                                     disabled={createChatMutation.isPending || sendMessageMutation.isPending}
                                   >
                                     <MessageCircle className="w-4 h-4 mr-2" />
-                                    Chat with User
+                                    {t('chatWithUser')}
                                   </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
@@ -525,10 +532,10 @@ const SupportTicketManagement = () => {
         <DialogContent className="sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              Ticket Details
+              {t('ticketDetails')}
               {selectedTicket && (
                 <Badge className={TICKET_STATUS_COLORS[selectedTicket.status]}>
-                  {TICKET_STATUS_LABELS[selectedTicket.status]}
+                  {getStatusLabel(selectedTicket.status)}
                 </Badge>
               )}
             </DialogTitle>
@@ -538,42 +545,42 @@ const SupportTicketManagement = () => {
             <div className="space-y-4 py-4">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500">Ticket Number</p>
+                  <p className="text-gray-500">{t('ticketNumber')}</p>
                   <p className="font-medium">{selectedTicket.ticketNumber}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Category</p>
+                  <p className="text-gray-500">{t('category')}</p>
                   <p className="font-medium">{TICKET_CATEGORY_LABELS[selectedTicket.category]}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Priority</p>
+                  <p className="text-gray-500">{t('priority')}</p>
                   <Badge className={TICKET_PRIORITY_COLORS[selectedTicket.priority]}>
                     {TICKET_PRIORITY_LABELS[selectedTicket.priority]}
                   </Badge>
                 </div>
                 <div>
-                  <p className="text-gray-500">User</p>
+                  <p className="text-gray-500">{t('user')}</p>
                   <p className="font-medium">{selectedTicket.user?.name}</p>
                   <p className="text-xs text-gray-400">{selectedTicket.user?.email}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500">Role</p>
+                  <p className="text-gray-500">{t('role')}</p>
                   <Badge variant="outline">{selectedTicket.userRole}</Badge>
                 </div>
                 <div>
-                  <p className="text-gray-500">Submitted</p>
+                  <p className="text-gray-500">{t('submitted')}</p>
                   <p className="font-medium">{formatDate(selectedTicket.createdAt)}</p>
                 </div>
               </div>
 
               <div>
-                <p className="text-gray-500 text-sm mb-1">Message</p>
+                <p className="text-gray-500 text-sm mb-1">{t('message')}</p>
                 <div className="bg-gray-50 rounded-lg p-4 text-sm">{selectedTicket.message}</div>
               </div>
 
               {selectedTicket.adminNotes && (
                 <div>
-                  <p className="text-gray-500 text-sm mb-1">Admin Response</p>
+                  <p className="text-gray-500 text-sm mb-1">{t('adminResponse')}</p>
                   <div className="bg-blue-50 rounded-lg p-4 text-sm border border-blue-100">
                     {selectedTicket.adminNotes}
                   </div>
@@ -590,10 +597,10 @@ const SupportTicketManagement = () => {
               className="gap-2"
             >
               <MessageCircle className="w-4 h-4" />
-              Chat with User
+              {t('chatWithUser')}
             </Button>
             <Button onClick={() => selectedTicket && openStatusModal(selectedTicket)}>
-              Update Status
+              {t('updateStatus')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -603,9 +610,9 @@ const SupportTicketManagement = () => {
       <Dialog open={showStatusModal} onOpenChange={setShowStatusModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Update Ticket Status</DialogTitle>
+            <DialogTitle>{t('updateTicketStatus')}</DialogTitle>
             <DialogDescription>
-              Change the status of ticket {selectedTicket?.ticketNumber}
+              {t('changeStatus', { number: selectedTicket?.ticketNumber || '' })}
             </DialogDescription>
           </DialogHeader>
 
@@ -614,12 +621,12 @@ const SupportTicketManagement = () => {
               <Label>Status</Label>
               <Select value={newStatus} onValueChange={(value) => setNewStatus(value as TICKET_STATUS)}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('selectStatus')} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(TICKET_STATUS).map((status) => (
                     <SelectItem key={status} value={status}>
-                      {TICKET_STATUS_LABELS[status]}
+                      {getStatusLabel(status)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -627,11 +634,11 @@ const SupportTicketManagement = () => {
             </div>
 
             <div className="space-y-2">
-              <Label>Admin Notes (Optional)</Label>
+              <Label>{t('adminNotes')}</Label>
               <Textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Add a response or note for the user..."
+                placeholder={t('adminNotesPlaceholder')}
                 className="min-h-[100px]"
               />
             </div>
@@ -648,10 +655,10 @@ const SupportTicketManagement = () => {
               {updateStatusMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Updating...
+                  {t('updating')}
                 </>
               ) : (
-                'Update Status'
+                t('updateStatus')
               )}
             </Button>
           </DialogFooter>
@@ -662,19 +669,19 @@ const SupportTicketManagement = () => {
       <Dialog open={showNotesModal} onOpenChange={setShowNotesModal}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add Response</DialogTitle>
+            <DialogTitle>{t('addResponse')}</DialogTitle>
             <DialogDescription>
-              Add a response to ticket {selectedTicket?.ticketNumber}
+              {t('addResponseDesc', { number: selectedTicket?.ticketNumber || '' })}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label>Response</Label>
+              <Label>{t('response')}</Label>
               <Textarea
                 value={adminNotes}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Write your response to the user..."
+                placeholder={t('responsePlaceholder')}
                 className="min-h-[150px]"
               />
             </div>
@@ -691,10 +698,10 @@ const SupportTicketManagement = () => {
               {addNotesMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                  Saving...
+                  {t('saving')}
                 </>
               ) : (
-                'Save Response'
+                t('saveResponse')
               )}
             </Button>
           </DialogFooter>
