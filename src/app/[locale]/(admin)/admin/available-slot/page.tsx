@@ -60,8 +60,11 @@ import {
   InterviewSlot,
 } from '@/hooks/api';
 import { ApiError } from '@/lib/api-client';
+import { useTranslations } from 'next-intl';
 
 const AvailableSlots = () => {
+  const t = useTranslations('slots');
+  const ts = useTranslations('status');
   // Calendar state
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -146,12 +149,12 @@ const AvailableSlots = () => {
   // Handle create slot - creates multiple slots if multiple hours selected
   const handleCreateSlot = async () => {
     if (!selectedDate) {
-      toast.error('Please select a date');
+      toast.error(t('selectDateError'));
       return;
     }
 
     if (selectedHours.length === 0) {
-      toast.error('Please select at least one time slot');
+      toast.error(t('selectTimeError'));
       return;
     }
 
@@ -195,7 +198,7 @@ const AvailableSlots = () => {
     }
 
     if (successCount > 0) {
-      toast.success(`${successCount} interview slot${successCount > 1 ? 's' : ''} created successfully`);
+      toast.success(t('createdSuccess', { count: successCount }));
       setIsCreateModalOpen(false);
       resetForm();
       refetch();
@@ -208,7 +211,7 @@ const AvailableSlots = () => {
 
     deleteSlot(slotToDelete._id, {
       onSuccess: () => {
-        toast.success('Slot deleted successfully');
+        toast.success(t('deletedSuccess'));
         setIsDeleteModalOpen(false);
         setSlotToDelete(null);
         refetch();
@@ -226,7 +229,7 @@ const AvailableSlots = () => {
   const handleCompleteSlot = (slotId: string) => {
     completeSlot(slotId, {
       onSuccess: () => {
-        toast.success('Interview marked as completed');
+        toast.success(t('completedSuccess'));
         refetch();
       },
       onError: (error: unknown) => {
@@ -241,7 +244,7 @@ const AvailableSlots = () => {
   // Handle cancel slot
   const handleCancelSlot = () => {
     if (!selectedSlot || !cancellationReason.trim()) {
-      toast.error('Please provide a cancellation reason');
+      toast.error(t('cancelReason'));
       return;
     }
 
@@ -249,7 +252,7 @@ const AvailableSlots = () => {
       { id: selectedSlot._id, cancellationReason },
       {
         onSuccess: () => {
-          toast.success('Slot cancelled successfully');
+          toast.success(t('cancelledSuccess'));
           setIsCancelModalOpen(false);
           setSelectedSlot(null);
           setCancellationReason('');
@@ -274,13 +277,13 @@ const AvailableSlots = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case INTERVIEW_SLOT_STATUS.AVAILABLE:
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Available</Badge>;
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">{ts('available')}</Badge>;
       case INTERVIEW_SLOT_STATUS.BOOKED:
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Booked</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">{ts('booked')}</Badge>;
       case INTERVIEW_SLOT_STATUS.COMPLETED:
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Completed</Badge>;
+        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">{ts('completed')}</Badge>;
       case INTERVIEW_SLOT_STATUS.CANCELLED:
-        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">Cancelled</Badge>;
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-100">{ts('cancelled')}</Badge>;
       default:
         return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100">{status}</Badge>;
     }
@@ -298,8 +301,8 @@ const AvailableSlots = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Interview Slots</h1>
-          <p className="text-sm text-gray-500">Manage available interview slots for tutor applications</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
+          <p className="text-sm text-gray-500">{t('subtitle')}</p>
         </div>
         <Button
           onClick={() => {
@@ -309,7 +312,7 @@ const AvailableSlots = () => {
           className="bg-[#0B31BD] hover:bg-blue-800"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Create New Slot
+          {t('createNewSlot')}
         </Button>
       </div>
 
@@ -318,7 +321,7 @@ const AvailableSlots = () => {
         <Card className="lg:col-span-1">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Calendar</CardTitle>
+              <CardTitle className="text-lg">{t('calendar')}</CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
@@ -396,7 +399,7 @@ const AvailableSlots = () => {
                     className="bg-[#0B31BD] hover:bg-blue-800"
                   >
                     <Plus className="w-3 h-3 mr-1" />
-                    Add Slot
+                    {t('addSlot')}
                   </Button>
                 </div>
 
@@ -416,7 +419,7 @@ const AvailableSlots = () => {
                   ))}
                   {getSlotsForDate(selectedDate).length === 0 && (
                     <p className="text-sm text-gray-400 text-center py-2">
-                      No slots for this date
+                      {t('noSlotsForDate')}
                     </p>
                   )}
                 </div>
@@ -429,17 +432,17 @@ const AvailableSlots = () => {
         <Card className="lg:col-span-2">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">All Interview Slots</CardTitle>
+              <CardTitle className="text-lg">{t('allInterviewSlots')}</CardTitle>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Filter by status" />
+                  <SelectValue placeholder={t('filterByStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value={INTERVIEW_SLOT_STATUS.AVAILABLE}>Available</SelectItem>
-                  <SelectItem value={INTERVIEW_SLOT_STATUS.BOOKED}>Booked</SelectItem>
-                  <SelectItem value={INTERVIEW_SLOT_STATUS.COMPLETED}>Completed</SelectItem>
-                  <SelectItem value={INTERVIEW_SLOT_STATUS.CANCELLED}>Cancelled</SelectItem>
+                  <SelectItem value="all">{t('allStatus')}</SelectItem>
+                  <SelectItem value={INTERVIEW_SLOT_STATUS.AVAILABLE}>{ts('available')}</SelectItem>
+                  <SelectItem value={INTERVIEW_SLOT_STATUS.BOOKED}>{ts('booked')}</SelectItem>
+                  <SelectItem value={INTERVIEW_SLOT_STATUS.COMPLETED}>{ts('completed')}</SelectItem>
+                  <SelectItem value={INTERVIEW_SLOT_STATUS.CANCELLED}>{ts('cancelled')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -476,10 +479,10 @@ const AvailableSlots = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Date & Time</TableHead>
-                      <TableHead>Applicant</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
+                      <TableHead>{t('colDateTime')}</TableHead>
+                      <TableHead>{t('colApplicant')}</TableHead>
+                      <TableHead>{t('colStatus')}</TableHead>
+                      <TableHead className="text-right">{t('colActions')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -524,7 +527,7 @@ const AvailableSlots = () => {
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="top">
-                                      <p>Mark as Completed</p>
+                                      <p>{t('markAsCompleted')}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 )}
@@ -544,7 +547,7 @@ const AvailableSlots = () => {
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="top">
-                                      <p>Cancel Slot</p>
+                                      <p>{t('cancelSlot')}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 )}
@@ -565,7 +568,7 @@ const AvailableSlots = () => {
                                       </Button>
                                     </TooltipTrigger>
                                     <TooltipContent side="top">
-                                      <p>Delete Slot</p>
+                                      <p>{t('deleteSlot')}</p>
                                     </TooltipContent>
                                   </Tooltip>
                                 )}
@@ -577,7 +580,7 @@ const AvailableSlots = () => {
                     ) : (
                       <TableRow>
                         <TableCell colSpan={4} className="text-center py-8 text-gray-500">
-                          No interview slots found
+                          {t('noSlots')}
                         </TableCell>
                       </TableRow>
                     )}
@@ -663,7 +666,7 @@ const AvailableSlots = () => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-[#0B31BD]" />
-              Create Interview Slot
+              {t('createInterviewSlot')}
             </DialogTitle>
           </DialogHeader>
 
@@ -671,7 +674,7 @@ const AvailableSlots = () => {
             <div className="space-y-5">
               {/* Date Display */}
               <div>
-                <Label className="text-sm font-medium text-gray-700">Select Date</Label>
+                <Label className="text-sm font-medium text-gray-700">{t('selectDate')}</Label>
                 <Input
                   type="date"
                   value={selectedDate ? format(selectedDate, 'yyyy-MM-dd') : ''}
@@ -683,20 +686,20 @@ const AvailableSlots = () => {
               {/* Time Slot Selection - Grid Layout (Multi-Select) */}
               <div>
                 <div className="flex items-center justify-between">
-                  <Label className="text-sm font-medium text-gray-700">Select Time Slots (1 Hour Each)</Label>
+                  <Label className="text-sm font-medium text-gray-700">{t('selectTimeSlots')}</Label>
                   {selectedHours.length > 0 && (
                     <span className="text-xs text-[#0B31BD] font-medium">
-                      {selectedHours.length} slot{selectedHours.length > 1 ? 's' : ''} selected
+                      {t('slotsSelected', { count: selectedHours.length })}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 mt-1 mb-3">Click to select multiple time slots</p>
+                <p className="text-xs text-gray-500 mt-1 mb-3">{t('clickToSelect')}</p>
 
                 {/* Night/Early Morning Slots (12 AM - 6 AM) */}
                 <div className="mt-3">
                   <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-indigo-400"></span>
-                    Night / Early Morning (12 AM - 6 AM)
+                    {t('nightEarlyMorning')}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {timeSlots.slice(0, 6).map((slot) => (
@@ -722,7 +725,7 @@ const AvailableSlots = () => {
                 <div className="mt-4">
                   <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-yellow-400"></span>
-                    Morning (6 AM - 12 PM)
+                    {t('morning')}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {timeSlots.slice(6, 12).map((slot) => (
@@ -748,7 +751,7 @@ const AvailableSlots = () => {
                 <div className="mt-4">
                   <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-orange-400"></span>
-                    Afternoon (12 PM - 6 PM)
+                    {t('afternoon')}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {timeSlots.slice(12, 18).map((slot) => (
@@ -774,7 +777,7 @@ const AvailableSlots = () => {
                 <div className="mt-4">
                   <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-purple-400"></span>
-                    Evening (6 PM - 12 AM)
+                    {t('evening')}
                   </p>
                   <div className="grid grid-cols-3 gap-2">
                     {timeSlots.slice(18, 24).map((slot) => (
