@@ -84,6 +84,7 @@ export default function ChatArea({
   const { user } = useAuthStore();
   const { joinChat, leaveChat, isConnected } = useSocket();
   const tChat = useTranslations("chat");
+  const tStudent = useTranslations("student");
 
   // Get chats to find the current chat info
   const { data: chats } = useChats();
@@ -390,7 +391,7 @@ export default function ChatArea({
     if (action === "accepted") {
       acceptProposal(messageId, {
         onSuccess: () => {
-          toast.success("Session accepted! Check your upcoming sessions.");
+          toast.success(tStudent("sessionAccepted"));
         },
         onError: (error: any) => {
           toast.error(

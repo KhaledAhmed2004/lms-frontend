@@ -561,5 +561,12 @@
     "cancelFailed": "Stunde konnte nicht abgesagt werden",
     "supportTicket": "📩 Support-Ticket",
     "category": "Kategorie:"
+  },
+  "student": {
+    "requestSentSuccess": "Deine Anfrage wurde erfolgreich gesendet!",
+    "subscriptionActivated": "Abonnement erfolgreich aktiviert, du kannst jetzt loslegen!",
+    "sessionAccepted": "Stunde angenommen! Überprüfe deine anstehenden Stunden.",
+    "reviewSubmitted": "Bewertung eingereicht!",
+    "feedbackSubmitted": "Feedback eingereicht!"
   }
 }

@@ -14,6 +14,7 @@ import {
   useActiveSubjects,
   type CreateTrialRequestData,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 interface StudentFormData {
   subject: string;
@@ -51,6 +52,7 @@ function FreeTrialStudent() {
   const { mutate: createTrialRequest, isPending: isSubmitting } =
     useCreateTrialRequest();
   const { data: subjects = [] } = useActiveSubjects();
+  const tStudent = useTranslations("student");
 
   // Browser back button → previous step instead of leaving page
   useEffect(() => {
@@ -212,7 +214,7 @@ function FreeTrialStudent() {
 
       createTrialRequest(payload, {
         onSuccess: () => {
-          toast.success("Your request has been sent successfully!");
+          toast.success(tStudent("requestSentSuccess"));
           router.push("/free-trial-student-dash");
         },
         onError: (error: unknown) => {

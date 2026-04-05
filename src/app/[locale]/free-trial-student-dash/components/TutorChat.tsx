@@ -43,6 +43,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
     string | null
   >(null);
   const tChat = useTranslations("chat");
+  const tStudent = useTranslations("student");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
@@ -211,7 +212,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
     if (action === "accepted") {
       acceptProposal(messageId, {
         onSuccess: () => {
-          toast.success("Session accepted! Check your upcoming sessions.");
+          toast.success(tStudent("sessionAccepted"));
         },
         onError: (error: any) => {
           toast.error(error?.message || tChat("acceptFailed"));

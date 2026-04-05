@@ -561,5 +561,12 @@
     "cancelFailed": "Failed to cancel session",
     "supportTicket": "📩 Support Ticket",
     "category": "Category:"
+  },
+  "student": {
+    "requestSentSuccess": "Your request has been sent successfully!",
+    "subscriptionActivated": "Subscription activated successfully!",
+    "sessionAccepted": "Session accepted! Check your upcoming sessions.",
+    "reviewSubmitted": "Review submitted successfully!",
+    "feedbackSubmitted": "Feedback submitted successfully!"
   }
 }

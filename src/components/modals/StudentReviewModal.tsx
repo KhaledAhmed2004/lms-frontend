@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useCreateReview } from "@/hooks/api/use-reviews";
+import { useTranslations } from "next-intl";
 
 interface StudentReviewModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export default function StudentReviewModal({
   const [comment, setComment] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const createReview = useCreateReview();
+  const tStudent = useTranslations("student");
 
   const handleSubmit = async () => {
     if (!sessionId || rating === 0) return;
@@ -42,7 +44,7 @@ export default function StudentReviewModal({
         wouldRecommend: rating >= 4,
         isPublic: true,
       });
-      toast.success("Review submitted successfully!");
+      toast.success(tStudent("reviewSubmitted"));
       setShowSuccess(true);
       setTimeout(() => {
         handleClose();
@@ -138,7 +140,7 @@ export default function StudentReviewModal({
             </div>
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Success!</h3>
             <p className="text-base sm:text-lg text-gray-600">
-              Your review was submitted successfully
+              {tStudent("reviewSubmitted")}
             </p>
           </div>
         )}

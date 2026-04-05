@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { NewSessionRequestModal } from "./components/NewSessionRequestModal";
 
 function FeedbackModal({
@@ -46,6 +47,7 @@ function FeedbackModal({
   const [comment, setComment] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const createReview = useCreateReview();
+  const tStudent = useTranslations("student");
 
   const handleSubmit = async () => {
     if (!session || rating === 0) return;
@@ -62,7 +64,7 @@ function FeedbackModal({
         wouldRecommend: rating >= 4,
         isPublic: true,
       });
-      toast.success("Feedback submitted successfully!");
+      toast.success(tStudent("feedbackSubmitted"));
       setShowSuccess(true);
       setTimeout(() => {
         onClose();
@@ -166,7 +168,7 @@ function FeedbackModal({
               Success!
             </h3>
             <p className="text-base sm:text-lg text-gray-600">
-              Your review was submitted successfully
+              {tStudent("reviewSubmitted")}
             </p>
           </div>
         )}
