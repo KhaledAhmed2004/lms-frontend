@@ -299,5 +299,29 @@
     "createdSuccess": "School type created successfully",
     "updatedSuccess": "School type updated successfully",
     "deletedSuccess": "School type deleted successfully"
+  },
+  "pricing": {
+    "title": "Pricing Management",
+    "subtitle": "Manage subscription plans displayed on the homepage",
+    "pricePerHour": "Price per hour",
+    "pricePerHourEdit": "Price per hour (€)",
+    "duration": "Duration",
+    "durationPlaceholder": "e.g., None, 1 Month, 3 Months",
+    "sessions": "Sessions",
+    "scheduling": "Scheduling",
+    "schedulingPlaceholder": "e.g., Flexible, Flexible or recurring",
+    "recommendedFor": "Recommended for",
+    "recommendedForEdit": "Recommended for (comma-separated)",
+    "recommendedPlaceholder": "e.g., Shortterm support, Exam preparation",
+    "displayName": "Display Name",
+    "minHours": "Min. Hours",
+    "commitment": "Commitment (Months)",
+    "displayOrder": "Display Order",
+    "status": "Status",
+    "inactive": "Inactive",
+    "lastUpdated": "Last updated:",
+    "errorLoading": "Error loading pricing config. Please try again.",
+    "updatedSuccess": "{name} plan updated successfully",
+    "updateFailed": "Failed to update plan"
   }
 }

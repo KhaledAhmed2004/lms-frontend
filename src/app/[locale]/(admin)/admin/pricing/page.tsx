@@ -15,6 +15,7 @@ import {
   useUpdateSinglePlan,
   PricingPlan,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 // Individual Plan Card Component (matches homepage design)
 const PlanCard = ({
@@ -24,6 +25,7 @@ const PlanCard = ({
   plan: PricingPlan;
   onUpdate: () => void;
 }) => {
+  const t = useTranslations("pricing");
   const [isEditing, setIsEditing] = useState(false);
   const [editedPlan, setEditedPlan] = useState<PricingPlan>(plan);
   const updateSinglePlan = useUpdateSinglePlan();
@@ -59,11 +61,11 @@ const PlanCard = ({
         tier: editedPlan.tier,
         updates: editedPlan,
       });
-      toast.success(`${plan.name} plan updated successfully`);
+      toast.success(t("updatedSuccess", { name: plan.name }));
       setIsEditing(false);
       onUpdate();
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update plan");
+      toast.error(error?.message || t("updateFailed"));
     }
   };
 
@@ -72,7 +74,7 @@ const PlanCard = ({
       {/* Inactive overlay */}
       {!plan.isActive && !isEditing && (
         <div className="absolute inset-0 bg-gray-100/80 rounded-[28px] z-10 flex items-center justify-center">
-          <Badge className="bg-gray-500 text-white text-sm px-4 py-2">Inactive</Badge>
+          <Badge className="bg-gray-500 text-white text-sm px-4 py-2">{t("inactive")}</Badge>
         </div>
       )}
 
@@ -85,7 +87,7 @@ const PlanCard = ({
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-md text-sm font-medium transition"
           >
             <Pencil size={14} />
-            Edit
+            Edit {/* User didn't request translated button texts, assuming keep as is or can use generalized */}
           </button>
         ) : (
           <button
@@ -102,17 +104,17 @@ const PlanCard = ({
       {!isEditing ? (
         <div className="space-y-4 flex-1">
           <div>
-            <p className="text-xs text-gray-500 mb-1">Price per hour</p>
+            <p className="text-xs text-gray-500 mb-1">{t("pricePerHour")}</p>
             <p className="text-2xl font-bold text-gray-900">{plan.pricePerHour}€</p>
           </div>
           <hr className="border-t border-[#F4F6F9]" />
           <div>
-            <p className="text-xs text-gray-500 mb-1">Duration</p>
+            <p className="text-xs text-gray-500 mb-1">{t("duration")}</p>
             <p className="text-sm font-semibold text-gray-900">{plan.courseDuration}</p>
           </div>
           <hr className="border-t border-[#F4F6F9]" />
           <div>
-            <p className="text-xs text-gray-500 mb-1">Sessions</p>
+            <p className="text-xs text-gray-500 mb-1">{t("sessions")}</p>
             <p className="text-sm font-semibold text-gray-900">{plan.selectedHours}</p>
             <p className="text-sm text-gray-900 font-semibold mt-1">
               {plan.selectedHoursDetails}
@@ -120,12 +122,12 @@ const PlanCard = ({
           </div>
           <hr className="border-t border-[#F4F6F9]" />
           <div>
-            <p className="text-xs text-gray-500 mb-1">Scheduling</p>
+            <p className="text-xs text-gray-500 mb-1">{t("scheduling")}</p>
             <p className="text-sm font-semibold text-gray-900">{plan.termType}</p>
           </div>
           <hr className="border-t border-[#F4F6F9]" />
           <div>
-            <p className="text-xs text-gray-500 mb-2">Recommended for</p>
+            <p className="text-xs text-gray-500 mb-2">{t("recommendedFor")}</p>
             <ul className="space-y-1">
               {plan.inclusions.map((inclusion, idx) => (
                 <li key={idx} className="text-sm font-semibold text-gray-900">
@@ -141,7 +143,7 @@ const PlanCard = ({
           {/* Display Name */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-name`} className="text-xs text-gray-500">
-              Display Name
+              {t("displayName")}
             </Label>
             <Input
               id={`${editedPlan.tier}-name`}
@@ -156,7 +158,7 @@ const PlanCard = ({
           {/* Price per Hour */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-price`} className="text-xs text-gray-500">
-              Price per hour (€)
+              {t("pricePerHourEdit")}
             </Label>
             <div className="relative">
               <Euro
@@ -182,13 +184,13 @@ const PlanCard = ({
           {/* Duration */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-duration`} className="text-xs text-gray-500">
-              Duration
+              {t("duration")}
             </Label>
             <Input
               id={`${editedPlan.tier}-duration`}
               value={editedPlan.courseDuration}
               onChange={(e) => updateField("courseDuration", e.target.value)}
-              placeholder="e.g., None, 1 Month, 3 Months"
+              placeholder={t("durationPlaceholder")}
               className="h-9"
             />
           </div>
@@ -198,7 +200,7 @@ const PlanCard = ({
           {/* Sessions */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-sessions`} className="text-xs text-gray-500">
-              Sessions
+              {t("sessions")}
             </Label>
             <Input
               id={`${editedPlan.tier}-sessions`}
@@ -219,13 +221,13 @@ const PlanCard = ({
           {/* Scheduling */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-term`} className="text-xs text-gray-500">
-              Scheduling
+              {t("scheduling")}
             </Label>
             <Input
               id={`${editedPlan.tier}-term`}
               value={editedPlan.termType}
               onChange={(e) => updateField("termType", e.target.value)}
-              placeholder="e.g., Flexible, Flexible or recurring"
+              placeholder={t("schedulingPlaceholder")}
               className="h-9"
             />
           </div>
@@ -235,13 +237,13 @@ const PlanCard = ({
           {/* Recommended for */}
           <div className="space-y-1.5">
             <Label htmlFor={`${editedPlan.tier}-inclusions`} className="text-xs text-gray-500">
-              Recommended for (comma-separated)
+              {t("recommendedForEdit")}
             </Label>
             <Textarea
               id={`${editedPlan.tier}-inclusions`}
               value={editedPlan.inclusions.join(", ")}
               onChange={(e) => updateInclusions(e.target.value)}
-              placeholder="e.g., Shortterm support, Exam preparation"
+              placeholder={t("recommendedPlaceholder")}
               rows={2}
               className="resize-none text-sm"
             />
@@ -253,7 +255,7 @@ const PlanCard = ({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor={`${editedPlan.tier}-minHours`} className="text-xs text-gray-500">
-                Min. Hours
+                {t("minHours")}
               </Label>
               <Input
                 id={`${editedPlan.tier}-minHours`}
@@ -268,7 +270,7 @@ const PlanCard = ({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor={`${editedPlan.tier}-commitment`} className="text-xs text-gray-500">
-                Commitment (Months)
+                {t("commitment")}
               </Label>
               <Input
                 id={`${editedPlan.tier}-commitment`}
@@ -286,7 +288,7 @@ const PlanCard = ({
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label htmlFor={`${editedPlan.tier}-order`} className="text-xs text-gray-500">
-                Display Order
+                {t("displayOrder")}
               </Label>
               <Input
                 id={`${editedPlan.tier}-order`}
@@ -300,7 +302,7 @@ const PlanCard = ({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-gray-500">Status</Label>
+              <Label className="text-xs text-gray-500">{t("status")}</Label>
               <div className="flex items-center gap-2 h-9">
                 <Switch
                   id={`${editedPlan.tier}-active`}
@@ -308,7 +310,7 @@ const PlanCard = ({
                   onCheckedChange={(checked) => updateField("isActive", checked)}
                 />
                 <span className="text-sm text-gray-600">
-                  {editedPlan.isActive ? "Active" : "Inactive"}
+                  {editedPlan.isActive ? "Active" : t("inactive")}
                 </span>
               </div>
             </div>
@@ -321,9 +323,9 @@ const PlanCard = ({
             className="w-full bg-gradient-to-r from-[#2563EB] via-[#3B82F6] to-[#6366F1] hover:opacity-90 mt-2"
           >
             {updateSinglePlan.isPending ? (
-              <Loader2 size={16} className="mr-2 animate-spin" />
+               <Loader2 size={16} className="mr-2 animate-spin" />
             ) : (
-              <Save size={16} className="mr-2" />
+               <Save size={16} className="mr-2" />
             )}
             Save Changes
           </Button>
@@ -334,6 +336,7 @@ const PlanCard = ({
 };
 
 const PricingManagement = () => {
+  const t = useTranslations("pricing");
   const { data: pricingConfig, isLoading, error, refetch } = useAdminPricingConfig();
 
   // Loading skeleton - matches homepage
@@ -368,7 +371,7 @@ const PricingManagement = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500">Error loading pricing config. Please try again.</p>
+        <p className="text-red-500">{t("errorLoading")}</p>
       </div>
     );
   }
@@ -379,9 +382,9 @@ const PricingManagement = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Pricing Management</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
         <p className="text-gray-600 mt-1">
-          Manage subscription plans displayed on the homepage
+          {t("subtitle")}
         </p>
       </div>
 
@@ -401,7 +404,7 @@ const PricingManagement = () => {
       {/* Last Updated Info */}
       {pricingConfig?.updatedAt && (
         <p className="text-sm text-gray-500 text-right">
-          Last updated: {new Date(pricingConfig.updatedAt).toLocaleString()}
+          {t("lastUpdated")} {new Date(pricingConfig.updatedAt).toLocaleString()}
         </p>
       )}
 

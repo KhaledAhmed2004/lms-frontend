@@ -299,5 +299,29 @@
     "createdSuccess": "Schulform erfolgreich erstellt",
     "updatedSuccess": "Schulform erfolgreich aktualisiert",
     "deletedSuccess": "Schulform erfolgreich gelöscht"
+  },
+  "pricing": {
+    "title": "Preisgestaltung",
+    "subtitle": "Abonnement-Tarife auf der Startseite verwalten",
+    "pricePerHour": "Preis pro Stunde",
+    "pricePerHourEdit": "Preis pro Stunde (€)",
+    "duration": "Laufzeit",
+    "durationPlaceholder": "z.B. Keine, 1 Monat, 3 Monate",
+    "sessions": "Stunden",
+    "scheduling": "Terminplanung",
+    "schedulingPlaceholder": "z.B. Flexibel, Flexibel oder wiederkehrend",
+    "recommendedFor": "Empfohlen für",
+    "recommendedForEdit": "Empfohlen für (kommagetrennt)",
+    "recommendedPlaceholder": "z.B. Kurzfristige Unterstützung, Prüfungsvorbereitung",
+    "displayName": "Anzeigename",
+    "minHours": "Min. Stunden",
+    "commitment": "Laufzeit (Monate)",
+    "displayOrder": "Anzeigereihenfolge",
+    "status": "Status",
+    "inactive": "Inaktiv",
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "errorLoading": "Fehler beim Laden der Preiskonfiguration. Bitte versuche es erneut.",
+    "updatedSuccess": "{name}-Tarif erfolgreich aktualisiert",
+    "updateFailed": "Tarif konnte nicht aktualisiert werden"
   }
 }
