@@ -65,10 +65,13 @@ import {
   useDeleteSchoolType,
   SchoolType,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 type SchoolTypeTab = "all" | "active" | "inactive";
 
 const SchoolTypeManagement = () => {
+  const t = useTranslations("schoolTypes");
+  const ts = useTranslations("status");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<SchoolTypeTab>("all");
@@ -119,7 +122,7 @@ const SchoolTypeManagement = () => {
   // Create School Type
   const handleCreateSchoolType = async () => {
     if (!formData.name.trim()) {
-      toast.error("School type name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -128,7 +131,7 @@ const SchoolTypeManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("School type created successfully");
+      toast.success(t("createdSuccess"));
       setIsCreateModalOpen(false);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
@@ -139,7 +142,7 @@ const SchoolTypeManagement = () => {
   // Edit School Type
   const handleEditSchoolType = async () => {
     if (!selectedSchoolType || !formData.name.trim()) {
-      toast.error("School type name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -149,7 +152,7 @@ const SchoolTypeManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("School type updated successfully");
+      toast.success(t("updatedSuccess"));
       setIsEditModalOpen(false);
       setSelectedSchoolType(null);
       setFormData({ name: "", isActive: true });
@@ -164,7 +167,7 @@ const SchoolTypeManagement = () => {
 
     try {
       await deleteSchoolType.mutateAsync(selectedSchoolType._id);
-      toast.success("School type deleted successfully");
+      toast.success(t("deletedSuccess"));
       setIsDeleteDialogOpen(false);
       setSelectedSchoolType(null);
     } catch (error: any) {
@@ -179,9 +182,7 @@ const SchoolTypeManagement = () => {
         id: schoolType._id,
         isActive: !schoolType.isActive,
       });
-      toast.success(
-        `School type ${schoolType.isActive ? "deactivated" : "activated"} successfully`
-      );
+      toast.success(t("updatedSuccess"));
     } catch (error: any) {
       toast.error(error?.message || "Failed to update school type status");
     }
@@ -214,7 +215,7 @@ const SchoolTypeManagement = () => {
     () => [
       {
         accessorKey: "name",
-        header: "School Type Name",
+        header: t("nameLabel").replace(" *", ""),
         cell: ({ row }) => (
           <span className="text-gray-900 font-medium text-sm">
             {row.getValue("name")}
@@ -280,7 +281,7 @@ const SchoolTypeManagement = () => {
         },
       },
     ],
-    []
+    [t]
   );
 
   // TanStack Table instance with server-side pagination
@@ -339,7 +340,7 @@ const SchoolTypeManagement = () => {
                     <School className="text-orange-600" size={24} />
                   </div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
-                    Total School Types
+                    {t("totalSchoolTypes")}
                   </p>
                   <p className="text-3xl font-bold text-gray-900">
                     {pagination?.total || 0}
@@ -359,7 +360,7 @@ const SchoolTypeManagement = () => {
           className="bg-black hover:bg-gray-800"
         >
           <Plus size={18} className="mr-2" />
-          Add School Type
+          {t("addSchoolType")}
         </Button>
       </div>
 
@@ -370,7 +371,7 @@ const SchoolTypeManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search school types..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -553,17 +554,17 @@ const SchoolTypeManagement = () => {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New School Type</DialogTitle>
+            <DialogTitle>{t("addNewTitle")}</DialogTitle>
             <DialogDescription>
-              Create a new school type for categorization.
+              {t("addNewDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">School Type Name *</Label>
+              <Label htmlFor="name">{t("nameLabel")}</Label>
               <Input
                 id="name"
-                placeholder="e.g., Gymnasium, Realschule"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -596,7 +597,7 @@ const SchoolTypeManagement = () => {
               {createSchoolType.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Create School Type
+              {t("addSchoolType")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -606,15 +607,15 @@ const SchoolTypeManagement = () => {
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit School Type</DialogTitle>
-            <DialogDescription>Update the school type details.</DialogDescription>
+            <DialogTitle>{t("editTitle")}</DialogTitle>
+            <DialogDescription>{t("editDescription")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">School Type Name *</Label>
+              <Label htmlFor="edit-name">{t("nameLabel")}</Label>
               <Input
                 id="edit-name"
-                placeholder="e.g., Gymnasium, Realschule"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -657,10 +658,9 @@ const SchoolTypeManagement = () => {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete the school type &quot;{selectedSchoolType?.name}&quot;.
-              This action cannot be undone.
+              {t("deleteConfirmDesc", { name: selectedSchoolType?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

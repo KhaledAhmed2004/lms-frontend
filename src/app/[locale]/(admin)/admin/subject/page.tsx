@@ -58,10 +58,13 @@ import {
   useDeleteSubject,
   Subject,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 type SubjectTab = "all" | "active" | "inactive";
 
 const SubjectManagement = () => {
+  const t = useTranslations("subjects");
+  const ts = useTranslations("status");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<SubjectTab>("all");
@@ -112,7 +115,7 @@ const SubjectManagement = () => {
   // Create Subject
   const handleCreateSubject = async () => {
     if (!formData.name.trim()) {
-      toast.error("Subject name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -121,7 +124,7 @@ const SubjectManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("Subject created successfully");
+      toast.success(t("createdSuccess"));
       setIsCreateModalOpen(false);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
@@ -132,7 +135,7 @@ const SubjectManagement = () => {
   // Edit Subject
   const handleEditSubject = async () => {
     if (!selectedSubject || !formData.name.trim()) {
-      toast.error("Subject name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -142,7 +145,7 @@ const SubjectManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("Subject updated successfully");
+      toast.success(t("updatedSuccess"));
       setIsEditModalOpen(false);
       setSelectedSubject(null);
       setFormData({ name: "", isActive: true });
@@ -157,7 +160,7 @@ const SubjectManagement = () => {
 
     try {
       await deleteSubject.mutateAsync(selectedSubject._id);
-      toast.success("Subject deleted successfully");
+      toast.success(t("deletedSuccess"));
       setIsDeleteDialogOpen(false);
       setSelectedSubject(null);
     } catch (error: any) {
@@ -172,9 +175,9 @@ const SubjectManagement = () => {
         id: subject._id,
         isActive: !subject.isActive,
       });
-      toast.success(
-        `Subject ${subject.isActive ? "deactivated" : "activated"} successfully`,
-      );
+      // Just a simple status update generic message could work here or custom 
+      // Re-using updatedSuccess
+      toast.success(t("updatedSuccess"));
     } catch (error: any) {
       toast.error(error?.message || "Failed to update subject status");
     }
@@ -199,7 +202,7 @@ const SubjectManagement = () => {
     () => [
       {
         accessorKey: "name",
-        header: "Subject Name",
+        header: t("nameLabel").replace(" *", ""),
         cell: ({ row }) => (
           <span className="text-gray-900 font-medium text-sm">
             {row.getValue("name")}
@@ -208,7 +211,7 @@ const SubjectManagement = () => {
       },
       {
         accessorKey: "isActive",
-        header: "Status",
+        header: "Status", // From another generic one or hardcoded status
         cell: ({ row }) => {
           const isActive = row.getValue("isActive") as boolean;
           return (
@@ -265,7 +268,7 @@ const SubjectManagement = () => {
         },
       },
     ],
-    [],
+    [t],
   );
 
   // TanStack Table instance with server-side pagination
@@ -324,7 +327,7 @@ const SubjectManagement = () => {
                     <BookOpen className="text-purple-600" size={24} />
                   </div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
-                    Total Subjects
+                    {t("totalSubjects")}
                   </p>
                   <p className="text-3xl font-bold text-gray-900">
                     {pagination?.total || 0}
@@ -344,7 +347,7 @@ const SubjectManagement = () => {
           className="bg-black hover:bg-gray-800"
         >
           <Plus size={18} className="mr-2" />
-          Add Subject
+          {t("addSubject")}
         </Button>
       </div>
 
@@ -355,7 +358,7 @@ const SubjectManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search subjects..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -405,16 +408,16 @@ const SubjectManagement = () => {
                       >
                         {headerGroup.headers.map((header) => (
                           <TableHead
-                            key={header.id}
-                            className="py-3 px-4 font-semibold text-gray-700 text-sm"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
-                          </TableHead>
+                             key={header.id}
+                             className="py-3 px-4 font-semibold text-gray-700 text-sm"
+                           >
+                             {header.isPlaceholder
+                               ? null
+                               : flexRender(
+                                   header.column.columnDef.header,
+                                   header.getContext(),
+                                 )}
+                           </TableHead>
                         ))}
                       </TableRow>
                     ))}
@@ -470,17 +473,17 @@ const SubjectManagement = () => {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New Subject</DialogTitle>
+            <DialogTitle>{t("addNewTitle")}</DialogTitle>
             <DialogDescription>
-              Create a new subject for tutoring sessions.
+              {t("addNewDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Subject Name *</Label>
+              <Label htmlFor="name">{t("nameLabel")}</Label>
               <Input
                 id="name"
-                placeholder="e.g., Mathematics, Physics"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -513,7 +516,7 @@ const SubjectManagement = () => {
               {createSubject.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Create Subject
+              {t("addSubject")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -523,15 +526,15 @@ const SubjectManagement = () => {
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit Subject</DialogTitle>
-            <DialogDescription>Update the subject details.</DialogDescription>
+            <DialogTitle>{t("editTitle")}</DialogTitle>
+            <DialogDescription>{t("editDescription")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Subject Name *</Label>
+              <Label htmlFor="edit-name">{t("nameLabel")}</Label>
               <Input
                 id="edit-name"
-                placeholder="e.g., Mathematics, Physics"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -574,10 +577,9 @@ const SubjectManagement = () => {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete the subject &quot;{selectedSubject?.name}&quot;.
-              This action cannot be undone.
+              {t("deleteConfirmDesc", { name: selectedSubject?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

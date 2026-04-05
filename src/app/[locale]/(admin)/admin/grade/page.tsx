@@ -64,10 +64,13 @@ import {
   useDeleteGrade,
   Grade,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 type GradeTab = "all" | "active" | "inactive";
 
 const GradeManagement = () => {
+  const t = useTranslations("grades");
+  const ts = useTranslations("status");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<GradeTab>("all");
@@ -118,7 +121,7 @@ const GradeManagement = () => {
   // Create Grade
   const handleCreateGrade = async () => {
     if (!formData.name.trim()) {
-      toast.error("Grade name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -127,7 +130,7 @@ const GradeManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("Grade created successfully");
+      toast.success(t("createdSuccess"));
       setIsCreateModalOpen(false);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
@@ -138,7 +141,7 @@ const GradeManagement = () => {
   // Edit Grade
   const handleEditGrade = async () => {
     if (!selectedGrade || !formData.name.trim()) {
-      toast.error("Grade name is required");
+      toast.error(t("nameRequired"));
       return;
     }
 
@@ -148,7 +151,7 @@ const GradeManagement = () => {
         name: formData.name.trim(),
         isActive: formData.isActive,
       });
-      toast.success("Grade updated successfully");
+      toast.success(t("updatedSuccess"));
       setIsEditModalOpen(false);
       setSelectedGrade(null);
       setFormData({ name: "", isActive: true });
@@ -163,7 +166,7 @@ const GradeManagement = () => {
 
     try {
       await deleteGrade.mutateAsync(selectedGrade._id);
-      toast.success("Grade deleted successfully");
+      toast.success(t("deletedSuccess"));
       setIsDeleteDialogOpen(false);
       setSelectedGrade(null);
     } catch (error: any) {
@@ -178,9 +181,7 @@ const GradeManagement = () => {
         id: grade._id,
         isActive: !grade.isActive,
       });
-      toast.success(
-        `Grade ${grade.isActive ? "deactivated" : "activated"} successfully`,
-      );
+      toast.success(t("updatedSuccess"));
     } catch (error: any) {
       toast.error(error?.message || "Failed to update grade status");
     }
@@ -205,7 +206,7 @@ const GradeManagement = () => {
     () => [
       {
         accessorKey: "name",
-        header: "Grade Name",
+        header: t("nameLabel").replace(" *", ""),
         cell: ({ row }) => (
           <span className="text-gray-900 font-medium text-sm">
             {row.getValue("name")}
@@ -271,7 +272,7 @@ const GradeManagement = () => {
         },
       },
     ],
-    [],
+    [t],
   );
 
   // TanStack Table instance with server-side pagination
@@ -328,7 +329,7 @@ const GradeManagement = () => {
                     <GraduationCap className="text-blue-600" size={24} />
                   </div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
-                    Total Grades
+                    {t("totalGrades")}
                   </p>
                   <p className="text-3xl font-bold text-gray-900">
                     {pagination?.total || 0}
@@ -348,7 +349,7 @@ const GradeManagement = () => {
           className="bg-black hover:bg-gray-800"
         >
           <Plus size={18} className="mr-2" />
-          Add Grade
+          {t("addGrade")}
         </Button>
       </div>
 
@@ -359,7 +360,7 @@ const GradeManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search grades..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -474,17 +475,17 @@ const GradeManagement = () => {
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Add New Grade</DialogTitle>
+            <DialogTitle>{t("addNewTitle")}</DialogTitle>
             <DialogDescription>
-              Create a new grade level for students.
+              {t("addNewDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Grade Name *</Label>
+              <Label htmlFor="name">{t("nameLabel")}</Label>
               <Input
                 id="name"
-                placeholder="e.g., Grade 1, Grade 2"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -517,7 +518,7 @@ const GradeManagement = () => {
               {createGrade.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Create Grade
+              {t("addGrade")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -527,15 +528,15 @@ const GradeManagement = () => {
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Edit Grade</DialogTitle>
-            <DialogDescription>Update the grade details.</DialogDescription>
+            <DialogTitle>{t("editTitle")}</DialogTitle>
+            <DialogDescription>{t("editDescription")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-name">Grade Name *</Label>
+              <Label htmlFor="edit-name">{t("nameLabel")}</Label>
               <Input
                 id="edit-name"
-                placeholder="e.g., Grade 1, Grade 2"
+                placeholder={t("namePlaceholder")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
@@ -578,10 +579,9 @@ const GradeManagement = () => {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete the grade &quot;{selectedGrade?.name}&quot;. This
-              action cannot be undone.
+              {t("deleteConfirmDesc", { name: selectedGrade?.name || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
