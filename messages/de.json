@@ -588,5 +588,25 @@
     "allNotificationsRead": "Alle Benachrichtigungen als gelesen markiert",
     "verificationSuccessful": "Verifizierung erfolgreich: Bitte bewahre diesen Code sicher auf und verwende ihn zum Zurücksetzen des Passworts",
     "googleCalendarNotConfigured": "Google Kalender OAuth2-Client nicht konfiguriert"
+  },
+  "common": {
+    "showing": "Zeige {start} bis {end} von {total} Ergebnissen",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "save": "Speichern",
+    "saveChanges": "Änderungen speichern",
+    "create": "Erstellen",
+    "viewAll": "Alle anzeigen",
+    "viewDetails": "View Details",
+    "all": "Alle",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "activate": "Aktivieren",
+    "deactivate": "Deaktivieren",
+    "na": "k.A.",
+    "close": "Schließen"
   }
 }

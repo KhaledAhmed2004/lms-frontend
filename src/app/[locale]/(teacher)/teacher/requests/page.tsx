@@ -122,6 +122,8 @@ export default function RequestsPage() {
     );
   };
 
+  const tCommon = useTranslations("common");
+
   return (
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       <div className=" rounded-lg">
@@ -394,7 +396,7 @@ export default function RequestsPage() {
                     disabled={isAccepting}
                     className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                   >
-                    Cancel
+                    {tCommon("cancel")}
                   </button>
                   <button
                     onClick={handleSendAccept}
@@ -420,7 +422,7 @@ export default function RequestsPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="w-full px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Close
+                  {tCommon("close")}
                 </button>
               </div>
             )}

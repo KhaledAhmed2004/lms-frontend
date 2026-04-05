@@ -588,5 +588,25 @@
     "allNotificationsRead": "All notifications marked as read",
     "verificationSuccessful": "Verification Successful: Please securely store and utilize this code for reset password",
     "googleCalendarNotConfigured": "Google Calendar OAuth2 client not configured"
+  },
+  "common": {
+    "showing": "Showing {start} to {end} of {total} results",
+    "previous": "Previous",
+    "next": "Next",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "create": "Create",
+    "viewAll": "View All",
+    "viewDetails": "View Details",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "na": "N/A",
+    "close": "Close"
   }
 }

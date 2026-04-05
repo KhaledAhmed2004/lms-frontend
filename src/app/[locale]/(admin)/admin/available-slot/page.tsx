@@ -66,6 +66,7 @@ const AvailableSlots = () => {
   const t = useTranslations('slots');
   const ts = useTranslations('status');
   const te = useTranslations('error');
+  const tc = useTranslations('common');
   // Calendar state
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -811,7 +812,7 @@ const AvailableSlots = () => {
                 resetForm();
               }}
             >
-              Cancel
+              {tc('cancel')}
             </Button>
             <Button
               onClick={handleCreateSlot}
@@ -927,7 +928,7 @@ const AvailableSlots = () => {
                 setSlotToDelete(null);
               }}
             >
-              Cancel
+              {tc('cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteSlot}
