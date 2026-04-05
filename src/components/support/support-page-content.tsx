@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
+import { useTranslations } from "next-intl";
 import {
   useCreateSupportTicket,
   useMyTickets,
@@ -61,6 +62,7 @@ const getStatusIcon = (status: TICKET_STATUS) => {
 };
 
 export default function SupportPageContent() {
+  const t = useTranslations("teacherSupport");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [ticketCategory, setTicketCategory] = useState<TICKET_CATEGORY | "">(
@@ -79,11 +81,11 @@ export default function SupportPageContent() {
 
   const handleSubmitTicket = async () => {
     if (!ticketCategory) {
-      toast.error("Please select a category");
+      toast.error(t("selectCategoryError"));
       return;
     }
     if (!ticketMessage.trim()) {
-      toast.error("Please enter your message");
+      toast.error(t("enterMessageError"));
       return;
     }
 
@@ -94,12 +96,12 @@ export default function SupportPageContent() {
         message: ticketMessage.trim(),
       });
 
-      toast.success("Support ticket submitted successfully!");
+      toast.success(t("submitSuccess"));
       setTicketCategory("");
       setTicketMessage("");
       setShowTicketModal(false);
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || "Failed to submit ticket");
+      toast.error(error?.response?.data?.message || t("submitFailed"));
     }
   };
 
@@ -115,7 +117,7 @@ export default function SupportPageContent() {
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-black">How can we help?</h2>
+        <h2 className="text-2xl font-semibold text-black">{t("howCanWeHelp")}</h2>
       </div>
 
       {/* FAQ Section */}
@@ -182,25 +184,23 @@ export default function SupportPageContent() {
       {/* Need Personal Assistance Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-5 lg:p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-3">
-          Need Personal assistance?
+          {t("needAssistance")}
         </h3>
         <p className="text-gray-600 text-sm sm:text-base mb-6">
-          If you couldn't find the information you need, our support team is
-          ready to assist you. Submit a ticket, and we'll get back to you as
-          soon as possible.
+          {t("needAssistanceDesc")}
         </p>
         <Button
           onClick={() => setShowTicketModal(true)}
           className="bg-[#0B31BD] hover:bg-[#0a2aa0]"
         >
-          Submit Ticket
+          {t("submitTicket")}
         </Button>
       </div>
 
       {/* My Tickets Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-5 lg:p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-6">
-          My Support Tickets
+          {t("myTickets")}
         </h3>
 
         {ticketsLoading ? (
@@ -259,8 +259,8 @@ export default function SupportPageContent() {
         ) : (
           <div className="text-center py-8 text-gray-500">
             <AlertCircle className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-            <p>No support tickets yet</p>
-            <p className="text-sm">Submit a ticket if you need help</p>
+            <p>{t("noTickets")}</p>
+            <p className="text-sm">{t("noTicketsDesc")}</p>
           </div>
         )}
       </div>
@@ -269,10 +269,9 @@ export default function SupportPageContent() {
       <Dialog open={showTicketModal} onOpenChange={handleCloseModal}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>Submit Support Ticket</DialogTitle>
+            <DialogTitle>{t("submitTicketTitle")}</DialogTitle>
             <DialogDescription>
-              Select a category and describe your issue. Our team will get back
-              to you soon.
+              {t("submitTicketDesc")}
             </DialogDescription>
           </DialogHeader>
 
@@ -280,7 +279,7 @@ export default function SupportPageContent() {
             {/* Category Dropdown */}
             <div className="space-y-2">
               <Label htmlFor="category">
-                Category <span className="text-red-500">*</span>
+                {t("categoryLabel").replace("*", "")} <span className="text-red-500">*</span>
               </Label>
               <Select
                 value={ticketCategory}
@@ -289,7 +288,7 @@ export default function SupportPageContent() {
                 }
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select a category" />
+                  <SelectValue placeholder={t("selectCategory")} />
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(TICKET_CATEGORY).map((category) => (
@@ -304,13 +303,13 @@ export default function SupportPageContent() {
             {/* Message Textarea */}
             <div className="space-y-2">
               <Label htmlFor="message">
-                Message <span className="text-red-500">*</span>
+                {t("messageLabel").replace("*", "")} <span className="text-red-500">*</span>
               </Label>
               <Textarea
                 id="message"
                 value={ticketMessage}
                 onChange={(e) => setTicketMessage(e.target.value)}
-                placeholder="Describe your issue or request in detail..."
+                placeholder={t("messagePlaceholder")}
                 className="min-h-[120px] resize-none"
                 maxLength={2000}
               />
@@ -323,7 +322,7 @@ export default function SupportPageContent() {
           <DialogFooter className="flex-row justify-between sm:justify-between">
             <Button variant="ghost" size="sm" className="gap-2">
               <Paperclip className="w-4 h-4" />
-              Attach file
+              {t("attachFile")}
             </Button>
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => handleCloseModal(false)}>
@@ -337,12 +336,12 @@ export default function SupportPageContent() {
                 {createTicketMutation.isPending ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Submitting...
+                    {t("submitting")}
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4" />
-                    Submit
+                    {t("submit")}
                   </>
                 )}
               </Button>
@@ -359,7 +358,7 @@ export default function SupportPageContent() {
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              Ticket Details
+              {t("ticketDetails")}
               {selectedTicket ? (
                 <Badge className={TICKET_STATUS_COLORS[selectedTicket.status]}>
                   {TICKET_STATUS_LABELS[selectedTicket.status]}
@@ -433,7 +432,7 @@ export default function SupportPageContent() {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setSelectedTicket(null)}>
-              Close
+              {t("close")}
             </Button>
           </DialogFooter>
         </DialogContent>
