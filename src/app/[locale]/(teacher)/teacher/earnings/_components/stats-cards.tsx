@@ -5,8 +5,11 @@ import Image from "next/image";
 import { useTutorStats } from "@/hooks/api";
 import { formatNumber } from "./utils";
 
+import { useTranslations } from "next-intl";
+
 export default function StatsCards() {
   const { data: stats, isLoading } = useTutorStats();
+  const t = useTranslations("earnings");
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
@@ -15,7 +18,7 @@ export default function StatsCards() {
         <div className="mb-4 bg-blue-50 p-3 rounded-full w-fit">
           <Image src="/cap.svg" alt="" width={24} height={24} />
         </div>
-        <h3 className="text-sm font-medium text-gray-600 mb-2">Sessions</h3>
+        <h3 className="text-sm font-medium text-gray-600 mb-2">{t("sessions")}</h3>
         {isLoading ? (
           <Skeleton className="h-9 w-20" />
         ) : (
@@ -24,7 +27,7 @@ export default function StatsCards() {
               {stats?.stats?.completedSessions || 0}
             </div>
             <p className="text-sm text-gray-500 mt-3">
-              Total: {formatNumber(stats?.stats?.totalHours || 0)} h
+              {t("totalSessions", { n: formatNumber(stats?.stats?.totalHours || 0) })}
             </p>
           </>
         )}
@@ -35,7 +38,7 @@ export default function StatsCards() {
         <div className="mb-4 bg-green-50 p-3 rounded-full w-fit">
           <Image src="/dollar.svg" alt="" width={24} height={24} />
         </div>
-        <h3 className="text-sm font-medium text-gray-600 mb-2">Earnings</h3>
+        <h3 className="text-sm font-medium text-gray-600 mb-2">{t("earnings")}</h3>
         {isLoading ? (
           <Skeleton className="h-9 w-24" />
         ) : (
@@ -45,7 +48,7 @@ export default function StatsCards() {
               <span className="text-lg text-gray-500">€</span>
             </div>
             <p className="text-sm text-gray-500 mt-3">
-              Total: {formatNumber(stats?.earnings?.totalEarnings || 0)} €
+              {t("total", { amount: formatNumber(stats?.earnings?.totalEarnings || 0) })}
             </p>
           </>
         )}
@@ -57,7 +60,7 @@ export default function StatsCards() {
           <BookOpen className="text-[#FF8A00]" size={24} />
         </div>
         <h3 className="text-sm font-medium text-gray-600 mb-2">
-          Trial Sessions
+          {t("trialSessions")}
         </h3>
         {isLoading ? (
           <Skeleton className="h-9 w-16" />
@@ -68,8 +71,7 @@ export default function StatsCards() {
               <span className="text-lg text-gray-500">%</span>
             </div>
             <p className="text-sm text-gray-500 mt-3">
-              {stats?.trialStats?.convertedTrials || 0} /{" "}
-              {stats?.trialStats?.totalTrials || 0} converted
+              {t("converted", { a: stats?.trialStats?.convertedTrials || 0, b: stats?.trialStats?.totalTrials || 0 })}
             </p>
           </>
         )}
@@ -80,7 +82,7 @@ export default function StatsCards() {
         <div className="mb-4 bg-[#F3F3F3] p-3 rounded-full w-fit">
           <Image src="/users.svg" alt="" width={24} height={24} />
         </div>
-        <h3 className="text-sm font-medium text-gray-600 mb-2">Students</h3>
+        <h3 className="text-sm font-medium text-gray-600 mb-2">{t("numberOfStudents")}</h3>
         {isLoading ? (
           <Skeleton className="h-9 w-16" />
         ) : (
@@ -88,7 +90,7 @@ export default function StatsCards() {
             <div className="text-3xl font-bold text-gray-900">
               {stats?.stats?.totalStudents || 0}
             </div>
-            <p className="text-sm text-gray-500 mt-3">Active students</p>
+            <p className="text-sm text-gray-500 mt-3">{t("activeStudents")}</p>
           </>
         )}
       </div>

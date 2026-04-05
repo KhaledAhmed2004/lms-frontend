@@ -13,11 +13,14 @@ import { toast } from "sonner";
 import { generateEarningsReceipt } from "@/lib/generate-earnings-receipt";
 import { formatNumber } from "./utils";
 
+import { useTranslations } from "next-intl";
+
 const ITEMS_PER_PAGE = 5;
 
 export default function EarningsHistory() {
   const [currentPage, setCurrentPage] = useState(1);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const t = useTranslations("earnings");
 
   const { data: earningsData, isLoading } = useEarningsHistory(
     currentPage,
@@ -51,19 +54,19 @@ export default function EarningsHistory() {
           <thead>
             <tr className="border-b border-gray-200">
               <th className="text-left text-sm font-semibold text-gray-700 pb-3 px-3">
-                Period
+                {t("colPeriod")}
               </th>
               <th className="text-left text-sm font-semibold text-gray-700 pb-3 px-3">
-                Sessions
+                {t("colSessions")}
               </th>
               <th className="text-left text-sm font-semibold text-gray-700 pb-3 px-3">
-                Earnings
+                {t("colEarnings")}
               </th>
               <th className="text-left text-sm font-semibold text-gray-700 pb-3 px-3">
-                Status
+                {t("colStatus")}
               </th>
               <th className="text-right text-sm font-semibold text-gray-700 pb-3 px-3">
-                Action
+                {t("colAction")}
               </th>
             </tr>
           </thead>
@@ -121,7 +124,7 @@ export default function EarningsHistory() {
                       ) : (
                         <>
                           <Download className="w-3.5 h-3.5 mr-1.5" />
-                          Receipt
+                          {t("download")}
                         </>
                       )}
                     </Button>
@@ -131,7 +134,7 @@ export default function EarningsHistory() {
             ) : (
               <tr>
                 <td colSpan={5} className="text-center py-8 text-gray-500">
-                  No earnings history found
+                  {t("noHistory")}
                 </td>
               </tr>
             )}
