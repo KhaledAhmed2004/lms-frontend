@@ -26,6 +26,8 @@ import {
   type UnifiedRequest,
 } from "@/hooks/api/use-trial-requests";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
+import { ApiError } from "@/lib/api-client";
 
 // Helper function to calculate days ago
 const getDaysAgo = (dateString: string) => {
@@ -37,13 +39,15 @@ const getDaysAgo = (dateString: string) => {
 };
 
 // Helper to get student name from request
-const getStudentName = (request: UnifiedRequest) => {
+const getStudentName = (request: UnifiedRequest, t: any) => {
   if (request.studentId?.name) return request.studentId.name;
   if (request.studentInfo?.name) return request.studentInfo.name;
-  return "Unknown Student";
+  return t("unknownStudent");
 };
 
 export default function RequestsPage() {
+  const t = useTranslations("requests");
+  const te = useTranslations("error");
   const [activeTab, setActiveTab] = useState<"open" | "accepted">("open");
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,7 +94,7 @@ export default function RequestsPage() {
 
   const handleSendAccept = () => {
     if (!selectedRequest || !introMessage.trim()) {
-      toast.error("Please write an introduction message");
+      toast.error(t("introError"));
       return;
     }
 
@@ -100,7 +104,7 @@ export default function RequestsPage() {
       { id: selectedRequest._id, introductoryMessage: introMessage },
       {
         onSuccess: () => {
-          toast.success("Request accepted successfully!");
+          toast.success(t("acceptSuccess"));
           setIsModalOpen(false);
           setIntroMessage("");
           setSelectedRequest(null);
@@ -108,11 +112,17 @@ export default function RequestsPage() {
           setCurrentPage(1);
         },
         onError: (error: any) => {
-          toast.error(error?.response?.data?.message || "Failed to accept request");
+          toast.error(
+            error instanceof ApiError
+              ? error.getLocalizedMessage(te)
+              : error?.response?.data?.message || t("acceptFailed"),
+          );
         },
       }
     );
   };
+
+  const tCommon = useTranslations("common");
 
   return (
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
@@ -126,7 +136,7 @@ export default function RequestsPage() {
                 : "text-gray-500 hover:text-gray-700"
               }`}
           >
-            Open Requests
+            {t("openRequests")}
           </button>
           <button
             onClick={() => handleTabChange("accepted")}
@@ -135,7 +145,7 @@ export default function RequestsPage() {
                 : "text-gray-500 hover:text-gray-700"
               }`}
           >
-            Accepted Requests
+            {t("acceptedRequests")}
           </button>
         </div>
 
@@ -147,7 +157,7 @@ export default function RequestsPage() {
             </div>
           ) : openRequests.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
-              No open requests available at the moment.
+              {t("noOpenRequests")}
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -157,23 +167,23 @@ export default function RequestsPage() {
                   <div key={request._id} className="bg-white rounded-lg shadow-sm p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{request.subject?.name || "Unknown Subject"}</h3>
+                        <h3 className="text-lg font-semibold text-gray-900">{request.subject?.name || t("unknownSubject")}</h3>
                       </div>
                       <span
                         className={`text-sm font-medium ${daysAgo <= 2 ? "text-orange-500" : "text-green-600"}`}
                       >
-                        {daysAgo} {daysAgo === 1 ? 'day' : 'days'} ago
+                        {t("daysAgo", { n: daysAgo })}
                       </span>
                     </div>
                     <div className="space-y-2 mb-6">
                       <p className="text-sm text-gray-600">{request.schoolType}</p>
-                      <p className="text-sm text-gray-600">Grade {request.gradeLevel}</p>
+                      <p className="text-sm text-gray-600">{t("grade", { level: request.gradeLevel })}</p>
                     </div>
                     <button
                       onClick={() => handleViewClick(request, false)}
                       className="w-full bg-[#002AC8] text-white font-medium py-3 rounded-lg hover:bg-[#0024a8] transition-colors"
                     >
-                      View
+                      {t("view")}
                     </button>
                   </div>
                 );
@@ -187,7 +197,7 @@ export default function RequestsPage() {
             </div>
           ) : acceptedRequests.length === 0 ? (
             <div className="text-center py-12 text-gray-500">
-              No accepted requests yet.
+              {t("noAcceptedRequests")}
             </div>
           ) : (
             <div className="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -197,10 +207,10 @@ export default function RequestsPage() {
                   <thead className="bg-[#FAFAFA] border border-gray-200">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Name
+                        {t("name")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Subject
+                        {t("subject")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
@@ -215,10 +225,10 @@ export default function RequestsPage() {
                     {acceptedRequests.map((request: UnifiedRequest) => (
                       <tr key={request._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {getStudentName(request)}
+                          {getStudentName(request, t)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {request.subject?.name || "Unknown"}
+                          {request.subject?.name || t("unknownSubject")}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
@@ -230,7 +240,7 @@ export default function RequestsPage() {
                             onClick={() => handleViewClick(request, true)}
                             className="bg-[#002AC8] text-white px-6 py-2 rounded-md hover:bg-[#0024a8] transition-colors font-medium"
                           >
-                            View
+                            {t("view")}
                           </button>
                         </td>
                       </tr>
@@ -299,7 +309,7 @@ export default function RequestsPage() {
         <DialogContent className="max-w-md p-0">
           <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="text-base font-semibold text-gray-900 border-b pb-4">
-              Student Information
+              {t("studentInformation")}
             </DialogTitle>
           </DialogHeader>
 
@@ -309,35 +319,35 @@ export default function RequestsPage() {
             {/* Student Info Grid */}
             <div className="grid grid-cols-2 gap-x-8 gap-y-3">
               <div>
-                <p className="text-xs text-gray-500 mb-1">Name</p>
-                <p className="text-sm text-gray-900">{selectedRequest ? getStudentName(selectedRequest) : "Unknown"}</p>
+                <p className="text-xs text-gray-500 mb-1">{t("name")}</p>
+                <p className="text-sm text-gray-900">{selectedRequest ? getStudentName(selectedRequest, t) : t("unknownStudent")}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 mb-1">Subject</p>
-                <p className="text-sm text-gray-900">{selectedRequest?.subject?.name || "Unknown"}</p>
+                <p className="text-xs text-gray-500 mb-1">{t("subject")}</p>
+                <p className="text-sm text-gray-900">{selectedRequest?.subject?.name || t("unknownSubject")}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 mb-1">School Type</p>
+                <p className="text-xs text-gray-500 mb-1">{t("schoolType")}</p>
                 <p className="text-sm text-gray-900">{selectedRequest?.schoolType || "Unknown"}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-500 mb-1">Grade</p>
-                <p className="text-sm text-gray-900">Grade {selectedRequest?.gradeLevel || "Unknown"}</p>
+                <p className="text-xs text-gray-500 mb-1">{t("grade2")}</p>
+                <p className="text-sm text-gray-900">{selectedRequest?.gradeLevel ? t("grade", { level: selectedRequest.gradeLevel }) : "Unknown"}</p>
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <p className="text-sm font-semibold text-gray-900 mb-2">Description</p>
+              <p className="text-sm font-semibold text-gray-900 mb-2">{t("description")}</p>
               <p className="text-sm text-gray-700">
-                {selectedRequest?.description || "No description provided"}
+                {selectedRequest?.description || t("noDescription")}
               </p>
             </div>
 
             {/* Learning Goals */}
             {selectedRequest?.learningGoals && (
               <div>
-                <p className="text-sm font-semibold text-gray-900 mb-2">Learning Goals</p>
+                <p className="text-sm font-semibold text-gray-900 mb-2">{t("learningGoals")}</p>
                 <p className="text-sm text-gray-700">{selectedRequest.learningGoals}</p>
               </div>
             )}
@@ -345,7 +355,7 @@ export default function RequestsPage() {
             {/* Documents */}
             {selectedRequest?.documents && selectedRequest.documents.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-gray-900">Documents</p>
+                <p className="text-sm font-semibold text-gray-900">{t("documents")}</p>
                 {selectedRequest.documents.map((doc, index) => (
                   <div key={index} className="bg-gray-50 rounded-lg p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -353,7 +363,7 @@ export default function RequestsPage() {
                         <FileText className="w-5 h-5 text-[#002AC8]" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">Document {index + 1}</p>
+                        <p className="text-sm font-medium text-gray-900">{t("document", { n: index + 1 })}</p>
                       </div>
                     </div>
                     <a href={doc} target="_blank" rel="noopener noreferrer" className="text-[#002AC8] hover:text-[#0024a8]">
@@ -369,12 +379,12 @@ export default function RequestsPage() {
                 {/* Introduction Message */}
                 <div>
                   <label className="text-sm font-medium text-gray-900 mb-2 block">
-                    Introduction Message*
+                    {t("introMessage")}
                   </label>
                   <textarea
                     value={introMessage}
                     onChange={(e) => setIntroMessage(e.target.value)}
-                    placeholder="Write your introduction message here..."
+                    placeholder={t("introPlaceholder")}
                     className="w-full h-32 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#002AC8] focus:border-transparent resize-none"
                   />
                 </div>
@@ -386,7 +396,7 @@ export default function RequestsPage() {
                     disabled={isAccepting}
                     className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                   >
-                    Cancel
+                    {tCommon("cancel")}
                   </button>
                   <button
                     onClick={handleSendAccept}
@@ -396,10 +406,10 @@ export default function RequestsPage() {
                     {isAccepting ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Accepting...
+                        {t("accepting")}
                       </>
                     ) : (
-                      "Send & Accept"
+                      t("sendAccept")
                     )}
                   </button>
                 </div>
@@ -412,7 +422,7 @@ export default function RequestsPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="w-full px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                 >
-                  Close
+                  {tCommon("close")}
                 </button>
               </div>
             )}

@@ -13,6 +13,7 @@ import {
 } from "@/hooks/api/use-subscription-payment";
 import { TrialProgressStepper } from "./TrialProgressStepper";
 import { useAuthStore } from "@/store/auth-store";
+import { useTranslations } from "next-intl";
 
 type PlanId = "flexible" | "regular" | "longterm";
 
@@ -25,6 +26,7 @@ const PLAN_TO_TIER: Record<PlanId, SubscriptionTier> = {
 const PlanSelection = () => {
   const router = useRouter();
   const { user } = useAuthStore();
+  const tStudent = useTranslations("student");
   const isSpecialStudent = user?.studentProfile?.isSpecialStudent === true;
   const [selectedPlan, setSelectedPlan] = useState<PlanId>("flexible");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -119,7 +121,7 @@ const PlanSelection = () => {
       paymentIntentId,
     });
 
-    toast.success("Subscription activated successfully!");
+    toast.success(tStudent("subscriptionActivated"));
     router.push("/student/subscription");
   };
 

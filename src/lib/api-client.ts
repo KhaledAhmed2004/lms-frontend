@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
+import { mapApiError } from "./error-mapper";
 
 // ============ Custom API Error ============
 export interface IErrorMessage {
@@ -11,6 +12,7 @@ export interface IErrorMessage {
 export class ApiError extends Error {
   status: number;
   errorMessages: IErrorMessage[];
+  mapping: { key: string; values?: any } | null = null;
 
   constructor(
     message: string,
@@ -21,6 +23,7 @@ export class ApiError extends Error {
     this.name = "ApiError";
     this.status = status;
     this.errorMessages = errorMessages;
+    this.mapping = mapApiError(this.getFullMessage());
   }
 
   // Get all error messages as single string
@@ -29,6 +32,14 @@ export class ApiError extends Error {
       return this.errorMessages.map((e) => e.message).join(", ");
     }
     return this.message;
+  }
+
+  // Get localized message if possible, fallback to original
+  getLocalizedMessage(t: any): string {
+    if (this.mapping) {
+      return t(this.mapping.key, this.mapping.values);
+    }
+    return this.getFullMessage();
   }
 }
 

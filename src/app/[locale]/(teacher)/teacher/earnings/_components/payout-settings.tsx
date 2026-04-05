@@ -17,6 +17,8 @@ import {
 } from "@/hooks/api";
 import { toast } from "sonner";
 
+import { useTranslations } from "next-intl";
+
 export default function PayoutSettings() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editFormData, setEditFormData] = useState({
@@ -26,6 +28,7 @@ export default function PayoutSettings() {
 
   const { data: payoutSettings, isLoading } = usePayoutSettings();
   const updatePayoutMutation = useUpdatePayoutSettings();
+  const t = useTranslations("earnings");
 
   useEffect(() => {
     if (payoutSettings) {
@@ -47,13 +50,13 @@ export default function PayoutSettings() {
   const handleSaveChanges = async () => {
     try {
       await updatePayoutMutation.mutateAsync(editFormData);
-      toast.success("Payout settings updated successfully");
+      toast.success(t("payoutUpdatedSuccess"));
       setIsEditDialogOpen(false);
     } catch (error: unknown) {
       const message =
         error instanceof Error
           ? error.message
-          : "Failed to update payout settings";
+          : t("payoutUpdateFailed");
       toast.error(message);
     }
   };
@@ -70,7 +73,7 @@ export default function PayoutSettings() {
       <div className="rounded-lg border border-gray-200 bg-white p-4 sm:p-5 lg:p-6">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-            Payout Settings
+            {t("payoutSettings")}
           </h2>
           <Button
             onClick={handleEditClick}
@@ -85,25 +88,25 @@ export default function PayoutSettings() {
         <div className="flex flex-col md:flex-row gap-8">
           <div className="flex-1">
             <label className="text-xs font-medium text-gray-600 block mb-2">
-              Recipient
+              {t("recipient")}
             </label>
             {isLoading ? (
               <Skeleton className="h-6 w-32" />
             ) : (
               <p className="text-gray-900 font-medium">
-                {payoutSettings?.recipient || "Not set"}
+                {payoutSettings?.recipient || t("notSet")}
               </p>
             )}
           </div>
           <div className="flex-1">
             <label className="text-xs font-medium text-gray-600 block mb-2">
-              IBAN
+              {t("iban")}
             </label>
             {isLoading ? (
               <Skeleton className="h-6 w-40" />
             ) : (
               <p className="text-gray-900 font-medium">
-                {payoutSettings?.iban || "Not set"}
+                {payoutSettings?.iban || t("notSet")}
               </p>
             )}
           </div>
@@ -114,25 +117,25 @@ export default function PayoutSettings() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold">
-              Edit Payout Settings
+              {t("editPayoutSettings")}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-6 py-4">
             <div>
               <label className="text-sm font-medium text-gray-700 block mb-2">
-                Recipient
+                {t("recipient")}
               </label>
               <Input
                 type="text"
                 value={editFormData.recipient}
                 onChange={(e) => handleInputChange("recipient", e.target.value)}
                 className="h-10 border-gray-300 rounded-lg"
-                placeholder="Enter recipient name"
+                placeholder={t("recipientPlaceholder")}
               />
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 block mb-2">
-                IBAN
+                {t("iban")}
               </label>
               <Input
                 type="text"

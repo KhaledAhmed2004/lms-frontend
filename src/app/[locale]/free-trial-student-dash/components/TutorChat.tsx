@@ -23,6 +23,7 @@ import {
   useRejectSessionProposal,
 } from "@/hooks/api/use-sessions";
 import SessionProposalWithFeedback from "@/components/messages/SessionProposalWithFeedback";
+import { useTranslations } from "next-intl";
 import ScheduleModal from "@/components/messages/schedule-modal";
 import StudentReviewModal from "@/components/modals/StudentReviewModal";
 import { useVideoCall } from "@/providers/video-call-provider";
@@ -41,6 +42,8 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
   const [selectedSessionForReview, setSelectedSessionForReview] = useState<
     string | null
   >(null);
+  const tChat = useTranslations("chat");
+  const tStudent = useTranslations("student");
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
@@ -115,7 +118,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
             },
             onError: (error: any) => {
               toast.error(
-                error?.response?.data?.message || "Failed to send attachment",
+                error?.response?.data?.message || tChat("sendAttachmentFailed"),
               );
             },
           },
@@ -160,7 +163,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
 
     files.forEach((file) => {
       if (file.size > maxSize) {
-        toast.error(`${file.name} is too large. Max size is 10MB`);
+        toast.error(tChat("fileTooLarge", { name: file.name }));
         return;
       }
 
@@ -172,9 +175,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
         mimeType === "application/pdf";
 
       if (!isValidType) {
-        toast.error(
-          `${file.name} is not supported. Use images, videos, audio, or PDF`,
-        );
+        toast.error(tChat("fileNotSupported", { name: file.name }));
         return;
       }
 
@@ -211,10 +212,10 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
     if (action === "accepted") {
       acceptProposal(messageId, {
         onSuccess: () => {
-          toast.success("Session accepted! Check your upcoming sessions.");
+          toast.success(tStudent("sessionAccepted"));
         },
         onError: (error: any) => {
-          toast.error(error?.message || "Failed to accept session");
+          toast.error(error?.message || tChat("acceptFailed"));
         },
       });
     } else if (action === "declined") {
@@ -223,7 +224,7 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
           toast.info("Session proposal declined");
         },
         onError: (error: any) => {
-          toast.error(error?.message || "Failed to decline session");
+          toast.error(error?.message || tChat("declineFailed"));
         },
       });
     }

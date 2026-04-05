@@ -7,6 +7,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useSubmitTutorFeedback, FEEDBACK_TYPE } from "@/hooks/api/use-tutor-feedback";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 type FeedbackStep = "audio" | "text" | "success";
 
@@ -35,6 +36,7 @@ export default function TutorFeedbackModal({
 
   const submitFeedback = useSubmitTutorFeedback();
   const queryClient = useQueryClient();
+  const tStudent = useTranslations("student");
 
   React.useEffect(() => {
     if (!isOpen) {
@@ -114,7 +116,7 @@ export default function TutorFeedbackModal({
         feedbackType: FEEDBACK_TYPE.TEXT,
         feedbackText,
       });
-      toast.success("Feedback submitted successfully!");
+      toast.success(tStudent("feedbackSubmitted"));
       // Invalidate session feedback query for this session
       if (chatId) {
         queryClient.invalidateQueries({ queryKey: ['messages', chatId] });
@@ -316,7 +318,7 @@ export default function TutorFeedbackModal({
                 Success!
               </h3>
               <p className="text-sm sm:text-base text-gray-600">
-                Your feedback was submitted successfully
+                {tStudent("feedbackSubmitted")}
               </p>
             </div>
 

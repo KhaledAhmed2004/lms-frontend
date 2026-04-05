@@ -17,6 +17,7 @@ import {
 } from "@/hooks/api/use-sessions";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { format, formatDistanceToNow } from "date-fns";
+import { de, enGB } from "date-fns/locale";
 import {
   Calendar,
   Check,
@@ -30,6 +31,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations, useLocale } from "next-intl";
 import { NewSessionRequestModal } from "./components/NewSessionRequestModal";
 
 function FeedbackModal({
@@ -46,6 +48,7 @@ function FeedbackModal({
   const [comment, setComment] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const createReview = useCreateReview();
+  const tStudent = useTranslations("student");
 
   const handleSubmit = async () => {
     if (!session || rating === 0) return;
@@ -62,7 +65,7 @@ function FeedbackModal({
         wouldRecommend: rating >= 4,
         isPublic: true,
       });
-      toast.success("Feedback submitted successfully!");
+      toast.success(tStudent("feedbackSubmitted"));
       setShowSuccess(true);
       setTimeout(() => {
         onClose();
@@ -166,7 +169,7 @@ function FeedbackModal({
               Success!
             </h3>
             <p className="text-base sm:text-lg text-gray-600">
-              Your review was submitted successfully
+              {tStudent("reviewSubmitted")}
             </p>
           </div>
         )}
@@ -175,18 +178,7 @@ function FeedbackModal({
   );
 }
 
-// Helper to format date
-function formatSessionDate(dateString: string): string {
-  const date = new Date(dateString);
-  return format(date, "EEEE, dd.MM.yyyy");
-}
-
-// Helper to format time
-function formatSessionTime(dateString: string): string {
-  const date = new Date(dateString);
-  return format(date, "h:mm a");
-}
-
+// Check if session can be joined (within 10 minutes of start or during session)
 // Check if session can be joined (within 10 minutes of start or during session)
 function canJoinSession(session: Session): boolean {
   const now = new Date();
@@ -400,10 +392,14 @@ function SessionCard({
   session,
   isUpcoming,
   onFeedback,
+  formatDate,
+  formatTime,
 }: {
   session: ExtendedSession;
   isUpcoming: boolean;
   onFeedback: () => void;
+  formatDate: (date: string) => string;
+  formatTime: (date: string) => string;
 }) {
   const canJoin = isUpcoming && canJoinSession(session);
   // Backend returns 'COMPLETED' when review exists, 'PENDING' when not
@@ -437,14 +433,14 @@ function SessionCard({
               size={14}
               className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0"
             />
-            <span>{formatSessionDate(session.startTime)}</span>
+            <span>{formatDate(session.startTime)}</span>
           </div>
           <div className="flex items-center gap-1 w-32">
             <Clock
               size={14}
               className="text-gray-400 sm:w-4 sm:h-4 flex-shrink-0"
             />
-            <span>{formatSessionTime(session.startTime)}</span>
+            <span>{formatTime(session.startTime)}</span>
           </div>
           <p className="text-[#405ED5] hover:text-[#3052D2] font-medium">
             {session.subject}
@@ -484,6 +480,22 @@ function SessionCard({
 }
 
 export default function StudentSession() {
+  const locale = useLocale();
+  const dateLocale = locale === "de" ? de : enGB;
+  const timeFormatString = locale === "de" ? "HH:mm" : "h:mm a";
+
+  // Helper to format date
+  const formatSessionDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    return format(date, "EEEE, dd.MM.yyyy", { locale: dateLocale });
+  };
+
+  // Helper to format time
+  const formatSessionTime = (dateString: string): string => {
+    const date = new Date(dateString);
+    return format(date, timeFormatString, { locale: dateLocale });
+  };
+
   const [activeTab, setActiveTab] = useState("upcoming");
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [isNewRequestModalOpen, setIsNewRequestModalOpen] = useState(false);
@@ -655,6 +667,8 @@ export default function StudentSession() {
                 session={session as ExtendedSession}
                 isUpcoming={activeTab === "upcoming"}
                 onFeedback={() => handleOpenFeedback(session)}
+                formatDate={formatSessionDate}
+                formatTime={formatSessionTime}
               />
             ))
           ) : (

@@ -45,6 +45,7 @@ import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import ScheduleModal from "./schedule-modal";
 import SessionProposalWithFeedback from "./SessionProposalWithFeedback";
+import { useTranslations } from "next-intl";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
@@ -82,6 +83,8 @@ export default function ChatArea({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuthStore();
   const { joinChat, leaveChat, isConnected } = useSocket();
+  const tChat = useTranslations("chat");
+  const tStudent = useTranslations("student");
 
   // Get chats to find the current chat info
   const { data: chats } = useChats();
@@ -217,7 +220,7 @@ export default function ChatArea({
             },
             onError: (error: any) => {
               toast.error(
-                error?.response?.data?.message || "Failed to send attachment",
+                error?.response?.data?.message || tChat("sendAttachmentFailed"),
               );
             },
           },
@@ -252,7 +255,7 @@ export default function ChatArea({
 
     files.forEach((file) => {
       if (file.size > maxSize) {
-        toast.error(`${file.name} is too large. Max size is 10MB`);
+        toast.error(tChat("fileTooLarge", { name: file.name }));
         return;
       }
 
@@ -264,9 +267,7 @@ export default function ChatArea({
         mimeType === "application/pdf";
 
       if (!isValidType) {
-        toast.error(
-          `${file.name} is not supported. Use images, videos, audio, or PDF`,
-        );
+        toast.error(tChat("fileNotSupported", { name: file.name }));
         return;
       }
 
@@ -351,7 +352,7 @@ export default function ChatArea({
           onError: (error: any) => {
             toast.error(
               error?.response?.data?.message ||
-                "Failed to send counter-proposal",
+                tChat("counterProposalFailed"),
             );
           },
         },
@@ -374,7 +375,7 @@ export default function ChatArea({
           },
           onError: (error: any) => {
             toast.error(
-              error?.response?.data?.message || "Failed to send proposal",
+              error?.response?.data?.message || tChat("proposalFailed"),
             );
           },
         },
@@ -390,11 +391,11 @@ export default function ChatArea({
     if (action === "accepted") {
       acceptProposal(messageId, {
         onSuccess: () => {
-          toast.success("Session accepted! Check your upcoming sessions.");
+          toast.success(tStudent("sessionAccepted"));
         },
         onError: (error: any) => {
           toast.error(
-            error?.response?.data?.message || "Failed to accept session",
+            error?.response?.data?.message || tChat("acceptFailed"),
           );
         },
       });
@@ -405,7 +406,7 @@ export default function ChatArea({
         },
         onError: (error: any) => {
           toast.error(
-            error?.response?.data?.message || "Failed to decline session",
+            error?.response?.data?.message || tChat("declineFailed"),
           );
         },
       });
@@ -418,7 +419,7 @@ export default function ChatArea({
           },
           onError: (error: any) => {
             toast.error(
-              error?.response?.data?.message || "Failed to cancel session",
+              error?.response?.data?.message || tChat("cancelFailed"),
             );
           },
         },

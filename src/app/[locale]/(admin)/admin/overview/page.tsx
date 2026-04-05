@@ -44,10 +44,11 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 const Overview = () => {
   const t = useTranslations("overview");
+  const locale = useLocale();
   const [timeRange, setTimeRange] = useState("monthly");
   const [isMounted, setIsMounted] = useState(false);
   const currentYear = new Date().getFullYear();
@@ -65,9 +66,9 @@ const Overview = () => {
 
   // Format currency
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+    return new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US", {
+      style: "currency",
+      currency: locale === "de" ? "EUR" : "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -75,7 +76,7 @@ const Overview = () => {
 
   // Format number with commas
   const formatNumber = (num: number) => {
-    return new Intl.NumberFormat('en-US').format(num);
+    return new Intl.NumberFormat(locale === "de" ? "de-DE" : "en-US").format(num);
   };
 
   // Month names for chart

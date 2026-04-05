@@ -13,6 +13,7 @@ import { AuthNavbar } from "@/components/auth-navbar";
 
 const LoginPage = () => {
   const t = useTranslations("auth.login");
+  const te = useTranslations("error");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberPassword, setRememberPassword] = useState(false);
@@ -36,7 +37,7 @@ const LoginPage = () => {
         },
         onError: (error: any) => {
           const message =
-            error?.getFullMessage?.() ||
+            error?.getLocalizedMessage?.(te) ||
             error?.message ||
             t("errorFallback");
           toast.error(message);

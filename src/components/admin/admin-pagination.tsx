@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useTranslations } from "next-intl";
 
 interface AdminPaginationProps {
   currentPage: number;
@@ -23,11 +24,16 @@ export function AdminPagination({
   total,
   onPageChange,
 }: AdminPaginationProps) {
+  const t = useTranslations("common");
+
   return (
     <div className="flex items-center justify-between pt-6">
       <p className="text-sm text-gray-500 whitespace-nowrap">
-        Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-        {Math.min(currentPage * itemsPerPage, total)} of {total} results
+        {t("showing", {
+          start: (currentPage - 1) * itemsPerPage + 1,
+          end: Math.min(currentPage * itemsPerPage, total),
+          total: total,
+        })}
       </p>
       <Pagination className="justify-end mx-0">
         <PaginationContent>
@@ -39,7 +45,9 @@ export function AdminPagination({
                   ? "pointer-events-none opacity-50"
                   : "cursor-pointer"
               }
-            />
+            >
+              <span className="hidden sm:block">{t("previous")}</span>
+            </PaginationPrevious>
           </PaginationItem>
 
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
@@ -80,7 +88,9 @@ export function AdminPagination({
                   ? "pointer-events-none opacity-50"
                   : "cursor-pointer"
               }
-            />
+            >
+              <span className="hidden sm:block">{t("next")}</span>
+            </PaginationNext>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

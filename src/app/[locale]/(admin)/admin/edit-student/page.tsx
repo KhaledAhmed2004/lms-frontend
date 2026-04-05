@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { useStudent, useAdminUpdateStudentProfile } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 const StudentEditContent = () => {
   const searchParams = useSearchParams();
@@ -42,6 +43,8 @@ const StudentEditContent = () => {
     }
   }, [student]);
 
+  const t = useTranslations('editStudent');
+
   const handleSave = () => {
     updateStudent(
       {
@@ -56,11 +59,11 @@ const StudentEditContent = () => {
       },
       {
         onSuccess: () => {
-          toast.success('Student profile updated successfully');
+          toast.success(t('updateSuccess'));
           router.push(`/admin/student-details?id=${id}`);
         },
         onError: (error: any) => {
-          toast.error(error?.message || 'Failed to update student profile');
+          toast.error(error?.message || t('updateFailed'));
         },
       }
     );

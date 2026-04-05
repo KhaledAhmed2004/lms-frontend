@@ -27,8 +27,11 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useTransactions, useTransactionStats, Transaction } from '@/hooks/api/use-admin-stats';
+import { useTranslations } from 'next-intl';
 
 const TransactionManagement = () => {
+  const t = useTranslations('transactions');
+  const ts = useTranslations('status');
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'PAID' | 'PENDING'>('all');
@@ -86,7 +89,7 @@ const TransactionManagement = () => {
   };
 
   const getTypeLabel = (type: Transaction['type']) => {
-    return type === 'STUDENT_PAYMENT' ? 'Student Payment' : 'Tutor Payout';
+    return type === 'STUDENT_PAYMENT' ? t('typeStudentPayment') : t('typeTutorPayout');
   };
 
   const formatDate = (dateString: string) => {
@@ -100,7 +103,7 @@ const TransactionManagement = () => {
 
   const formatCurrency = (amount: number, showFreeLabel = false) => {
     if (showFreeLabel && amount === 0) {
-      return 'Free';
+      return ts('free');
     }
     return new Intl.NumberFormat('de-DE', {
       style: 'currency',
@@ -121,7 +124,7 @@ const TransactionManagement = () => {
                   <DollarSign className="text-green-600" size={24} />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-2">
-                  Total Amount
+                  {t('totalAmount')}
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
                   {isLoadingStats ? (
@@ -144,7 +147,7 @@ const TransactionManagement = () => {
                   <ArrowDownLeft className="text-blue-600" size={24} />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-2">
-                  Student Payments
+                  {t('studentPayments')}
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
                   {isLoadingStats ? (
@@ -154,7 +157,7 @@ const TransactionManagement = () => {
                   )}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {stats?.studentPayments?.count || 0} transactions
+                  {stats?.studentPayments?.count || 0} {t('transactions')}
                 </p>
               </div>
             </div>
@@ -170,7 +173,7 @@ const TransactionManagement = () => {
                   <ArrowUpRight className="text-purple-600" size={24} />
                 </div>
                 <p className="text-sm font-medium text-gray-600 mb-2">
-                  Tutor Payouts
+                  {t('tutorPayouts')}
                 </p>
                 <p className="text-3xl font-bold text-gray-900">
                   {isLoadingStats ? (
@@ -180,7 +183,7 @@ const TransactionManagement = () => {
                   )}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {stats?.tutorPayouts?.count || 0} transactions
+                  {stats?.tutorPayouts?.count || 0} {t('transactions')}
                 </p>
               </div>
             </div>
@@ -195,7 +198,7 @@ const TransactionManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search by ID, name, or email..."
+          placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -211,19 +214,19 @@ const TransactionManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All Transactions
+                {t('tabAll')}
               </TabsTrigger>
               <TabsTrigger
                 value="PAID"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Paid
+                {t('tabPaid')}
               </TabsTrigger>
               <TabsTrigger
                 value="PENDING"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Pending
+                {t('tabPending')}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -237,28 +240,28 @@ const TransactionManagement = () => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Transaction ID
+                          {t('colTransactionId')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Type
+                          {t('colType')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          User
+                          {t('colUser')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Description
+                          {t('colDescription')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Amount
+                          {t('colAmount')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Date
+                          {t('colDate')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Status
+                          {t('colStatus')}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Action
+                          {t('colAction')}
                         </th>
                       </tr>
                     </thead>
@@ -267,13 +270,13 @@ const TransactionManagement = () => {
                         <tr>
                           <td colSpan={8} className="py-8 text-center">
                             <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-400" />
-                            <p className="text-gray-500 mt-2">Loading transactions...</p>
+                            <p className="text-gray-500 mt-2">{t('loadingTransactions')}</p>
                           </td>
                         </tr>
                       ) : transactions.length === 0 ? (
                         <tr>
                           <td colSpan={8} className="py-8 text-center text-gray-500">
-                            No transactions found
+                            {t('noTransactions')}
                           </td>
                         </tr>
                       ) : (
@@ -314,7 +317,7 @@ const TransactionManagement = () => {
                             </td>
                             <td className="py-3 px-4">
                               <Badge className={`${getStatusColor(transaction.status)} border-0`}>
-                                {transaction.status}
+                                {ts(transaction.status.toLowerCase().replace(/_/g, ''))}
                               </Badge>
                             </td>
                             <td className="py-3 px-4">
@@ -345,7 +348,7 @@ const TransactionManagement = () => {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between pt-6">
                   <p className="text-sm text-gray-500">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, meta?.total || 0)} of {meta?.total || 0} transactions
+                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, meta?.total || 0)} of {meta?.total || 0} {t('transactions')}
                   </p>
                   <Pagination>
                     <PaginationContent>

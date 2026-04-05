@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { useTutor, useAdminUpdateTutorProfile, useActiveSubjects } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 interface SubjectItem {
   _id: string;
@@ -38,6 +39,8 @@ const TutorEditContent = () => {
   const { data: tutor, isLoading, error } = useTutor(id);
   const { data: availableSubjects } = useActiveSubjects();
   const { mutate: updateTutor, isPending: isUpdating } = useAdminUpdateTutorProfile();
+
+  const t = useTranslations('editTutor');
 
   // Form state
   const [fullName, setFullName] = useState('');
@@ -96,7 +99,7 @@ const TutorEditContent = () => {
       },
       {
         onSuccess: () => {
-          toast.success('Tutor profile updated successfully');
+          toast.success(t('updateSuccess'));
           router.push(`/admin/tutor-details?id=${id}`);
         },
         onError: (error: any) => {
