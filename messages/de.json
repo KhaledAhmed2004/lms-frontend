@@ -465,5 +465,33 @@
     "ticketDetails": "Ticketdetails",
     "resolved": "Gelöst",
     "close": "Schließen"
+  },
+  "requests": {
+    "openRequests": "Offen",
+    "acceptedRequests": "Angenommen",
+    "noOpenRequests": "Zurzeit keine offenen Anfragen verfügbar.",
+    "noAcceptedRequests": "Du hast noch keine Anfrage angenommen.",
+    "view": "Anzeigen",
+    "daysAgo": "vor {n} Tag(en)",
+    "grade": "Klasse {level}",
+    "unknownStudent": "Unbekannter Schüler",
+    "unknownSubject": "Unbekanntes Fach",
+    "studentInformation": "Schülerinformationen",
+    "name": "Name",
+    "subject": "Fach",
+    "schoolType": "Schulform",
+    "grade2": "Klassenstufe",
+    "description": "Beschreibung",
+    "noDescription": "Keine Beschreibung vorhanden",
+    "learningGoals": "Lernziele",
+    "documents": "Dokumente",
+    "document": "Dokument {n}",
+    "introMessage": "Vorstellungsnachricht*",
+    "introPlaceholder": "Stelle dich bitte kurz vor...",
+    "introError": "Bitte schreibe eine Vorstellungsnachricht",
+    "sendAccept": "Senden & Annehmen",
+    "accepting": "Wird angenommen...",
+    "acceptSuccess": "Anfrage erfolgreich angenommen!",
+    "acceptFailed": "Anfrage konnte nicht angenommen werden, versuche es später erneut"
   }
 }

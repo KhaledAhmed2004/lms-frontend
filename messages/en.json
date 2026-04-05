@@ -465,5 +465,33 @@
     "ticketDetails": "Ticket Details",
     "resolved": "Resolved",
     "close": "Close"
+  },
+  "requests": {
+    "openRequests": "Open Requests",
+    "acceptedRequests": "Accepted Requests",
+    "noOpenRequests": "No open requests available at the moment.",
+    "noAcceptedRequests": "No accepted requests yet.",
+    "view": "View",
+    "daysAgo": "{n} day(s) ago",
+    "grade": "Grade {level}",
+    "unknownStudent": "Unknown Student",
+    "unknownSubject": "Unknown Subject",
+    "studentInformation": "Student Information",
+    "name": "Name",
+    "subject": "Subject",
+    "schoolType": "School Type",
+    "grade2": "Grade",
+    "description": "Description",
+    "noDescription": "No description provided",
+    "learningGoals": "Learning Goals",
+    "documents": "Documents",
+    "document": "Document {n}",
+    "introMessage": "Introduction Message*",
+    "introPlaceholder": "Write your introduction message here...",
+    "introError": "Please write an introduction message",
+    "sendAccept": "Send & Accept",
+    "accepting": "Accepting...",
+    "acceptSuccess": "Request accepted successfully!",
+    "acceptFailed": "Failed to accept request"
   }
 }
