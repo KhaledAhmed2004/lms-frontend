@@ -323,5 +323,27 @@
     "errorLoading": "Error loading pricing config. Please try again.",
     "updatedSuccess": "{name} plan updated successfully",
     "updateFailed": "Failed to update plan"
+  },
+  "transactions": {
+    "totalAmount": "Total Amount",
+    "studentPayments": "Student Payments",
+    "tutorPayouts": "Tutor Payouts",
+    "transactions": "transactions",
+    "searchPlaceholder": "Search by ID, name, or email...",
+    "tabAll": "All Transactions",
+    "tabPaid": "Paid",
+    "tabPending": "Pending",
+    "colTransactionId": "Transaction ID",
+    "colType": "Type",
+    "colUser": "User",
+    "colDescription": "Description",
+    "colAmount": "Amount",
+    "colDate": "Date",
+    "colStatus": "Status",
+    "colAction": "Action",
+    "typeStudentPayment": "Student Payment",
+    "typeTutorPayout": "Tutor Payout",
+    "loadingTransactions": "Loading transactions...",
+    "noTransactions": "No transactions found"
   }
 }

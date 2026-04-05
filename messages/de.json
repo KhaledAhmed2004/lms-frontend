@@ -323,5 +323,27 @@
     "errorLoading": "Fehler beim Laden der Preiskonfiguration. Bitte versuche es erneut.",
     "updatedSuccess": "{name}-Tarif erfolgreich aktualisiert",
     "updateFailed": "Tarif konnte nicht aktualisiert werden"
+  },
+  "transactions": {
+    "totalAmount": "Gesamtbetrag",
+    "studentPayments": "Schülerzahlungen",
+    "tutorPayouts": "Tutor-Auszahlungen",
+    "transactions": "Transaktionen",
+    "searchPlaceholder": "Nach ID, Name oder E-Mail suchen...",
+    "tabAll": "Alle Transaktionen",
+    "tabPaid": "Bezahlt",
+    "tabPending": "Ausstehend",
+    "colTransactionId": "Transaktions-ID",
+    "colType": "Typ",
+    "colUser": "Benutzer",
+    "colDescription": "Beschreibung",
+    "colAmount": "Betrag",
+    "colDate": "Datum",
+    "colStatus": "Status",
+    "colAction": "Aktion",
+    "typeStudentPayment": "Schülerzahlung",
+    "typeTutorPayout": "Tutor-Auszahlung",
+    "loadingTransactions": "Transaktionen werden geladen...",
+    "noTransactions": "Keine Transaktionen gefunden"
   }
 }
