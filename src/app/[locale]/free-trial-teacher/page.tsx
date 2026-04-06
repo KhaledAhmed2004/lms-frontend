@@ -67,7 +67,7 @@ const FreeTrialTeacher = () => {
   // Redirect existing tutors/applicants
   useEffect(() => {
     if (isAuthenticated && user?.role === "TUTOR") {
-      router.replace("/teacher/dashboard");
+      router.replace("/teacher/session");
       return;
     }
 

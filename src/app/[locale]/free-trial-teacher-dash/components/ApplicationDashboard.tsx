@@ -89,7 +89,12 @@ const getStatusMessage = (
 const ApplicationDashboard = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: application, isLoading, error } = useMyApplication();
+  const stripeOnboarding = searchParams.get("stripe_onboarding");
+  const isStripeSuccess = stripeOnboarding === "success";
+
+  const { data: application, isLoading, error } = useMyApplication({
+    enabled: !isStripeSuccess,
+  });
   const { refetchStatus } = useStripeConnect();
   const { mutate: updateApplication, isPending: isUpdating } = useUpdateMyApplication();
   const { data: bookedInterview } = useMyBookedInterview();
@@ -152,8 +157,8 @@ const ApplicationDashboard = () => {
       stripeToastShownRef.current = true;
       toast.success("Stripe account connected successfully!");
       refetchStatus();
-      // Clean URL by removing query params
-      router.replace("/free-trial-teacher-dash", { scroll: false });
+      // Redirect after successful verification to teacher session
+      router.replace("/teacher/session", { scroll: false });
     } else if (stripeOnboarding === "refresh") {
       stripeToastShownRef.current = true;
       toast.info("Please complete your Stripe onboarding to continue.");
@@ -163,7 +168,7 @@ const ApplicationDashboard = () => {
 
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || isStripeSuccess) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
