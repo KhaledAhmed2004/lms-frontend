@@ -93,6 +93,7 @@ const isPublicEndpoint = (url: string, method: string): boolean => {
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
+  timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
 

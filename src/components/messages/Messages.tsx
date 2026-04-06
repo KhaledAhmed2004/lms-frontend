@@ -39,7 +39,7 @@ export default function Messages() {
       {/* Main Chat Area Container */}
       <div
         className={`
-        flex-1 h-full w-full
+        flex-1 h-full w-full min-h-0
         ${showMobileChat ? "block" : "hidden"}
         md:block
       `}

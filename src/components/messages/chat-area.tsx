@@ -81,6 +81,7 @@ export default function ChatArea({
     useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { user } = useAuthStore();
   const { joinChat, leaveChat, isConnected } = useSocket();
   const tChat = useTranslations("chat");
@@ -204,36 +205,63 @@ export default function ChatArea({
   }, [actualChatId, currentChat?.unreadCount, markAsRead]);
 
   const handleSend = () => {
-    if (actualChatId) {
+    if (!actualChatId || isSending || isUploadingSending) return;
+
+    if (selectedFiles.length > 0) {
       // If there are files selected, send with attachments
-      if (selectedFiles.length > 0) {
-        sendMessageWithAttachment(
-          {
-            chatId: actualChatId,
-            text: message.trim() || undefined,
-            files: selectedFiles,
-          },
-          {
-            onSuccess: () => {
-              setMessage("");
-              setSelectedFiles([]);
-            },
-            onError: (error: any) => {
-              toast.error(
-                error?.response?.data?.message || tChat("sendAttachmentFailed"),
-              );
-            },
-          },
-        );
-      } else if (message.trim()) {
-        // Text only message
-        sendMessage({
+      const filesToSend = [...selectedFiles];
+      const messageText = message.trim();
+
+      // Clear immediately for better UX
+      setMessage("");
+      setSelectedFiles([]);
+
+      sendMessageWithAttachment(
+        {
           chatId: actualChatId,
-          content: message.trim(),
+          text: messageText || undefined,
+          files: filesToSend,
+        },
+        {
+          onError: (error: any) => {
+            // Restore state on error so user doesn't lose their work
+            setMessage(messageText);
+            setSelectedFiles(filesToSend);
+            toast.error(
+              error?.response?.data?.message || tChat("sendAttachmentFailed"),
+            );
+          },
+          onSettled: () => {
+            // Ensure focus is returned to textarea
+            textareaRef.current?.focus();
+          },
+        },
+      );
+    } else if (message.trim()) {
+      // Text only message
+      const messageContent = message.trim();
+
+      // Clear immediately for better UX
+      setMessage("");
+
+      sendMessage(
+        {
+          chatId: actualChatId,
+          content: messageContent,
           type: "TEXT",
-        });
-        setMessage("");
-      }
+        },
+        {
+          onError: (error: any) => {
+            // Restore message on error
+            setMessage(messageContent);
+            toast.error(error?.response?.data?.message || tChat("sendFailed"));
+          },
+          onSettled: () => {
+            // Ensure focus is returned to textarea
+            textareaRef.current?.focus();
+          },
+        },
+      );
     }
   };
 
@@ -577,10 +605,9 @@ export default function ChatArea({
         </div>
       </div>
 
-      {/* Messages */}
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6"
+        className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-6"
       >
         {messagesLoading ? (
           <div className="flex items-center justify-center h-full">
@@ -835,12 +862,12 @@ export default function ChatArea({
             )}
 
             <Textarea
+              ref={textareaRef}
               placeholder="Type your Message..."
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              disabled={isSending || isUploadingSending}
-              className="min-h-20 mb-3 resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
+              className="min-h-[44px] mb-3 resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-none"
             />
 
             <div className="flex items-center gap-2">

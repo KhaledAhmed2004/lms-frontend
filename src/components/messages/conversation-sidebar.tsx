@@ -154,78 +154,79 @@ export default function ConversationSidebar({
             No conversations yet
           </div>
         )}
+
+        {/* New Tutor Chat - Move inside scrollable area to remove gap */}
+        {!isAdmin && (
+          <div className="p-3 border-b border-border">
+            <button
+              onClick={() => onSelectConversation("tutor")}
+              className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
+                selectedConversation === "tutor"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80 text-foreground"
+              }`}
+            >
+              <div className="relative flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
+                <User className="w-4 h-4" />
+                {adminChatUnread > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {adminChatUnread}
+                  </span>
+                )}
+              </div>
+
+              <div className="text-left flex-1">
+                <div
+                  className={`font-semibold text-sm ${adminChatUnread > 0 ? "font-bold" : ""}`}
+                >
+                  New Tutor Chat
+                </div>
+                <div className="text-xs opacity-75">
+                  {hasAdminChat
+                    ? "Chat with support team"
+                    : "Get help from our team"}
+                </div>
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* Support Chat - Move inside scrollable area to remove gap */}
+        {!isAdmin && (
+          <div className="p-3 border-b border-border">
+            <button
+              onClick={() => onSelectConversation("support")}
+              className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
+                selectedConversation === "support"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted hover:bg-muted/80 text-foreground"
+              }`}
+            >
+              <div className="relative flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
+                <Headphones className="w-4 h-4" />
+                {adminChatUnread > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {adminChatUnread}
+                  </span>
+                )}
+              </div>
+
+              <div className="text-left flex-1">
+                <div
+                  className={`font-semibold text-sm ${adminChatUnread > 0 ? "font-bold" : ""}`}
+                >
+                  Support Chat
+                </div>
+                <div className="text-xs opacity-75">
+                  {hasAdminChat
+                    ? "Chat with support team"
+                    : "Get help from our team"}
+                </div>
+              </div>
+            </button>
+          </div>
+        )}
       </div>
-
-      {/* New Tutor Chat - Only show for non-admin users */}
-      {!isAdmin && (
-        <div className="border-t border-border p-[15.2px]">
-          <button
-            onClick={() => onSelectConversation("tutor")}
-            className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
-              selectedConversation === "tutor"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-muted/80 text-foreground"
-            }`}
-          >
-            <div className="relative flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
-              <User className="w-4 h-4" />
-              {adminChatUnread > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {adminChatUnread}
-                </span>
-              )}
-            </div>
-
-            <div className="text-left flex-1">
-              <div
-                className={`font-semibold text-sm ${adminChatUnread > 0 ? "font-bold" : ""}`}
-              >
-                New Tutor Chat
-              </div>
-              <div className="text-xs opacity-75">
-                {hasAdminChat
-                  ? "Chat with support team"
-                  : "Get help from our team"}
-              </div>
-            </div>
-          </button>
-        </div>
-      )}
-      {/* Support Chat - Only show for non-admin users */}
-      {!isAdmin && (
-        <div className="border-t border-border p-[15.2px]">
-          <button
-            onClick={() => onSelectConversation("support")}
-            className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
-              selectedConversation === "support"
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted hover:bg-muted/80 text-foreground"
-            }`}
-          >
-            <div className="relative flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full">
-              <Headphones className="w-4 h-4" />
-              {adminChatUnread > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {adminChatUnread}
-                </span>
-              )}
-            </div>
-
-            <div className="text-left flex-1">
-              <div
-                className={`font-semibold text-sm ${adminChatUnread > 0 ? "font-bold" : ""}`}
-              >
-                Support Chat
-              </div>
-              <div className="text-xs opacity-75">
-                {hasAdminChat
-                  ? "Chat with support team"
-                  : "Get help from our team"}
-              </div>
-            </div>
-          </button>
-        </div>
-      )}
     </div>
   );
 }

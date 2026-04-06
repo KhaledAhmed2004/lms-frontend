@@ -123,27 +123,77 @@ export function useMessages(chatId: string) {
   });
 }
 
-// Send Message (Protected)
 export function useSendMessage() {
   const queryClient = useQueryClient();
+  const { user } = useAuthStore();
 
   return useMutation({
     mutationFn: async (messageData: {
       chatId: string;
       content: string;
-      type?: 'TEXT' | 'FILE';
+      type?: "TEXT" | "FILE";
     }) => {
       // Backend expects 'text' field, not 'content'
-      const { data } = await apiClient.post('/messages', {
+      const { data } = await apiClient.post("/messages", {
         chatId: messageData.chatId,
         text: messageData.content,
-        type: messageData.type?.toLowerCase() || 'text',
+        type: messageData.type?.toLowerCase() || "text",
       });
       return data;
     },
-    onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ['messages', variables.chatId] });
-      queryClient.invalidateQueries({ queryKey: ['chats'] });
+    onMutate: async (newMessage) => {
+      // Cancel any outgoing refetches
+      // (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({
+        queryKey: ["messages", newMessage.chatId],
+      });
+
+      // Snapshot the previous value
+      const previousMessages = queryClient.getQueryData([
+        "messages",
+        newMessage.chatId,
+      ]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(
+        ["messages", newMessage.chatId],
+        (old: Message[] | undefined) => {
+          const optimisticMessage: Message = {
+            _id: `temp-${Date.now()}`,
+            chatId: newMessage.chatId,
+            sender: {
+              _id: user?._id || "",
+              name: user?.name || "You",
+              avatar: user?.avatar || "",
+            },
+            text: newMessage.content,
+            content: newMessage.content, // Virtual alias
+            type: (newMessage.type?.toLowerCase() as any) || "text",
+            createdAt: new Date().toISOString(),
+          };
+          return old ? [...old, optimisticMessage] : [optimisticMessage];
+        },
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousMessages };
+    },
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, newMessage, context) => {
+      if (context?.previousMessages) {
+        queryClient.setQueryData(
+          ["messages", newMessage.chatId],
+          context.previousMessages,
+        );
+      }
+    },
+    // Always refetch after error or success:
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["messages", variables.chatId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
   });
 }
