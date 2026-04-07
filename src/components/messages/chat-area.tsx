@@ -14,10 +14,11 @@ import {
   Chat,
   useChats,
   useMarkChatAsRead,
-  useMessages,
   useSendMessage,
   useSendMessageWithAttachment,
 } from "@/hooks/api/use-chats";
+import { useInfiniteChats } from "@/hooks/useInfiniteChats";
+import ChatList from "./ChatList";
 import {
   useAcceptSessionProposal,
   useCancelSession,
@@ -79,7 +80,6 @@ export default function ChatArea({
     useState(false);
   const [selectedSessionForStudentReview, setSelectedSessionForStudentReview] =
     useState<string | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { user } = useAuthStore();
@@ -114,9 +114,14 @@ export default function ChatArea({
     }
   }, [actualChatId, isConnected, joinChat, leaveChat]);
 
-  // Get messages from API
-  const { data: messages, isLoading: messagesLoading } =
-    useMessages(actualChatId);
+  // Get messages using our new infinite scroll hook
+  const { 
+    messages, 
+    isLoading: messagesLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage 
+  } = useInfiniteChats(actualChatId, 20); // Load 20 at a time for better UX
   const { mutate: sendMessage, isPending: isSending } = useSendMessage();
   const { mutate: sendMessageWithAttachment, isPending: isUploadingSending } =
     useSendMessageWithAttachment();
@@ -193,13 +198,7 @@ export default function ChatArea({
     });
   };
 
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [messages]);
+  // Scroll to bottom is now handled by ChatList
 
   // Mark chat as read when viewing
   useEffect(() => {
@@ -609,217 +608,214 @@ export default function ChatArea({
         </div>
       </div>
 
-      <div
-        ref={chatContainerRef}
-        className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 space-y-6"
-      >
-        {messagesLoading ? (
-          <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
-        ) : messages && messages.length > 0 ? (
-          messages.map((msg) => {
-            const isOwn = msg.sender._id === user?._id;
-            const messageContent = (msg as any).text || msg.content;
-
-            return (
+      {/* Infinite Scroll Messages Area */}
+      <ChatList
+        messages={messages || []}
+        isFetchingNextPage={isFetchingNextPage}
+        hasNextPage={hasNextPage}
+        fetchNextPage={fetchNextPage}
+        emptyState={
+          messagesLoading ? (
+            <div className="flex items-center justify-center h-full">
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground italic">
+              <p>No messages in this chat. Say hello!</p>
+            </div>
+          )
+        }
+        renderMessage={(msg) => {
+          const isOwn = msg.sender._id === user?._id;
+          const messageContent = (msg as any).text || msg.content;
+          return (
+            <div
+              key={msg._id}
+              className={`flex ${isOwn ? "justify-end" : "justify-start"} mb-6`}
+            >
               <div
-                key={msg._id}
-                className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}
               >
+                {!isOwn &&
+                  (isSupportChatView ? (
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full shrink-0">
+                      <Headphones className="w-4 h-4" />
+                    </div>
+                  ) : (
+                    <Avatar className="w-8 h-8 shrink-0">
+                      {msg.sender.profilePicture || msg.sender.avatar ? (
+                        <AvatarImage
+                          src={msg.sender.profilePicture || msg.sender.avatar}
+                          alt={msg.sender.name}
+                        />
+                      ) : null}
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                        {getInitials(msg.sender.name || "U")}
+                      </AvatarFallback>
+                    </Avatar>
+                  ))}
                 <div
-                  className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}
+                  className={
+                    isOwn && !msg.sessionProposal ? "text-right" : ""
+                  }
                 >
-                  {!isOwn &&
-                    (isSupportChatView ? (
-                      // Support Chat: Show support icon instead of admin avatar
-                      <div className="flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full shrink-0">
-                        <Headphones className="w-4 h-4" />
-                      </div>
-                    ) : (
-                      <Avatar className="w-8 h-8 shrink-0">
-                        {msg.sender.profilePicture || msg.sender.avatar ? (
-                          <AvatarImage
-                            src={msg.sender.profilePicture || msg.sender.avatar}
-                            alt={msg.sender.name}
-                          />
-                        ) : null}
-                        <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                          {getInitials(msg.sender.name || "U")}
-                        </AvatarFallback>
-                      </Avatar>
-                    ))}
-                  <div
-                    className={
-                      isOwn && !msg.sessionProposal ? "text-right" : ""
-                    }
-                  >
-                    {msg.sessionProposal ? (
-                      <SessionProposalWithFeedback
-                        date={new Date(
-                          (msg.sessionProposal as any).startTime ||
-                          msg.sessionProposal.scheduledAt,
-                        ).toLocaleDateString()}
-                        time={new Date(
-                          (msg.sessionProposal as any).startTime ||
-                          msg.sessionProposal.scheduledAt,
-                        ).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                        endTime={
-                          (msg.sessionProposal as any).endTime
-                            ? new Date(
-                              (msg.sessionProposal as any).endTime,
-                            ).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                            : undefined
-                        }
-                        startTimeRaw={
-                          (msg.sessionProposal as any).startTime ||
-                          msg.sessionProposal.scheduledAt
-                        }
-                        endTimeRaw={(msg.sessionProposal as any).endTime}
-                        status={(msg.sessionProposal as any).status}
-                        noShowBy={(msg.sessionProposal as any).noShowBy}
-                        isOwn={isOwn}
-                        isLoading={
-                          isAccepting ||
-                          isRejecting ||
-                          isCounterProposing ||
-                          isCancelling
-                        }
-                        userRole={user?.role}
-                        sessionId={(msg.sessionProposal as any).sessionId}
-                        onAccept={() =>
-                          handleSessionAction(msg._id, "accepted")
-                        }
-                        onReschedule={() => {
-                          // Counter-proposing alternative time
-                          setCounterProposalMessageId(msg._id);
-                          setIsScheduleOpen(true);
-                        }}
-                        onDecline={() =>
-                          handleSessionAction(msg._id, "declined")
-                        }
-                        onCancel={() =>
-                          handleSessionAction(
-                            msg._id,
-                            "cancelled",
+                  {msg.sessionProposal ? (
+                    <SessionProposalWithFeedback
+                      date={new Date(
+                        (msg.sessionProposal as any).startTime ||
+                        msg.sessionProposal.scheduledAt,
+                      ).toLocaleDateString()}
+                      time={new Date(
+                        (msg.sessionProposal as any).startTime ||
+                        msg.sessionProposal.scheduledAt,
+                      ).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                      endTime={
+                        (msg.sessionProposal as any).endTime
+                          ? new Date(
+                            (msg.sessionProposal as any).endTime,
+                          ).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                          : undefined
+                      }
+                      startTimeRaw={
+                        (msg.sessionProposal as any).startTime ||
+                        msg.sessionProposal.scheduledAt
+                      }
+                      endTimeRaw={(msg.sessionProposal as any).endTime}
+                      status={(msg.sessionProposal as any).status}
+                      noShowBy={(msg.sessionProposal as any).noShowBy}
+                      isOwn={isOwn}
+                      isLoading={
+                        isAccepting ||
+                        isRejecting ||
+                        isCounterProposing ||
+                        isCancelling
+                      }
+                      userRole={user?.role}
+                      sessionId={(msg.sessionProposal as any).sessionId}
+                      onAccept={() =>
+                        handleSessionAction(msg._id, "accepted")
+                      }
+                      onReschedule={() => {
+                        setCounterProposalMessageId(msg._id);
+                        setIsScheduleOpen(true);
+                      }}
+                      onDecline={() =>
+                        handleSessionAction(msg._id, "declined")
+                      }
+                      onCancel={() =>
+                        handleSessionAction(
+                          msg._id,
+                          "cancelled",
+                          (msg.sessionProposal as any).sessionId,
+                        )
+                      }
+                      onJoinSession={() => {
+                        if (
+                          otherParticipant &&
+                          (msg.sessionProposal as any)?.sessionId
+                        ) {
+                          const endTimeRaw = (msg.sessionProposal as any)
+                            .endTime;
+                          joinSessionCall(
                             (msg.sessionProposal as any).sessionId,
-                          )
+                            otherParticipant._id,
+                            otherParticipant.name || "User",
+                            endTimeRaw ? new Date(endTimeRaw) : undefined,
+                          );
                         }
-                        onJoinSession={() => {
-                          // Join session-based video call with the other participant
-                          // Both users will join the same channel based on sessionId
-                          if (
-                            otherParticipant &&
-                            (msg.sessionProposal as any)?.sessionId
-                          ) {
-                            const endTimeRaw = (msg.sessionProposal as any)
-                              .endTime;
-                            joinSessionCall(
-                              (msg.sessionProposal as any).sessionId,
-                              otherParticipant._id,
-                              otherParticipant.name || "User",
-                              endTimeRaw ? new Date(endTimeRaw) : undefined, // Pass endTime for countdown
-                            );
-                          }
-                        }}
-                        onLeaveReview={(sessionId) => {
-                          // Tutor opens TutorFeedbackModal, Student opens StudentReviewModal
-                          if (user?.role === "TUTOR") {
-                            setSelectedSessionForFeedback(sessionId);
-                            setIsFeedbackModalOpen(true);
-                          } else {
-                            setSelectedSessionForStudentReview(sessionId);
-                            setIsStudentReviewModalOpen(true);
-                          }
-                        }}
-                      />
-                    ) : (
-                      <>
-                        <div
-                          className={`rounded-lg px-4 py-2 ${isOwn
-                              ? "bg-accent text-accent-foreground rounded-br-none"
-                              : "bg-card border border-border rounded-bl-none"
-                            }`}
-                        >
-                          {/* Display attachments */}
-                          {msg.attachments && msg.attachments.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              {msg.attachments.map((attachment, idx) => {
-                                const fileUrl = resolveAttachmentUrl(
-                                  attachment.url,
-                                );
-                                return (
-                                  <div key={idx} className="relative">
-                                    {attachment.type === "image" ? (
-                                      <a
-                                        href={fileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                      >
-                                        <img
-                                          src={fileUrl}
-                                          alt={attachment.name || "Image"}
-                                          className="max-w-[200px] max-h-[200px] rounded object-cover cursor-pointer hover:opacity-90"
-                                        />
-                                      </a>
-                                    ) : attachment.type === "video" ? (
-                                      <video
+                      }}
+                      onLeaveReview={(sessionId) => {
+                        if (user?.role === "TUTOR") {
+                          setSelectedSessionForFeedback(sessionId);
+                          setIsFeedbackModalOpen(true);
+                        } else {
+                          setSelectedSessionForStudentReview(sessionId);
+                          setIsStudentReviewModalOpen(true);
+                        }
+                      }}
+                    />
+                  ) : (
+                    <>
+                      <div
+                        className={`rounded-lg px-4 py-2 ${isOwn
+                          ? "bg-accent text-accent-foreground rounded-br-none"
+                          : "bg-card border border-border rounded-bl-none"
+                          }`}
+                      >
+                        {msg.attachments && msg.attachments.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-2">
+                            {msg.attachments.map((attachment: any, idx: number) => {
+                              const fileUrl = resolveAttachmentUrl(
+                                attachment.url,
+                              );
+                              return (
+                                <div key={idx} className="relative">
+                                  {attachment.type === "image" ? (
+                                    <a
+                                      href={fileUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <img
                                         src={fileUrl}
-                                        controls
-                                        className="max-w-[250px] max-h-[200px] rounded"
+                                        alt={attachment.name || "Image"}
+                                        className="max-w-[200px] max-h-[200px] rounded object-cover cursor-pointer hover:opacity-90"
                                       />
-                                    ) : attachment.type === "audio" ? (
-                                      <audio
-                                        src={fileUrl}
-                                        controls
-                                        className="max-w-[250px]"
-                                      />
-                                    ) : (
-                                      <a
-                                        href={fileUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-2 p-2 bg-background rounded hover:bg-muted transition-colors"
-                                      >
-                                        <FileText className="w-5 h-5 text-primary" />
-                                        <span className="text-sm truncate max-w-[150px]">
-                                          {attachment.name || "Document"}
-                                        </span>
-                                      </a>
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          )}
-                          {messageContent && (
-                            <p className="text-sm wrap-break-word">
-                              {messageContent}
-                            </p>
-                          )}
-                        </div>
-                        <span className="text-xs text-muted-foreground mt-1 block">
-                          {formatTime(msg.createdAt)}
-                        </span>
-                      </>
-                    )}
-                  </div>
+                                    </a>
+                                  ) : attachment.type === "video" ? (
+                                    <video
+                                      src={fileUrl}
+                                      controls
+                                      className="max-w-[250px] max-h-[200px] rounded"
+                                      style={{ maxHeight: "200px" }}
+                                    />
+                                  ) : attachment.type === "audio" ? (
+                                    <audio
+                                      src={fileUrl}
+                                      controls
+                                      className="max-w-[250px]"
+                                    />
+                                  ) : (
+                                    <a
+                                      href={fileUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex items-center gap-2 p-2 bg-background rounded hover:bg-muted transition-colors"
+                                    >
+                                      <FileText className="w-5 h-5 text-primary" />
+                                      <span className="text-sm truncate max-w-[150px]">
+                                        {attachment.name || "Document"}
+                                      </span>
+                                    </a>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        {messageContent && (
+                          <p className="text-sm break-words whitespace-pre-wrap">
+                            {messageContent}
+                          </p>
+                        )}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground mt-1 block">
+                        {formatTime(msg.createdAt)}
+                      </span>
+                    </>
+                  )}
                 </div>
               </div>
-            );
-          })
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
-            <p>No messages yet. Start the conversation!</p>
-          </div>
-        )}
-      </div>
+            </div>
+          );
+        }}
+      />
 
       {/* Input Area */}
       <div className="w-full flex bg-background p-4">

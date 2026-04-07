@@ -11,6 +11,7 @@ import {
 import { io, Socket } from 'socket.io-client';
 import { useAuthStore } from '@/store/auth-store';
 import { useQueryClient } from '@tanstack/react-query';
+import { updateInfiniteChatCache } from '@/hooks/useInfiniteChats';
 
 // Type for incoming message from socket
 interface SocketMessage {
@@ -127,12 +128,15 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       setIsConnected(false);
     });
 
-    // Listen for new messages and invalidate React Query cache
+    // Listen for new messages and update React Query cache instantly
     socketInstance.on('MESSAGE_SENT', (data: { message: SocketMessage }) => {
       console.log('New message received via socket:', data.message);
       const chatId = data.message.chatId;
 
-      // Invalidate messages query for this chat to trigger refetch
+      // Update infinite query cache manually (Fixes Issue 2 lag)
+      updateInfiniteChatCache(queryClient, chatId, data.message as any);
+
+      // Still invalidate standard messages query as fallback
       queryClient.invalidateQueries({ queryKey: ['messages', chatId] });
 
       // Also invalidate chats list to update last message preview

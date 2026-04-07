@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/store/auth-store';
+import { updateInfiniteChatCache } from '../useInfiniteChats';
 
 // Types
 export interface Chat {
@@ -180,8 +181,17 @@ export function useSendMessage() {
       // Return a context object with the snapshotted value
       return { previousMessages };
     },
-    // If the mutation fails,
-    // use the context returned from onMutate to roll back
+    // Instant update after success without full refetch
+    onSuccess: (data, variables) => {
+      // Manual update of infinite query cache
+      if (data?.data) {
+        updateInfiniteChatCache(queryClient, variables.chatId, data.data);
+      }
+      // Also update standard query to facilitate sidebar previews
+      queryClient.invalidateQueries({ queryKey: ["messages", variables.chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chats"] });
+    },
+    // If the mutation fails, roll back
     onError: (err, newMessage, context) => {
       if (context?.previousMessages) {
         queryClient.setQueryData(
@@ -189,13 +199,6 @@ export function useSendMessage() {
           context.previousMessages,
         );
       }
-    },
-    // Always refetch after error or success:
-    onSettled: (data, error, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["messages", variables.chatId],
-      });
-      queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
   });
 }
@@ -253,7 +256,10 @@ export function useSendMessageWithAttachment() {
       });
       return data;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
+      if (data?.data) {
+        updateInfiniteChatCache(queryClient, variables.chatId, data.data);
+      }
       queryClient.invalidateQueries({ queryKey: ['messages', variables.chatId] });
       queryClient.invalidateQueries({ queryKey: ['chats'] });
     },
