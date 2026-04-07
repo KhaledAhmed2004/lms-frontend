@@ -41,13 +41,13 @@ export function useInfiniteChats(chatId: string, limit: number = 20) {
    */
   const messages = useMemo(() => {
     if (!query.data) return [];
-    
+
     // Flatten all pages fetched so far
     const allMessages = query.data.pages.flatMap(page => page.messages);
-    
+
     // Sort messages by createdAt ASC (oldest to newest) to ensure correct UI order
     // This fixed Issue 1 where newest messages appeared at the top.
-    return [...allMessages].sort((a, b) => 
+    return [...allMessages].sort((a, b) =>
       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
   }, [query.data]);
@@ -63,8 +63,8 @@ export function useInfiniteChats(chatId: string, limit: number = 20) {
  * Fixes Issue 2 by providing "instant" updates without full refetches.
  */
 export const updateInfiniteChatCache = (
-  queryClient: any, 
-  chatId: string, 
+  queryClient: any,
+  chatId: string,
   newMessage: Message
 ) => {
   queryClient.setQueryData(
@@ -73,7 +73,7 @@ export const updateInfiniteChatCache = (
       if (!oldData) return oldData;
 
       // Check if message already exists (prevent duplicates)
-      const messageExists = oldData.pages.some(page => 
+      const messageExists = oldData.pages.some(page =>
         page.messages.some(m => m._id === newMessage._id)
       );
       if (messageExists) return oldData;

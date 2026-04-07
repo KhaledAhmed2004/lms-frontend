@@ -117,23 +117,23 @@ const ChatList: React.FC<ChatListProps> = ({
   }
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="flex-1 overflow-y-auto px-4 pt-4 pb-8 md:px-6 relative scroll-smooth"
-      style={{ 
-        scrollbarWidth: 'thin', 
-        display: 'flex', 
-        flexDirection: 'column' 
+      style={{
+        scrollbarWidth: 'thin',
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
       {/* Top Sentinel & History Loading Indicator */}
-      <div 
-        ref={topSentinelRef} 
+      <div
+        ref={topSentinelRef}
         className="w-full flex items-center justify-center py-4 min-h-[40px]"
       >
         <AnimatePresence>
           {isFetchingNextPage && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.8, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: -10 }}
@@ -149,7 +149,7 @@ const ChatList: React.FC<ChatListProps> = ({
       {/* Messages Wrapper */}
       <div className="flex flex-col gap-6 mt-auto">
         {messages.map((msg, index) => (
-          <motion.div 
+          <motion.div
             key={msg._id || `msg-${index}`}
             initial={isInitialLoad.current ? { opacity: 0 } : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
