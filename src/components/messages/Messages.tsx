@@ -18,11 +18,11 @@ export default function Messages() {
   }, [chats, selectedConversation]);
 
   return (
-    <div className="flex h-full bg-background overflow-hidden">
+    <div className="flex h-full bg-white overflow-hidden border border-slate-200 rounded-xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.1)]">
       {/* Sidebar Container */}
       <div
         className={`
-        h-full w-full md:w-56 shrink-0 border-r border-border
+        h-full w-full md:w-[320px] shrink-0 border-r border-slate-200 bg-slate-50/50
         ${showMobileChat ? "hidden" : "block"}
         md:block
       `}

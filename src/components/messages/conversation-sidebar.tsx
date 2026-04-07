@@ -87,7 +87,7 @@ export default function ConversationSidebar({
     : 0;
 
   return (
-    <div className="w-full h-full bg-card flex flex-col">
+    <div className="w-full h-full bg-transparent flex flex-col">
       {/* Conversations List */}
       <div className="flex-1 overflow-y-auto">
         {isLoading ? (
@@ -98,17 +98,18 @@ export default function ConversationSidebar({
           filteredChats.map((chat) => {
             const otherParticipant = getOtherParticipant(chat);
             const hasUnread = chat.unreadCount > 0;
+            const isSelected = selectedConversation === chat._id;
 
             return (
               <button
                 key={chat._id}
                 onClick={() => onSelectConversation(chat._id)}
-                className={`w-full p-4 border-b border-border text-left transition-colors hover:bg-muted ${
-                  selectedConversation === chat._id ? "bg-muted" : ""
+                className={`w-full p-4 border-b border-slate-100 text-left transition-all hover:bg-white hover:shadow-sm ${
+                  isSelected ? "bg-white shadow-sm ring-1 ring-slate-200/50" : ""
                 }`}
               >
                 <div className="flex items-start gap-3">
-                  <Avatar className="w-10 h-10 shrink-0 mt-1">
+                  <Avatar className="w-11 h-11 shrink-0">
                     {otherParticipant?.image || otherParticipant?.avatar ? (
                       <AvatarImage
                         src={otherParticipant.image || otherParticipant.avatar}

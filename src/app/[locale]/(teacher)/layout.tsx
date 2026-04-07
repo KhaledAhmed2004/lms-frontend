@@ -22,7 +22,7 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
       <main
         className={`pt-16 sm:pt-20 lg:pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-full min-h-0 overflow-hidden" : "min-h-screen"}`}
       >
-        <div className={isMessagesPage ? "h-full min-h-0 overflow-hidden" : "mx-auto px-4 py-5"}>
+        <div className={isMessagesPage ? "h-full min-h-0 overflow-hidden p-5" : "mx-auto px-4 py-5"}>
           {children}
         </div>
       </main>
