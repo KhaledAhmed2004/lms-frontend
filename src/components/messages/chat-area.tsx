@@ -153,20 +153,28 @@ export default function ChatArea({
   const canShowScheduleButton = isTutor && isOtherParticipantStudent;
 
   // Check if there's a pending proposal in current messages (status: PROPOSED)
-  const hasPendingProposal = messages?.some(
-    (msg) =>
-      msg.type === "session_proposal" &&
-      (msg.sessionProposal as any)?.status === "PROPOSED",
-  );
+  // Only blocks if the scheduled time hasn't passed yet
+  const hasPendingProposal = messages?.some((msg) => {
+    if (msg.type !== "session_proposal") return false;
+    const proposal = msg.sessionProposal as any;
+    if (proposal?.status !== "PROPOSED") return false;
+
+    const startTime = new Date(proposal.startTime || proposal.scheduledAt);
+    return startTime > new Date(); // Only pending if in the future
+  });
 
   // Check if there's an active session in current messages (ACCEPTED status with sessionId)
-  // Active session = proposal accepted and session not yet completed
-  const hasActiveSession = messages?.some(
-    (msg) =>
-      msg.type === "session_proposal" &&
-      (msg.sessionProposal as any)?.status === "ACCEPTED" &&
-      (msg.sessionProposal as any)?.sessionId,
-  );
+  // Active session = proposal accepted and session end time hasn't passed yet
+  const hasActiveSession = messages?.some((msg) => {
+    if (msg.type !== "session_proposal") return false;
+    const proposal = msg.sessionProposal as any;
+    if (proposal?.status !== "ACCEPTED" || !proposal?.sessionId) return false;
+
+    const endTime = proposal.endTime ? new Date(proposal.endTime) : null;
+    if (!endTime) return true; // Block if no end time (shouldn't happen)
+
+    return endTime > new Date(); // Only active if end time hasn't passed
+  });
 
   // Get initials from name
   const getInitials = (name: string) => {
@@ -330,7 +338,7 @@ export default function ChatArea({
     return null;
   };
 
-  const handleSchedule = (selectedDate: Date, time: string) => {
+  const handleSchedule = (selectedDate: Date, time: string, duration: number) => {
     if (!actualChatId) return;
 
     // Parse time (format: HH:MM AM/PM)
@@ -349,15 +357,11 @@ export default function ChatArea({
       minutes,
     );
 
-    // ============================================
-    // 🧪 TEST MODE: Set to true for 5 min test sessions
-    // Set to false for production (60 min sessions)
-    // ============================================
-    const TEST_MODE = true;
-    const SESSION_DURATION_MS = TEST_MODE ? 5 * 60 * 1000 : 60 * 60 * 1000; // 5 min or 1 hour
+    const SESSION_DURATION_MS = duration * 60 * 1000;
+    
     // Extra time added to session for warning period (warning shows during this extra time)
-    // TEST_MODE: 1 min extra warning, Production: 5 min extra warning
-    const WARNING_EXTRA_TIME_MS = TEST_MODE ? 1 * 60 * 1000 : 5 * 60 * 1000;
+    // For 5 min sessions, use 1 min extra. For others, use 5 min extra.
+    const WARNING_EXTRA_TIME_MS = duration <= 5 ? 1 * 60 * 1000 : 5 * 60 * 1000;
 
     const endTime = new Date(
       startTime.getTime() + SESSION_DURATION_MS + WARNING_EXTRA_TIME_MS,
@@ -380,7 +384,7 @@ export default function ChatArea({
           onError: (error: any) => {
             toast.error(
               error?.response?.data?.message ||
-                tChat("counterProposalFailed"),
+              tChat("counterProposalFailed"),
             );
           },
         },
@@ -654,11 +658,11 @@ export default function ChatArea({
                       <SessionProposalWithFeedback
                         date={new Date(
                           (msg.sessionProposal as any).startTime ||
-                            msg.sessionProposal.scheduledAt,
+                          msg.sessionProposal.scheduledAt,
                         ).toLocaleDateString()}
                         time={new Date(
                           (msg.sessionProposal as any).startTime ||
-                            msg.sessionProposal.scheduledAt,
+                          msg.sessionProposal.scheduledAt,
                         ).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
@@ -666,11 +670,11 @@ export default function ChatArea({
                         endTime={
                           (msg.sessionProposal as any).endTime
                             ? new Date(
-                                (msg.sessionProposal as any).endTime,
-                              ).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
+                              (msg.sessionProposal as any).endTime,
+                            ).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
                             : undefined
                         }
                         startTimeRaw={
@@ -738,11 +742,10 @@ export default function ChatArea({
                     ) : (
                       <>
                         <div
-                          className={`rounded-lg px-4 py-2 ${
-                            isOwn
+                          className={`rounded-lg px-4 py-2 ${isOwn
                               ? "bg-accent text-accent-foreground rounded-br-none"
                               : "bg-card border border-border rounded-bl-none"
-                          }`}
+                            }`}
                         >
                           {/* Display attachments */}
                           {msg.attachments && msg.attachments.length > 0 && (

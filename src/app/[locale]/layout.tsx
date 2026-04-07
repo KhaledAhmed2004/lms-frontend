@@ -16,6 +16,8 @@ export const metadata: Metadata = {
     'Finde jetzt den perfekten Nachhilfelehrer! Flexible Online-Nachhilfe in Mathe, Englisch & Co. Jetzt kostenlose Probestunde sichern.',
 };
 
+import { SessionStartNotifier } from '@/components/session-monitor';
+
 export default async function RootLayout({
   children,
   params
@@ -43,6 +45,7 @@ export default async function RootLayout({
               <VideoCallProvider>
                 {children}
                 <VideoCallWrapper />
+                <SessionStartNotifier />
                 <Toaster richColors />
               </VideoCallProvider>
             </SocketProvider>

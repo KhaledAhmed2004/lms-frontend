@@ -592,22 +592,38 @@ export default function SessionProposal({
 
         {/* Action Buttons for Accepted Session */}
         <div className="flex flex-col gap-2.5">
-          <Button
-            variant="outline"
-            onClick={onReschedule}
-            disabled={isLoading}
-            className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 text-sm font-medium text-gray-700"
-          >
-            Reschedule
-          </Button>
-          <Button
-            variant="outline"
-            onClick={onCancel || onDecline}
-            disabled={isLoading}
-            className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 text-sm font-medium text-gray-700"
-          >
-            Cancel
-          </Button>
+          {onLeaveReview ? (
+            <Button
+              onClick={onLeaveReview}
+              disabled={isLoading}
+              className={`w-full ${userRole === "TUTOR" ? "bg-orange-500 hover:bg-orange-600" : "bg-blue-600 hover:bg-blue-700"} text-white rounded-lg h-11 text-sm font-medium`}
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                userRole === "TUTOR" ? "Leave a review" : "Rate your tutor"
+              )}
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                onClick={onReschedule}
+                disabled={isLoading}
+                className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 text-sm font-medium text-gray-700"
+              >
+                Reschedule
+              </Button>
+              <Button
+                variant="outline"
+                onClick={onCancel || onDecline}
+                disabled={isLoading}
+                className="w-full border-gray-200 hover:bg-gray-50 rounded-lg h-11 text-sm font-medium text-gray-700"
+              >
+                Cancel
+              </Button>
+            </>
+          )}
         </div>
       </div>
     );

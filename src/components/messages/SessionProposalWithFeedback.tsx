@@ -30,11 +30,16 @@ export default function SessionProposalWithFeedback({
   status,
   userRole,
   onLeaveReview,
+  endTimeRaw,
+  startTimeRaw,
   isLoading = false,
   ...props
 }: SessionProposalWithFeedbackProps) {
-  // Only fetch feedback when session is COMPLETED and has a sessionId
-  const shouldFetchFeedback = status === 'COMPLETED' && !!sessionId;
+  // Calculate if session time has ended
+  const hasTimeEnded = endTimeRaw ? new Date(endTimeRaw) < new Date() : false;
+
+  // Only fetch feedback when session is COMPLETED or has ended
+  const shouldFetchFeedback = (status === 'COMPLETED' || hasTimeEnded) && !!sessionId;
 
   // Fetch tutor feedback (teacher's feedback to student)
   const { data: tutorFeedback, isLoading: isFeedbackLoading } = useFeedbackBySession(
@@ -51,10 +56,8 @@ export default function SessionProposalWithFeedback({
   const hasTutorFeedback = !!tutorFeedback;
   const hasStudentReview = !!studentReview;
 
-  // For status badge and UI:
-  // - Teacher sees "Feedback Given" if they submitted feedback
-  // - Student sees "Completed" if teacher gave feedback
-  const hasReview = userRole === 'TUTOR' ? hasTutorFeedback : hasTutorFeedback;
+  // For status badge and UI
+  const hasReview = userRole === 'TUTOR' ? hasTutorFeedback : hasStudentReview;
 
   // Review texts
   const tutorReviewText = tutorFeedback?.feedbackText;
@@ -70,8 +73,9 @@ export default function SessionProposalWithFeedback({
 
   // Show "Leave a review" button:
   // - Teacher: if they haven't submitted feedback yet
-  // - Student: if they haven't submitted review yet (independent of teacher feedback)
-  const shouldShowReviewButton = shouldFetchFeedback && (
+  // - Student: if they haven't submitted review yet
+  // - ONLY if session has ended (by status or by time)
+  const shouldShowReviewButton = (status === 'COMPLETED' || hasTimeEnded) && !!sessionId && (
     (userRole === 'TUTOR' && !hasTutorFeedback) ||
     (userRole === 'STUDENT' && !hasStudentReview)
   );

@@ -15,21 +15,16 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface ScheduleModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSchedule: (selectedDate: Date, time: string) => void;
+  onSchedule: (selectedDate: Date, time: string, duration: number) => void;
 }
 
-// ============================================
-// 🧪 TEST MODE CONFIGURATION
-// ============================================
-// Set to true for testing - shows 5 minute intervals
-// Set to false for production - shows hourly intervals
-const TEST_MODE = true;
-// ============================================
+// Use 5 minute intervals for the time picker to allow flexible start times
+const TIME_INTERVAL = 5;
 
-// Generate time options based on mode
+// Generate time options
 const generateTimeOptions = () => {
   const options: string[] = [];
-  const interval = TEST_MODE ? 5 : 60; // 5 min or 1 hour
+  const interval = TIME_INTERVAL;
 
   for (let hour = 0; hour < 24; hour++) {
     for (let minute = 0; minute < 60; minute += interval) {
@@ -46,7 +41,7 @@ const generateTimeOptions = () => {
 // Get the next available time slot (current time + 5 minutes, rounded to next interval)
 const getDefaultTime = () => {
   const now = new Date();
-  const interval = TEST_MODE ? 5 : 60;
+  const interval = TIME_INTERVAL;
 
   // Add 5 minutes to current time
   now.setMinutes(now.getMinutes() + 5);
@@ -78,7 +73,8 @@ export default function ScheduleModal({
   onSchedule,
 }: ScheduleModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-  const [selectedTime, setSelectedTime] = useState(() => TEST_MODE ? getDefaultTime() : "10:00 AM");
+  const [selectedTime, setSelectedTime] = useState(() => getDefaultTime());
+  const [selectedDuration, setSelectedDuration] = useState("60");
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   const timeOptions = generateTimeOptions();
@@ -111,7 +107,7 @@ export default function ScheduleModal({
 
   const handleSchedule = () => {
     if (selectedDate) {
-      onSchedule(selectedDate, selectedTime);
+      onSchedule(selectedDate, selectedTime, parseInt(selectedDuration));
       onClose();
     }
   };
@@ -188,12 +184,11 @@ export default function ScheduleModal({
             <button
               key={day}
               onClick={() => handleDateClick(day)}
-              className={`text-center text-sm py-2 rounded font-medium transition-colors ${
-                selectedDate?.getDate() === day &&
-                selectedDate?.getMonth() === currentMonth.getMonth()
+              className={`text-center text-sm py-2 rounded font-medium transition-colors ${selectedDate?.getDate() === day &&
+                  selectedDate?.getMonth() === currentMonth.getMonth()
                   ? "bg-accent text-accent-foreground"
                   : "text-foreground hover:bg-background"
-              }`}
+                }`}
             >
               {day}
             </button>
@@ -225,6 +220,25 @@ export default function ScheduleModal({
           </SelectContent>
         </Select>
 
+        {/* Select Duration */}
+        <h3 className="text-sm font-semibold text-foreground mb-3">
+          Select Duration
+        </h3>
+        <Select value={selectedDuration} onValueChange={setSelectedDuration}>
+          <SelectTrigger className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground mb-4">
+            <SelectValue placeholder="Select duration" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="5">5 Minutes</SelectItem>
+            <SelectItem value="15">15 Minutes</SelectItem>
+            <SelectItem value="30">30 Minutes</SelectItem>
+            <SelectItem value="45">45 Minutes</SelectItem>
+            <SelectItem value="60">1 Hour</SelectItem>
+            <SelectItem value="90">1.5 Hours</SelectItem>
+            <SelectItem value="120">2 Hours</SelectItem>
+          </SelectContent>
+        </Select>
+
         {/* Selected Schedule Summary */}
         {selectedDate && (
           <div className="bg-background rounded-lg p-3 mb-4 border border-border">
@@ -232,7 +246,7 @@ export default function ScheduleModal({
               Selected Schedule: {selectedDate.toLocaleDateString("en-DE")}
             </p>
             <p className="text-sm font-medium text-foreground">
-              {selectedTime}
+              {selectedTime} ({selectedDuration} mins)
             </p>
           </div>
         )}

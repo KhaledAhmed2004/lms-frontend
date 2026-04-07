@@ -16,7 +16,7 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full md:w-56 lg:w-[328px] h-full bg-white flex flex-col overflow-y-auto">
+    <aside className="w-full md:w-56 lg:w-[328px] h-full bg-white border-r border-gray-200 flex flex-col overflow-y-auto">
       <nav className="flex-1 flex flex-col items-center py-3 sm:py-4 lg:py-5 space-y-2 sm:space-y-3 lg:space-y-4">
         {menuItems.map((item) => {
           const isActive = pathname.startsWith(item.href);

@@ -15,7 +15,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
   const pathname = usePathname();
   const { data: subscription, isLoading } = useMySubscription();
   const [isChecking, setIsChecking] = useState(true);
-  const isMessagesPage = pathname?.startsWith("/student/messages");
+  const isMessagesPage = pathname?.includes("/student/messages");
 
   useEffect(() => {
     if (!isLoading) {
@@ -42,19 +42,19 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className={isMessagesPage ? "h-screen overflow-hidden" : "min-h-screen"}>
       <TopNavbar />
 
       {/* Sidebar */}
-      <div className="fixed top-24 left-0 bottom-0 w-[328px] z-30 hidden lg:block">
+      <div className="fixed top-24 left-0 bottom-0 w-[328px] z-30 hidden lg:block border-r border-border bg-white overflow-y-auto">
         <Sidebar />
       </div>
 
       {/* Main Content */}
       <main
-        className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-screen" : "min-h-screen"}`}
+        className={`pt-24 lg:pl-[328px] bg-[#F8F8F8] ${isMessagesPage ? "h-full min-h-0 overflow-hidden" : "min-h-screen"}`}
       >
-        <div className={isMessagesPage ? "h-full" : "mx-auto px-4 py-5"}>
+        <div className={isMessagesPage ? "h-full min-h-0 overflow-hidden" : "mx-auto px-4 py-5"}>
           {children}
         </div>
       </main>

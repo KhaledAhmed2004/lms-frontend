@@ -565,11 +565,11 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
       <ScheduleModal
         isOpen={isScheduleOpen}
         onClose={() => setIsScheduleOpen(false)}
-        onSchedule={(selectedDate, time) => {
+        onSchedule={(selectedDate, time, duration) => {
           // For now just close the modal - reschedule would need a separate API
           setIsScheduleOpen(false);
           toast.info(
-            "Reschedule request noted. Please discuss with your tutor.",
+            `Reschedule request noted for ${duration} minutes. Please discuss with your tutor.`,
           );
         }}
       />

@@ -77,9 +77,11 @@ export function useChats() {
   const hasAccess = user?.role === 'STUDENT' || user?.role === 'TUTOR' || user?.role === 'SUPER_ADMIN';
 
   return useQuery({
-    queryKey: ['chats'],
+    queryKey: ['chats', 100],
     queryFn: async () => {
-      const { data } = await apiClient.get('/chats');
+      const { data } = await apiClient.get('/chats', {
+        params: { limit: 100, perPage: 100, page: 1 }
+      });
       return data.data as Chat[];
     },
     // Only fetch if user has proper role
