@@ -30,14 +30,14 @@ export function LanguageToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem 
-          onClick={() => onSelectLocale('en')}
-          className={locale === 'en' ? 'bg-blue-50 text-blue-600 font-medium' : ''}
+          onClick={() => onSelectLocale('en-gb')}
+          className={locale === 'en-gb' ? 'bg-blue-50 text-blue-600 font-medium' : ''}
         >
           English
         </DropdownMenuItem>
         <DropdownMenuItem 
-          onClick={() => onSelectLocale('de')}
-          className={locale === 'de' ? 'bg-blue-50 text-blue-600 font-medium' : ''}
+          onClick={() => onSelectLocale('de-de')}
+          className={locale === 'de-de' ? 'bg-blue-50 text-blue-600 font-medium' : ''}
         >
           Deutsch
         </DropdownMenuItem>

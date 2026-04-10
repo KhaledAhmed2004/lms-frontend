@@ -93,8 +93,8 @@ const ApplicationManagement = () => {
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
-              error?.message ||
-              "Failed to select for interview",
+            error?.message ||
+            "Failed to select for interview",
           );
         },
       },
@@ -109,8 +109,8 @@ const ApplicationManagement = () => {
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
-              error?.message ||
-              "Failed to approve application",
+            error?.message ||
+            "Failed to approve application",
           );
         },
       },
@@ -128,8 +128,8 @@ const ApplicationManagement = () => {
         onError: (error: any) => {
           toast.error(
             error?.getFullMessage?.() ||
-              error?.message ||
-              "Failed to reject application",
+            error?.message ||
+            "Failed to reject application",
           );
         },
       },
@@ -253,57 +253,56 @@ const ApplicationManagement = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {statsLoading
           ? Array.from({ length: 5 }).map((_, index) => (
-              <Card key={index} className="border-gray-200">
-                <CardContent className="pt-6">
-                  <div className="flex items-center justify-center h-24">
-                    <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))
+            <Card key={index} className="border-gray-200">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-center h-24">
+                  <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+                </div>
+              </CardContent>
+            </Card>
+          ))
           : statsConfig.map((stat, index) => (
-              <Card
-                key={index}
-                className="border-gray-200 hover:shadow-md transition-shadow"
-              >
-                <CardContent className="pt-6">
+            <Card
+              key={index}
+              className="border-gray-200 hover:shadow-md transition-shadow"
+            >
+              <CardContent className="pt-6">
+                <div
+                  className={`${stat.bgColor} p-2 rounded-full w-fit mb-2`}
+                >
+                  <stat.icon className={stat.iconColor} size={24} />
+                </div>
+                <p className="text-sm font-medium text-gray-600 mb-1">
+                  {stat.label}
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mb-1">
+                  {stat.data?.count ?? 0}
+                </p>
+                {stat.data && (
                   <div
-                    className={`${stat.bgColor} p-2 rounded-full w-fit mb-2`}
-                  >
-                    <stat.icon className={stat.iconColor} size={24} />
-                  </div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">
-                    {stat.label}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stat.data?.count ?? 0}
-                  </p>
-                  {stat.data && (
-                    <div
-                      className={`flex items-center gap-1 text-xs ${
-                        stat.data.growthType === "increase"
-                          ? "text-green-600"
-                          : stat.data.growthType === "decrease"
-                            ? "text-red-600"
-                            : "text-gray-500"
+                    className={`flex items-center gap-1 text-xs ${stat.data.growthType === "increase"
+                        ? "text-green-600"
+                        : stat.data.growthType === "decrease"
+                          ? "text-red-600"
+                          : "text-gray-500"
                       }`}
-                    >
-                      {stat.data.growthType === "increase" ? (
-                        <ArrowUp className="w-3 h-3" />
-                      ) : stat.data.growthType === "decrease" ? (
-                        <ArrowDown className="w-3 h-3" />
-                      ) : null}
-                      <span>
-                        {stat.data.growthType === "no_change"
-                          ? "No change"
-                          : `${stat.data.growth > 0 ? "+" : ""}${stat.data.growth}%`}
-                      </span>
-                      <span className="text-gray-500">vs last month</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                  >
+                    {stat.data.growthType === "increase" ? (
+                      <ArrowUp className="w-3 h-3" />
+                    ) : stat.data.growthType === "decrease" ? (
+                      <ArrowDown className="w-3 h-3" />
+                    ) : null}
+                    <span>
+                      {stat.data.growthType === "no_change"
+                        ? "No change"
+                        : `${stat.data.growth > 0 ? "+" : ""}${stat.data.growth}%`}
+                    </span>
+                    <span className="text-gray-500">vs last month</span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
       </div>
 
       {/* Search */}

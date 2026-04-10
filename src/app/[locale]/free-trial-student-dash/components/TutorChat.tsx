@@ -29,6 +29,7 @@ import StudentReviewModal from "@/components/modals/StudentReviewModal";
 import { useVideoCall } from "@/providers/video-call-provider";
 import { toast } from "sonner";
 import { TrialProgressStepper } from "./TrialProgressStepper";
+import { getFileUrl } from "@/lib/utils";
 
 interface TutorChatProps {
   trialRequest: TrialRequest;
@@ -404,31 +405,31 @@ const TutorChat = ({ trialRequest }: TutorChatProps) => {
                                       <div key={idx} className="relative">
                                         {attachment.type === "image" ? (
                                           <a
-                                            href={attachment.url}
+                                            href={getFileUrl(attachment.url)}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                           >
                                             <img
-                                              src={attachment.url}
+                                              src={getFileUrl(attachment.url)}
                                               alt={attachment.name || "Image"}
                                               className="max-w-[180px] max-h-[180px] rounded object-cover cursor-pointer hover:opacity-90"
                                             />
                                           </a>
                                         ) : attachment.type === "video" ? (
                                           <video
-                                            src={attachment.url}
+                                            src={getFileUrl(attachment.url)}
                                             controls
                                             className="max-w-[200px] max-h-[150px] rounded"
                                           />
                                         ) : attachment.type === "audio" ? (
                                           <audio
-                                            src={attachment.url}
+                                            src={getFileUrl(attachment.url)}
                                             controls
                                             className="max-w-[200px]"
                                           />
                                         ) : (
                                           <a
-                                            href={attachment.url}
+                                            href={getFileUrl(attachment.url)}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className={`flex items-center gap-2 p-2 rounded hover:opacity-80 transition-opacity ${isStudent ? "bg-blue-600" : "bg-gray-100"}`}

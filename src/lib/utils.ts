@@ -13,3 +13,12 @@ export function formatDateShort(dateString: string, locale: string = "en-GB") {
     year: "2-digit",
   });
 }
+
+export function getFileUrl(url: string) {
+  if (!url) return '';
+  if (url.startsWith('http')) return url;
+  const baseUrl = process.env.NEXT_PUBLIC_SOCKET_URL || '';
+  const sanitizedBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  const sanitizedPath = url.startsWith('/') ? url : `/${url}`;
+  return `${sanitizedBase}${sanitizedPath}`;
+}

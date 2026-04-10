@@ -47,15 +47,9 @@ import { Textarea } from "../ui/textarea";
 import ScheduleModal from "./schedule-modal";
 import SessionProposalWithFeedback from "./SessionProposalWithFeedback";
 import { useTranslations } from "next-intl";
+import { getFileUrl } from "@/lib/utils";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
-/** Resolve attachment URLs - backend stores relative paths like /doc/file.pdf */
-function resolveAttachmentUrl(url: string): string {
-  if (!url) return url;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
-  return `${BACKEND_URL}${url}`;
-}
 
 interface ChatAreaProps {
   conversationId: string;
@@ -751,7 +745,7 @@ export default function ChatArea({
                         {msg.attachments && msg.attachments.length > 0 && (
                           <div className="flex flex-wrap gap-2 mb-2">
                             {msg.attachments.map((attachment: any, idx: number) => {
-                              const fileUrl = resolveAttachmentUrl(
+                              const fileUrl = getFileUrl(
                                 attachment.url,
                               );
                               return (
