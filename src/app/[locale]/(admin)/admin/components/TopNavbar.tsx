@@ -112,7 +112,7 @@ export default function TopNavbar() {
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-lg">{t("notifications")}</h3>
                   <Link 
-                    href="/admin/notification"
+                    href={"/admin/notification" as any}
                     className="text-sm text-[#0B31BD] hover:underline"
                     onClick={() => setNotificationMenuOpen(false)}
                   >
@@ -190,7 +190,7 @@ export default function TopNavbar() {
             {userMenuOpen && (
               <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 z-50">
                 <Link
-                  href="/admin/profile"
+                  href={"/admin/profile" as any}
                   className="block px-4 py-2 text-sm hover:bg-gray-100 rounded-t-lg"
                 >
                   {t("profile")}
