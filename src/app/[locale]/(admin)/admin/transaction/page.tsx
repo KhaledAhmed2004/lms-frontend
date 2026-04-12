@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, MoreVertical, DollarSign, ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
+import { Search, Eye, DollarSign, ArrowUpRight, ArrowDownLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -26,6 +26,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useTransactions, useTransactionStats, Transaction } from '@/hooks/api/use-admin-stats';
 import { useTranslations } from 'next-intl';
 
@@ -35,6 +41,8 @@ const TransactionManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'PAID' | 'PENDING'>('all');
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 10;
 
   // Fetch transactions from API
@@ -62,6 +70,11 @@ const TransactionManagement = () => {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab as 'all' | 'PAID' | 'PENDING');
     setCurrentPage(1);
+  };
+
+  const handleViewDetails = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalOpen(true);
   };
 
   const getStatusColor = (status: string) => {
@@ -321,20 +334,15 @@ const TransactionManagement = () => {
                               </Badge>
                             </td>
                             <td className="py-3 px-4">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <MoreVertical size={16} />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem>View Details</DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                onClick={() => handleViewDetails(transaction)}
+                                title="View Details"
+                              >
+                                <Eye size={18} />
+                              </Button>
                             </td>
                           </tr>
                         ))
@@ -420,6 +428,124 @@ const TransactionManagement = () => {
           </CardContent>
         </Card>
       </Tabs>
+      {/* Transaction Details Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-md bg-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Transaction Details
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedTransaction ? (
+            <div className="space-y-6">
+              {/* ID & Date */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">
+                    {t('colTransactionId')}
+                  </p>
+                  <p className="text-sm font-bold text-gray-900">
+                    {selectedTransaction.transactionId}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">
+                    {t('colDate')}
+                  </p>
+                  <p className="text-sm text-gray-900">
+                    {formatDate(selectedTransaction.date)}
+                  </p>
+                </div>
+              </div>
+
+              {/* User Info */}
+              <div>
+                <p className="text-xs font-medium text-gray-500 mb-2">
+                  User Information
+                </p>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  <p className="text-sm font-semibold text-gray-900">
+                    {selectedTransaction.userName}
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {selectedTransaction.userEmail}
+                  </p>
+                  <Badge className="mt-2 bg-blue-50 text-blue-700 hover:bg-blue-50 border-0 uppercase text-[10px]">
+                    {selectedTransaction.userType}
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Transaction Info */}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">
+                      {t('colType')}
+                    </p>
+                    <div className="flex items-center gap-1.5">
+                      {getTypeIcon(selectedTransaction.type)}
+                      <span className="text-sm text-gray-900">
+                        {getTypeLabel(selectedTransaction.type)}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-gray-500 mb-1">
+                      {t('colStatus')}
+                    </p>
+                    <Badge className={`${getStatusColor(selectedTransaction.status)} border-0 text-[10px]`}>
+                      {ts(selectedTransaction.status.toLowerCase().replace(/_/g, ''))}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">
+                    {t('colAmount')}
+                  </p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {formatCurrency(selectedTransaction.amount)}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-gray-500 mb-1">
+                    {t('colDescription')}
+                  </p>
+                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg min-h-[60px]">
+                    {selectedTransaction.description || 'No description provided'}
+                  </p>
+                </div>
+
+                {selectedTransaction.sessions !== undefined && (
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 mb-1">
+                        Sessions
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {selectedTransaction.sessions}
+                      </p>
+                    </div>
+                    {selectedTransaction.hours && (
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 mb-1">
+                          Total Hours
+                        </p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {selectedTransaction.hours}h
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
