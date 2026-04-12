@@ -10,7 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
+import { useActiveSubjects } from '@/hooks/api/use-subjects';
 
 const bannerData = {
   title: 'Find the online tutor that fits your needs',
@@ -21,21 +22,9 @@ const bannerData = {
   ],
 };
 
-const subjects = [
-  'Mathematics',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'English',
-  'History',
-  'Geography',
-  'Computer Science',
-  'Economics',
-  'Psychology',
-];
-
 const Banner = () => {
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
+  const { data: subjects, isLoading } = useActiveSubjects();
 
   return (
     <div className="bg-linear-to-r from-[#0B31BD] to-[#4B71FF] relative overflow-hidden">
@@ -62,16 +51,26 @@ const Banner = () => {
                     <ChevronDown size={22} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
-                  {subjects.map((subject) => (
-                    <DropdownMenuItem
-                      key={subject}
-                      onClick={() => setSelectedSubject(subject)}
-                      className="cursor-pointer"
-                    >
-                      {subject}
-                    </DropdownMenuItem>
-                  ))}
+                <DropdownMenuContent className="w-56 max-h-72 overflow-y-auto">
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="w-4 h-4 animate-spin text-gray-400" />
+                    </div>
+                  ) : subjects && subjects.length > 0 ? (
+                    subjects.map((subject) => (
+                      <DropdownMenuItem
+                        key={subject._id}
+                        onClick={() => setSelectedSubject(subject.name)}
+                        className="cursor-pointer"
+                      >
+                        {subject.name}
+                      </DropdownMenuItem>
+                    ))
+                  ) : (
+                    <div className="py-3 px-2 text-sm text-gray-500 text-center">
+                      No subjects available
+                    </div>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
 
