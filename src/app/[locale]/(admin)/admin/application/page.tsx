@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import {
   Search,
+  Eye,
   MoreVertical,
   FileText,
   Clock,
@@ -352,7 +353,7 @@ const ApplicationManagement = () => {
                           {t("colApplicantName")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          {t("tutors.colSubject", { defaultValue: "Subject" })}
+                          {t("colSubject")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
                           {t("colApplicationDate")}
@@ -364,7 +365,7 @@ const ApplicationManagement = () => {
                           Status
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          {t("tutors.colAction", { defaultValue: "Action" })}
+                          {t("colAction")}
                         </th>
                       </tr>
                     </thead>
@@ -407,58 +408,75 @@ const ApplicationManagement = () => {
                               </Badge>
                             </td>
                             <td className="py-3 px-4">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
+                              <div className="flex items-center gap-1">
+                                <Link
+                                  href={`/admin/application-details?id=${app._id}` as any}
+                                >
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-8 w-8 p-0"
-                                    disabled={
-                                      isSelecting || isApproving || isRejecting
-                                    }
+                                    className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                    title={t("viewDetails")}
                                   >
-                                    <MoreVertical size={16} />
+                                    <Eye size={18} />
                                   </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <Link
-                                    href={`/admin/application-details?id=${app._id}` as any}
-                                  >
-                                    <DropdownMenuItem>
-                                      {t("tutors.viewDetails", { defaultValue: "View Details" })}
-                                    </DropdownMenuItem>
-                                  </Link>
+                                </Link>
 
-                                  {canSelectForInterview(app.status) && (
-                                    <DropdownMenuItem
-                                      className="text-blue-600"
-                                      onClick={() =>
-                                        handleSelectForInterview(app._id)
-                                      }
-                                    >
-                                      {t("selectForInterview")}
-                                    </DropdownMenuItem>
-                                  )}
+                                {(canSelectForInterview(app.status) ||
+                                  canApprove(app.status) ||
+                                  canReject(app.status)) && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-8 w-8 p-0"
+                                        disabled={
+                                          isSelecting ||
+                                          isApproving ||
+                                          isRejecting
+                                        }
+                                      >
+                                        <MoreVertical size={16} />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      {canSelectForInterview(app.status) && (
+                                        <DropdownMenuItem
+                                          className="text-blue-600"
+                                          onClick={() =>
+                                            handleSelectForInterview(app._id)
+                                          }
+                                        >
+                                          {t("selectForInterview")}
+                                        </DropdownMenuItem>
+                                      )}
 
-                                  {canApprove(app.status) && (
-                                    <DropdownMenuItem
-                                      className="text-green-600"
-                                      onClick={() => handleApprove(app._id)}
-                                    >
-                                      {t("approve")}
-                                    </DropdownMenuItem>
-                                  )}
+                                      {canApprove(app.status) && (
+                                        <DropdownMenuItem
+                                          className="text-green-600"
+                                          onClick={() =>
+                                            handleApprove(app._id)
+                                          }
+                                        >
+                                          {t("approve")}
+                                        </DropdownMenuItem>
+                                      )}
 
-                                  {canReject(app.status) && (
-                                    <DropdownMenuItem
-                                      className="text-red-600"
-                                      onClick={() => handleReject(app._id)}
-                                    >
-                                      {t("reject")}
-                                    </DropdownMenuItem>
-                                  )}
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                                      {canReject(app.status) && (
+                                        <DropdownMenuItem
+                                          className="text-red-600"
+                                          onClick={() =>
+                                            handleReject(app._id)
+                                          }
+                                        >
+                                          {t("reject")}
+                                        </DropdownMenuItem>
+                                      )}
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))

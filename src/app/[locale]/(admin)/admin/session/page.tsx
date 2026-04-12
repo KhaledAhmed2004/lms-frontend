@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import {
   Search,
-  MoreVertical,
+  Eye,
   Clock,
   CheckCircle,
   AlertCircle,
@@ -314,7 +314,7 @@ const SessionManagement = () => {
                           {t("colLessonStatus")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          {t("sessions.colAction", { defaultValue: "Action" })}
+                          {t("colAction")}
                         </th>
                       </tr>
                     </thead>
@@ -366,25 +366,16 @@ const SessionManagement = () => {
                                 {formatStatusLabel(session.status)}
                               </Badge>
                             </td>
-                            <td className="py-3 px-4">
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <MoreVertical size={16} />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                  <DropdownMenuItem
-                                    onClick={() => handleViewDetails(session)}
-                                  >
-                                    {t("viewDetails", { defaultValue: "View Details" })}
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
+                            <td className="py-3 px-4 whitespace-nowrap">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                onClick={() => handleViewDetails(session)}
+                                title={t("viewDetails")}
+                              >
+                                <Eye size={18} />
+                              </Button>
                             </td>
                           </tr>
                         ))
