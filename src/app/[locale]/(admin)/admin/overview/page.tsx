@@ -290,17 +290,10 @@ const Overview = () => {
               {/* Recent Activity */}
               <Card className="border-gray-200">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>{t("recentActivity")}</CardTitle>
-                      <CardDescription>
-                        {t("latestActivities")}
-                      </CardDescription>
-                    </div>
-                    <Button variant="outline" size="sm">
-                      {t("viewAll")}
-                    </Button>
-                  </div>
+                  <CardTitle>{t("recentActivity")}</CardTitle>
+                  <CardDescription>
+                    {t("latestActivities")}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   {activityLoading ? (
