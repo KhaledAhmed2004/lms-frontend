@@ -422,7 +422,7 @@ const ApplicationManagement = () => {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                   <Link
-                                    href={`/admin/application-details?id=${app._id}`}
+                                    href={`/admin/application-details?id=${app._id}` as any}
                                   >
                                     <DropdownMenuItem>
                                       {t("tutors.viewDetails", { defaultValue: "View Details" })}

@@ -256,7 +256,7 @@ const StudentManagement = () => {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <Link
-                                  href={`/admin/student-details?id=${student._id}`}
+                                  href={`/admin/student-details?id=${student._id}` as any}
                                 >
                                   <DropdownMenuItem>
                                     {t("viewDetails")}

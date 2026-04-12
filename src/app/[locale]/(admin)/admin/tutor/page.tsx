@@ -232,7 +232,7 @@ const TutorManagement = () => {
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <Link
-                                  href={`/admin/tutor-details?id=${tutor._id}`}
+                                  href={`/admin/tutor-details?id=${tutor._id}` as any}
                                 >
                                   <DropdownMenuItem>
                                     {t("viewDetails")}
