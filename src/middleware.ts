@@ -4,8 +4,14 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const intlMiddleware = createMiddleware(routing);
 
-// Routes that require authentication (internal canonical paths)
-const protectedRoutes = ['/student', '/teacher', '/admin'];
+// Routes that require authentication (localized slugs and internal paths)
+const protectedRoutes = [
+  '/student',
+  '/teacher',
+  '/admin',
+  '/schueler',
+  '/lehrer',
+];
 
 /**
  * All localized slugs that map to auth pages.
@@ -36,7 +42,8 @@ export default function middleware(request: NextRequest) {
   const response = intlMiddleware(request);
 
   // 2. Strip locale prefix to get the path segment used for route matching
-  const pathnameWithoutLocale = pathname.replace(LOCALE_REGEX, '/').replace(/\/$/, '') || '/';
+  const pathnameWithoutLocale =
+    pathname.replace(LOCALE_REGEX, '/').replace(/\/$/, '') || '/';
 
   // 3. Extract locale for redirect URLs (default to de-de)
   const localeMatch = pathname.match(LOCALE_REGEX);
@@ -48,7 +55,13 @@ export default function middleware(request: NextRequest) {
   const hasValidToken = !!(refreshToken || accessToken);
 
   // 5. Protected routes → redirect to locale-prefixed login if unauthenticated
-  if (protectedRoutes.some((route) => pathnameWithoutLocale.startsWith(route))) {
+  const isProtectedRoute = protectedRoutes.some(
+    (route) =>
+      pathnameWithoutLocale === route ||
+      pathnameWithoutLocale.startsWith(route + '/')
+  );
+
+  if (isProtectedRoute) {
     if (!hasValidToken) {
       // Redirect to the localized login slug
       const loginSlug = locale === 'de-de' ? 'anmelden' : 'login';

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import PrimaryButton from "@/components/button/PrimaryButton";
 import { useAuthStore } from "@/store/auth-store";
 import { LanguageToggle } from "@/components/language-toggle";
@@ -46,13 +46,13 @@ const DesktopMenu = () => {
       <div className="hidden md:flex items-center gap-6 lg:gap-10">
         <LanguageToggle />
         <Link
-          href={getDashboardLink()}
+          href={getDashboardLink() as any}
           className="text-[#0B31BD] text-lg font-medium hover:text-[#092A9E] transition-colors"
         >
           Dashboard
         </Link>
         <Link
-          href={getDashboardLink()}
+          href={getDashboardLink() as any}
           className="flex items-center gap-3"
         >
           <div className="w-10 h-10 rounded-full bg-[#0B31BD] text-white flex items-center justify-center font-semibold text-lg">
@@ -73,11 +73,11 @@ const DesktopMenu = () => {
         href="/free-trial-teacher"
         className="text-[#0B31BD] text-lg font-medium hover:text-[#092A9E] transition-colors"
       >
-        Become Tutor
+        Become a tutor
       </Link>
       <PrimaryButton name={"Login"} href={"/login"} />
     </div>
   );
 };
 
-export default DesktopMenu;
+export default DesktopMenu;

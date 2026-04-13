@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth-store";
 import { useLogout } from "@/hooks/api/use-auth";
@@ -80,7 +80,7 @@ const MobileMenu = ({ isOpen, closeMenu }: MobileMenuProps) => {
             </div>
 
             <Link
-              href={getDashboardLink()}
+              href={getDashboardLink() as any}
               onClick={closeMenu}
               className="block px-4 py-3 text-lg font-medium text-gray-800 hover:text-[#0B31BD] hover:bg-blue-50 rounded-lg transition mx-2"
             >
@@ -106,7 +106,7 @@ const MobileMenu = ({ isOpen, closeMenu }: MobileMenuProps) => {
               onClick={closeMenu}
               className="block px-4 py-3 text-lg font-medium text-gray-800 hover:text-[#0B31BD] hover:bg-blue-50 rounded-lg transition mx-2"
             >
-              Become Tutor
+              Become a tutor
             </Link>
 
             <div className="px-4 pt-2">
