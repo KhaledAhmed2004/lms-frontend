@@ -66,6 +66,27 @@ const REDIRECT_MAP: Record<string, string> = {
   APPLICANT: '/free-trial-teacher-dash',
 };
 
+// Helper function to get redirect path for tutors based on onboarding status
+const getTutorRedirectPath = async (accessToken: string): Promise<string> => {
+  try {
+    const { data: profileData } = await apiClient.get('/user/profile', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    const tutorProfile = profileData.data?.tutorProfile;
+
+    // If Stripe onboarding not complete, redirect to profile setup
+    if (!tutorProfile?.stripeOnboardingCompleted) {
+      return '/free-trial-teacher-dash';
+    }
+
+    return '/teacher/session';
+  } catch {
+    // If profile fetch fails, default to teacher dashboard
+    return '/teacher/session';
+  }
+};
+
 // Helper function to get redirect path for students based on subscription status
 const getStudentRedirectPath = async (accessToken: string): Promise<string> => {
   try {
@@ -142,6 +163,9 @@ export function useLogin() {
       // For students, check trial completion status before redirect
       if (user.role === 'STUDENT') {
         const redirectPath = await getStudentRedirectPath(accessToken);
+        router.push(redirectPath);
+      } else if (user.role === 'TUTOR') {
+        const redirectPath = await getTutorRedirectPath(accessToken);
         router.push(redirectPath);
       } else {
         router.push(REDIRECT_MAP[user.role] || '/');
