@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
-import { useAuthStore, type User } from '@/store/auth-store';
+import { useAuthStore, useAuthHasHydrated, type User } from '@/store/auth-store';
 
 // ============ Types ============
 export interface SubmitApplicationData {
@@ -140,7 +140,7 @@ export const useSubmitApplication = () => {
 export const useMyApplication = (options?: { enabled?: boolean }) => {
   const setAuth = useAuthStore((state) => state.setAuth);
   const currentUser = useAuthStore((state) => state.user);
-  const hasHydrated = useAuthStore((state) => state._hasHydrated);
+  const hasHydrated = useAuthHasHydrated();
 
   return useQuery({
     queryKey: ['myApplication'],
