@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Check, Loader2, AlertCircle, XCircle } from "lucide-react";
 import { useMyApplication, useUpdateMyApplication, useMyBookedInterview, type ApplicationStatus } from "@/hooks/api";
 import { useStripeConnect } from "@/hooks/api/use-stripe";
+import { useAuthStore } from "@/store/auth-store";
 import { toast } from "sonner";
 import InterviewBookingSection from "./InterviewBookingSection";
 import ProfileSetupSection from "./ProfileSetupSection";
@@ -92,6 +93,7 @@ const ApplicationDashboard = () => {
   const stripeOnboarding = searchParams.get("stripe_onboarding");
   const isStripeSuccess = stripeOnboarding === "success";
 
+  const hasHydrated = useAuthStore((state) => state._hasHydrated);
   const { data: application, isLoading, error } = useMyApplication({
     enabled: !isStripeSuccess,
   });
@@ -167,8 +169,8 @@ const ApplicationDashboard = () => {
   }, [searchParams, refetchStatus, router]);
 
 
-  // Loading state
-  if (isLoading || isStripeSuccess) {
+  // Loading state (also wait for auth store hydration)
+  if (isLoading || isStripeSuccess || !hasHydrated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">

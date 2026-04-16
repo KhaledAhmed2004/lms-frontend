@@ -140,6 +140,7 @@ export const useSubmitApplication = () => {
 export const useMyApplication = (options?: { enabled?: boolean }) => {
   const setAuth = useAuthStore((state) => state.setAuth);
   const currentUser = useAuthStore((state) => state.user);
+  const hasHydrated = useAuthStore((state) => state._hasHydrated);
 
   return useQuery({
     queryKey: ['myApplication'],
@@ -156,7 +157,7 @@ export const useMyApplication = (options?: { enabled?: boolean }) => {
     },
     staleTime: 2 * 60 * 1000, // 2 min cache
     retry: false, // Don't retry on 404
-    enabled: options?.enabled ?? true,
+    enabled: (options?.enabled ?? true) && hasHydrated,
   });
 };
 
