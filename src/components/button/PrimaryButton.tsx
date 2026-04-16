@@ -17,7 +17,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
 }) => {
   return (
     <Link
-      href={href}
+      href={href as any}
       className={cn(
         "bg-[#0B31BD] hover:bg-[#092A9E] text-white font-medium rounded-[12px] text-lg",
         "w-[182px] h-[50px] flex items-center justify-center",
