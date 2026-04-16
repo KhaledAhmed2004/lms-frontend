@@ -220,7 +220,7 @@ const MeetingList = () => {
                                   onClick={() => handleJoinMeeting(meeting._id)}
                                   disabled={joiningMeetingId === meeting._id || agora.callState === "connecting"}
                                 >
-                                  {joiningMeetingId === meeting._id || agora.callState === "connecting" ? (
+                                  {joiningMeetingId === meeting._id ? (
                                     <>
                                       <Loader2 className="h-4 w-4 mr-1 animate-spin" />
                                       Joining...
