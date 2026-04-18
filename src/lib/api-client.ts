@@ -102,9 +102,10 @@ apiClient.interceptors.request.use((config) => {
   const url = config.url || "";
   const method = (config.method || "GET").toUpperCase();
 
-  // For FormData, remove Content-Type so the browser sets it with the correct boundary
+  // For FormData: remove Content-Type (browser sets it with boundary) + increase timeout for uploads
   if (config.data instanceof FormData) {
     delete config.headers["Content-Type"];
+    config.timeout = 120000; // 2 minutes for file uploads (vs 30s default)
   }
 
   if (!isPublicEndpoint(url, method)) {
