@@ -249,11 +249,7 @@ export function useSendMessageWithAttachment() {
         }
       });
 
-      const { data } = await apiClient.post('/messages', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const { data } = await apiClient.post('/messages', formData);
       return data;
     },
     onSuccess: (data, variables) => {

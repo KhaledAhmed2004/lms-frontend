@@ -100,9 +100,7 @@ export function useSubmitTutorFeedback() {
           feedbackType: data.feedbackType,
           audioDuration: data.audioDuration,
         }));
-        response = await apiClient.post('/tutor-feedback', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        response = await apiClient.post('/tutor-feedback', formData);
       } else {
         // Text feedback: use JSON
         const { audioBlob, ...jsonData } = data;

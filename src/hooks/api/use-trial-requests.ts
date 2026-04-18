@@ -151,9 +151,7 @@ export function useCreateTrialRequest() {
 
       formData.append('data', JSON.stringify(jsonPayload));
 
-      const response = await apiClient.post('/trial-requests', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const response = await apiClient.post('/trial-requests', formData);
       return response.data;
     },
     onSuccess: (response) => {

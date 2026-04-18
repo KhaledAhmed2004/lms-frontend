@@ -102,6 +102,11 @@ apiClient.interceptors.request.use((config) => {
   const url = config.url || "";
   const method = (config.method || "GET").toUpperCase();
 
+  // For FormData, remove Content-Type so the browser sets it with the correct boundary
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+
   if (!isPublicEndpoint(url, method)) {
     // Dynamic import to avoid circular dependency
     const { useAuthStore } = require("@/store/auth-store");

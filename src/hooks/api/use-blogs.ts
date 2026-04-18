@@ -110,9 +110,7 @@ export function useCreateBlog() {
         formData.append('featuredImage', payload.featuredImage);
       }
 
-      const { data } = await apiClient.post('/blogs', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await apiClient.post('/blogs', formData);
       return data;
     },
     onSuccess: () => {
@@ -139,9 +137,7 @@ export function useUpdateBlog() {
         formData.append('featuredImage', payload.featuredImage);
       }
 
-      const { data } = await apiClient.patch(`/blogs/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await apiClient.patch(`/blogs/${id}`, formData);
       return data;
     },
     onSuccess: (_data, variables) => {

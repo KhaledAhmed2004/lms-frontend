@@ -103,11 +103,7 @@ const submitApplication = async (
   };
   formData.append('data', JSON.stringify(jsonData));
 
-  const response = await apiClient.post('/applications', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+  const response = await apiClient.post('/applications', formData);
   return response.data;
 };
 
@@ -192,11 +188,6 @@ export const useUpdateMyApplication = () => {
       const response = await apiClient.patch(
         '/applications/my-application',
         formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
       );
       return response.data;
     },
