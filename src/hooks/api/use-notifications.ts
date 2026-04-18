@@ -5,20 +5,28 @@ import { useAuthStore } from '@/store/auth-store';
 // Types
 export interface Notification {
   _id: string;
-  user: string;
-  title: string;
-  message: string;
-  type:
-    | 'SESSION_REMINDER'
-    | 'SESSION_CANCELLED'
-    | 'NEW_MESSAGE'
-    | 'PAYMENT_SUCCESS'
-    | 'PAYMENT_FAILED'
-    | 'GENERAL';
+  title?: string;
+  text: string;
+  receiver: string;
   isRead: boolean;
-  data?: Record<string, unknown>;
+  type?: 'ADMIN' | 'BID' | 'BOOKING' | 'TASK' | 'BID_ACCEPTED' | 'SYSTEM' | 'DELIVERY_SUBMITTED' | 'PAYMENT_PENDING';
+  referenceId?: string;
   createdAt: string;
+  updatedAt: string;
 }
+
+interface NotificationResponse {
+  data: Notification[];
+  pagination: {
+    page: number;
+    limit: number;
+    totalPage: number;
+    total: number;
+  };
+  unreadCount: number;
+}
+
+// ============ STUDENT / TUTOR HOOKS ============
 
 // Get All Notifications (Protected - STUDENT or TUTOR only)
 export function useNotifications() {
@@ -29,18 +37,16 @@ export function useNotifications() {
     queryKey: ['notifications'],
     queryFn: async () => {
       const { data } = await apiClient.get('/notifications');
-      return data.data as Notification[];
+      return data.data as NotificationResponse;
     },
-    // Only fetch if user is a STUDENT or TUTOR
     enabled: isAuthenticated && isStudentOrTutor,
   });
 }
 
 // Get Unread Count (Protected)
 export function useUnreadNotificationsCount() {
-  const { data: notifications } = useNotifications();
-
-  return notifications?.filter((n) => !n.isRead).length ?? 0;
+  const { data } = useNotifications();
+  return data?.unreadCount ?? 0;
 }
 
 // Mark Notification as Read (Protected)
@@ -71,6 +77,61 @@ export function useMarkAllNotificationsAsRead() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+}
+
+// ============ ADMIN HOOKS ============
+
+// Get Admin Notifications
+export function useAdminNotifications(query?: { page?: number; limit?: number }) {
+  const { isAuthenticated, user } = useAuthStore();
+
+  return useQuery({
+    queryKey: ['admin-notifications', query],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (query?.page) params.set('page', String(query.page));
+      if (query?.limit) params.set('limit', String(query.limit));
+      const { data } = await apiClient.get(`/notifications/admin?${params.toString()}`);
+      return data.data as NotificationResponse;
+    },
+    enabled: isAuthenticated && user?.role === 'SUPER_ADMIN',
+  });
+}
+
+// Get Admin Unread Count
+export function useAdminUnreadCount() {
+  const { data } = useAdminNotifications();
+  return data?.unreadCount ?? 0;
+}
+
+// Mark Admin Notification as Read
+export function useAdminMarkNotificationAsRead() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (notificationId: string) => {
+      const { data } = await apiClient.patch(`/notifications/admin/${notificationId}/read`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+    },
+  });
+}
+
+// Mark All Admin Notifications as Read
+export function useAdminMarkAllNotificationsAsRead() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { data } = await apiClient.patch('/notifications/admin/read-all');
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
     },
   });
 }

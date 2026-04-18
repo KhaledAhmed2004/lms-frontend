@@ -105,6 +105,10 @@ export {
   useUnreadNotificationsCount,
   useMarkNotificationAsRead,
   useMarkAllNotificationsAsRead,
+  useAdminNotifications,
+  useAdminUnreadCount,
+  useAdminMarkNotificationAsRead,
+  useAdminMarkAllNotificationsAsRead,
 } from './use-notifications';
 
 // Application Hooks (Applicant)

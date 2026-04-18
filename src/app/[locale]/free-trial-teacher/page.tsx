@@ -231,12 +231,18 @@ const FreeTrialTeacher = () => {
         router.push("/free-trial-teacher-dash");
       },
       onError: (error: unknown) => {
-        const err = error as { getFullMessage?: () => string; message?: string };
+        const err = error as { getFullMessage?: () => string; message?: string; status?: number };
         const message =
           err?.getFullMessage?.() ||
           err?.message ||
           "Something went wrong. Please try again.";
-        toast.error(message);
+        // Debug: show status + file sizes to diagnose mobile upload failures
+        const fileSizes = [formData.cv, formData.abiturCertificate, formData.officialId]
+          .filter(Boolean)
+          .map(f => `${f!.name}: ${(f!.size / 1024 / 1024).toFixed(2)}MB`)
+          .join(', ');
+        console.error('Application submit error:', { status: err?.status, message, fileSizes });
+        toast.error(`${message}${fileSizes ? ` (Files: ${fileSizes})` : ''}`);
       },
     });
   };

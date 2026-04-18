@@ -244,6 +244,12 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       console.log('🔔 Feedback queries invalidated for sessionId:', data.sessionId);
     });
 
+    // Listen for new notifications (real-time bell updates)
+    socketInstance.on(`get-notification::${user._id}`, () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
+    });
+
     // Listen for student review submitted (real-time update when student submits review)
     socketInstance.on('STUDENT_REVIEW_SUBMITTED', (data: { sessionId: string; chatId: string; reviewId: string }) => {
       console.log('🔔 STUDENT_REVIEW_SUBMITTED received via socket:', data);
@@ -275,6 +281,7 @@ export default function SocketProvider({ children }: { children: ReactNode }) {
       socketInstance.off('PROPOSAL_UPDATED');
       socketInstance.off('FEEDBACK_SUBMITTED');
       socketInstance.off('STUDENT_REVIEW_SUBMITTED');
+      socketInstance.off(`get-notification::${user._id}`);
       socketInstance.disconnect();
     };
   }, [token, user, queryClient]);

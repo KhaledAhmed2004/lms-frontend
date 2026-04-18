@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "@/i18n/routing";
 import MobileMenuAdmin from "@/components/dashboard/MobileMenuAdmin";
 import { LanguageToggle } from "@/components/language-toggle";
-import { useLogout } from "@/hooks/api";
+import { useLogout, useAdminNotifications, useAdminMarkAllNotificationsAsRead } from "@/hooks/api";
 import { useAuthStore } from "@/store/auth-store";
 import { useTranslations } from "next-intl";
 
@@ -20,6 +20,11 @@ export default function TopNavbar() {
 
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
   const { user } = useAuthStore();
+  const { data: notificationData } = useAdminNotifications({ limit: 5 });
+  const { mutate: markAllAsRead } = useAdminMarkAllNotificationsAsRead();
+
+  const notifications = notificationData?.data ?? [];
+  const unreadCount = notificationData?.unreadCount ?? 0;
 
   // Close user dropdown on outside click
   useEffect(() => {
@@ -41,37 +46,21 @@ export default function TopNavbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Sample notifications data
-  const notifications = [
-    {
-      id: 1,
-      title: "New Session Request",
-      message: "Sarah Johnson requested a math tutoring session",
-      time: "5 min ago",
-      unread: true
-    },
-    {
-      id: 2,
-      title: "Payment Received",
-      message: "Payment of $50 received from John Smith",
-      time: "1 hour ago",
-      unread: true
-    },
-    {
-      id: 3,
-      title: "Session Completed",
-      message: "Physics session with Mike Davis has been completed",
-      time: "2 hours ago",
-      unread: false
-    },
-    {
-      id: 4,
-      title: "New Message",
-      message: "You have a new message from Emma Wilson",
-      time: "Yesterday",
-      unread: false
-    }
-  ];
+  // Format relative time
+  const formatTime = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHr = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHr / 24);
+
+    if (diffMin < 1) return "Just now";
+    if (diffMin < 60) return `${diffMin} min ago`;
+    if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? "s" : ""} ago`;
+    if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
+    return date.toLocaleDateString();
+  };
 
   return (
     <>
@@ -97,12 +86,14 @@ export default function TopNavbar() {
           {/* Notification Dropdown */}
           <div ref={notificationMenuRef} className="relative flex items-center gap-2">
             <LanguageToggle />
-            <button 
+            <button
               onClick={() => setNotificationMenuOpen(prev => !prev)}
               className="relative p-2 hover:bg-gray-100 rounded-full transition"
             >
               <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-gray-700" />
-              <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              {unreadCount > 0 ? (
+                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+              ) : null}
             </button>
 
             {/* Notification Dropdown Menu */}
@@ -125,24 +116,26 @@ export default function TopNavbar() {
                   {notifications.length > 0 ? (
                     notifications.map((notification) => (
                       <div
-                        key={notification.id}
+                        key={notification._id}
                         className={`p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition ${
-                          notification.unread ? "bg-blue-50" : ""
+                          !notification.isRead ? "bg-blue-50" : ""
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          {notification.unread && (
+                          {!notification.isRead ? (
                             <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          )}
+                          ) : null}
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-sm text-gray-900 mb-1">
-                              {notification.title}
-                            </h4>
+                            {notification.title ? (
+                              <h4 className="font-semibold text-sm text-gray-900 mb-1">
+                                {notification.title}
+                              </h4>
+                            ) : null}
                             <p className="text-sm text-gray-600 mb-1 line-clamp-2">
-                              {notification.message}
+                              {notification.text}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {notification.time}
+                              {formatTime(notification.createdAt)}
                             </p>
                           </div>
                         </div>
@@ -157,13 +150,16 @@ export default function TopNavbar() {
                 </div>
 
                 {/* Footer */}
-                {notifications.length > 0 && (
+                {notifications.length > 0 && unreadCount > 0 ? (
                   <div className="p-3 border-t border-gray-200 text-center">
-                    <button className="text-sm text-[#0B31BD] hover:underline font-medium">
+                    <button
+                      onClick={() => markAllAsRead()}
+                      className="text-sm text-[#0B31BD] hover:underline font-medium"
+                    >
                       {t("markAllRead")}
                     </button>
                   </div>
-                )}
+                ) : null}
               </div>
             )}
           </div>
