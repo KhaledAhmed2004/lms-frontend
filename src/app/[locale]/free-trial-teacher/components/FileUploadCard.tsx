@@ -21,7 +21,7 @@ export const FileUploadCard = ({
         id={inputId}
         onChange={onFileChange}
         className="hidden"
-        accept=".png,.jpg,.jpeg,.pdf"
+        accept=".png,.jpg,.jpeg,.pdf,.heic,.heif,.webp"
       />
       <label
         htmlFor={inputId}
