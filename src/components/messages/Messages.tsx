@@ -2,6 +2,7 @@
 
 import ChatArea from "@/components/messages/chat-area";
 import ConversationSidebar from "@/components/messages/conversation-sidebar";
+import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useChats } from "@/hooks/api/use-chats";
 
@@ -9,13 +10,19 @@ export default function Messages() {
   const [selectedConversation, setSelectedConversation] = useState("");
   const [showMobileChat, setShowMobileChat] = useState(false);
   const { data: chats } = useChats();
+  const searchParams = useSearchParams();
+  const chatParam = searchParams.get("chat");
 
-  // Auto-select first chat when chats load
+  // Auto-select chat from url or first chat when chats load
   useEffect(() => {
-    if (chats && chats.length > 0 && !selectedConversation) {
+    if (chatParam) {
+      setSelectedConversation(chatParam);
+      // We might also want to show mobile chat if loaded from url
+      setShowMobileChat(true);
+    } else if (chats && chats.length > 0 && !selectedConversation) {
       setSelectedConversation(chats[0]._id);
     }
-  }, [chats, selectedConversation]);
+  }, [chats, chatParam]);
 
   return (
     <div className="flex h-full bg-white overflow-hidden border border-slate-200 rounded-xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.1)]">
