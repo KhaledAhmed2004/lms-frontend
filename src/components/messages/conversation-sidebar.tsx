@@ -155,10 +155,13 @@ export default function ConversationSidebar({
             No conversations yet
           </div>
         )}
+      </div>
 
-        {/* New Tutor Chat - Move inside scrollable area to remove gap */}
-        {!isAdmin && (
-          <div className="p-3 border-b border-border">
+      {/* Fixed bottom actions */}
+      <div className="shrink-0 border-t border-slate-100 bg-white">
+        {/* New Tutor Chat */}
+        {user?.role === "STUDENT" && (
+          <div className="p-3">
             <button
               onClick={() => onSelectConversation("tutor")}
               className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${
@@ -192,9 +195,9 @@ export default function ConversationSidebar({
           </div>
         )}
 
-        {/* Support Chat - Move inside scrollable area to remove gap */}
+        {/* Support Chat */}
         {!isAdmin && (
-          <div className="p-3 border-b border-border">
+          <div className="p-3 pt-0">
             <button
               onClick={() => onSelectConversation("support")}
               className={`w-full flex items-center gap-3 rounded-lg px-3 py-3 transition-colors ${

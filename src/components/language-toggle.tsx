@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/routing';
+import { useSearchParams } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +17,14 @@ export function LanguageToggle() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const searchParams = useSearchParams();
+
   const onSelectLocale = (nextLocale: string) => {
-    router.replace(pathname, { locale: nextLocale });
+    // Reconstruct the full path with search parameters if any exist
+    const currentParams = searchParams.toString();
+    const href = currentParams ? `${pathname}?${currentParams}` : pathname;
+    
+    router.replace(href as any, { locale: nextLocale, scroll: false });
   };
 
   return (

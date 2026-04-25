@@ -1,7 +1,6 @@
 'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 
 const menuItems = [
   { label: "Sessions", href: "/teacher/session" },
@@ -24,7 +23,7 @@ export function AppSidebar() {
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={item.href as any}
               className={`w-full max-w-[240px] sm:max-w-[220px] md:max-w-[200px] lg:w-64 px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 lg:py-4 rounded-lg sm:rounded-xl text-base sm:text-lg font-medium transition-all duration-200 ${
                 isActive
                   ? "bg-[#002AC8] text-white shadow-xl"
