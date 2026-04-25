@@ -62,7 +62,7 @@ export default function MobileMenuTutor({ isOpen, onClose }: MobileMenuProps) {
             return (
               <Link
                 key={item.href}
-                href={item.href}
+                href={item.href as any}
                 onClick={onClose}
                 className={`flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-3 sm:py-4 rounded-lg transition-all ${
                   isActive
