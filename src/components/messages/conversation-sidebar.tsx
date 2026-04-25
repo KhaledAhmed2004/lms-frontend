@@ -160,7 +160,7 @@ export default function ConversationSidebar({
       {/* Fixed bottom actions */}
       <div className="shrink-0 border-t border-slate-100 bg-white">
         {/* New Tutor Chat */}
-        {!isAdmin && (
+        {user?.role === "STUDENT" && (
           <div className="p-3">
             <button
               onClick={() => onSelectConversation("tutor")}

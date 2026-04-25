@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
 import Sidebar from "./components/Sidebar";
 import TopNavbar from "./components/TopNavbar";
 import { useMySubscription } from "@/hooks/api/use-subscription";
