@@ -69,20 +69,16 @@ const REDIRECT_MAP: Record<string, string> = {
 // Helper function to get redirect path for tutors based on onboarding status
 const getTutorRedirectPath = async (accessToken: string): Promise<string> => {
   try {
-    const { data: profileData } = await apiClient.get('/user/profile', {
+    const { data: statusData } = await apiClient.get('/payments/stripe/onboarding-status', {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
-    const tutorProfile = profileData.data?.tutorProfile;
-
-    // If Stripe onboarding not complete, redirect to profile setup
-    if (!tutorProfile?.stripeOnboardingCompleted) {
+    if (!statusData.data?.isOnboardingComplete) {
       return '/free-trial-teacher-dash';
     }
 
     return '/teacher/session';
   } catch {
-    // If profile fetch fails, default to teacher dashboard
     return '/teacher/session';
   }
 };
