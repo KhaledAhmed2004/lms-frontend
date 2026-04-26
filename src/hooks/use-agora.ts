@@ -143,16 +143,24 @@ export function useAgora(options: UseAgoraOptions = {}) {
       setState(prev => ({ ...prev, callState: 'connecting', error: null }));
 
       // Set up event handlers
+      client.on('user-joined', (user) => {
+        console.log('Remote user joined:', user.uid);
+        setState(prev => ({
+          ...prev,
+          remoteUsers: prev.remoteUsers.some(u => u.uid === user.uid)
+            ? prev.remoteUsers
+            : [...prev.remoteUsers, user],
+        }));
+      });
+
       client.on('user-published', async (user, mediaType) => {
         await client.subscribe(user, mediaType);
         console.log('Subscribed to remote user:', user.uid, mediaType);
 
-        if (mediaType === 'video') {
-          setState(prev => ({
-            ...prev,
-            remoteUsers: [...prev.remoteUsers.filter(u => u.uid !== user.uid), user],
-          }));
-        }
+        setState(prev => ({
+          ...prev,
+          remoteUsers: [...prev.remoteUsers.filter(u => u.uid !== user.uid), user],
+        }));
 
         if (mediaType === 'audio') {
           user.audioTrack?.play();

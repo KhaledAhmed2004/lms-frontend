@@ -199,7 +199,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
           ref={remoteVideoRef}
           className="absolute inset-0 bg-gray-800 flex items-center justify-center"
         >
-          {remoteUsers.length === 0 && (
+          {(remoteUsers.length === 0 || !remoteUsers[0]?.videoTrack) && (
             <div className="text-center">
               <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl text-white">
@@ -209,7 +209,9 @@ export default function VideoCall({ onClose }: VideoCallProps) {
               <p className="text-white/70">
                 {callState === "connecting"
                   ? "Connecting..."
-                  : "Waiting for participant..."}
+                  : remoteUsers.length === 0
+                    ? "Waiting for participant..."
+                    : `${currentCall?.otherUser?.name || "Participant"} — camera off`}
               </p>
             </div>
           )}
