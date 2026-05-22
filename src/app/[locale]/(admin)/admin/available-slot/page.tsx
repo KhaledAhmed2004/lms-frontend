@@ -87,10 +87,10 @@ const AvailableSlots = () => {
     const startHour = i;
     const endHour = (i + 1) % 24;
     const formatHour = (hour: number) => {
-      if (hour === 0) return '12:00 AM';
-      if (hour === 12) return '12:00 PM';
-      if (hour < 12) return `${hour}:00 AM`;
-      return `${hour - 12}:00 PM`;
+      if (hour === 0) return `12:00 ${t('am')}`;
+      if (hour === 12) return `12:00 ${t('pm')}`;
+      if (hour < 12) return `${hour}:00 ${t('am')}`;
+      return `${hour - 12}:00 ${t('pm')}`;
     };
     return {
       value: String(i),
@@ -295,7 +295,16 @@ const AvailableSlots = () => {
   const formatSlotTime = (startTime: string, endTime: string) => {
     const start = new Date(startTime);
     const end = new Date(endTime);
-    return `${format(start, 'h:mm a')} - ${format(end, 'h:mm a')}`;
+
+    const formatH = (date: Date) => {
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? t('pm') : t('am');
+      const displayHours = hours % 12 || 12;
+      return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+    };
+
+    return `${formatH(start)} - ${formatH(end)}`;
   };
 
   return (
@@ -603,7 +612,7 @@ const AvailableSlots = () => {
                         disabled={page === 1 || isFetching}
                       >
                         <ChevronLeft className="w-4 h-4 mr-1" />
-                        Previous
+                        {t('previous')}
                       </Button>
 
                       {/* Page Numbers */}
@@ -627,7 +636,7 @@ const AvailableSlots = () => {
 
                           return pages.map((p, idx) => (
                             p === '...' ? (
-                              <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">...</span>
+                              <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">{t('ellipsis')}</span>
                             ) : (
                               <Button
                                 key={p}
@@ -650,7 +659,7 @@ const AvailableSlots = () => {
                         onClick={() => setPage((p) => p + 1)}
                         disabled={page >= slotsData.pagination.totalPage || isFetching}
                       >
-                        Next
+                        {t('next')}
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
                     </div>
@@ -822,10 +831,10 @@ const AvailableSlots = () => {
               {isCreating ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Creating...
+                  {t('creating')}
                 </>
               ) : (
-                `Create ${selectedHours.length > 1 ? `${selectedHours.length} Slots` : 'Slot'}`
+                `${t('create')} ${selectedHours.length > 1 ? `${selectedHours.length} Slots` : 'Slot'}`
               )}
             </Button>
           </DialogFooter>
@@ -836,12 +845,12 @@ const AvailableSlots = () => {
       <Dialog open={isCancelModalOpen} onOpenChange={setIsCancelModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Cancel Interview Slot</DialogTitle>
+            <DialogTitle>{t('cancelSlotTitle')}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
-              Are you sure you want to cancel this interview slot? This action cannot be undone.
+              {t('cancelSlotDesc')}
             </p>
 
             {selectedSlot && (
@@ -861,11 +870,11 @@ const AvailableSlots = () => {
             )}
 
             <div>
-              <Label>Cancellation Reason</Label>
+              <Label>{t('cancellationReasonLabel')}</Label>
               <Textarea
                 value={cancellationReason}
                 onChange={(e) => setCancellationReason(e.target.value)}
-                placeholder="Please provide a reason for cancellation..."
+                placeholder={t('cancellationReasonPlaceholder')}
                 className="mt-1"
                 rows={3}
               />
@@ -881,7 +890,7 @@ const AvailableSlots = () => {
                 setCancellationReason('');
               }}
             >
-              Keep Slot
+              {t('keepSlot')}
             </Button>
             <Button
               onClick={handleCancelSlot}
@@ -891,10 +900,10 @@ const AvailableSlots = () => {
               {isCancelling ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Cancelling...
+                  {t('cancelling')}
                 </>
               ) : (
-                'Cancel Slot'
+                t('cancelSlot')
               )}
             </Button>
           </DialogFooter>
@@ -905,9 +914,9 @@ const AvailableSlots = () => {
       <AlertDialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Interview Slot</AlertDialogTitle>
+            <AlertDialogTitle>{t('deleteSlotTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this interview slot? This action cannot be undone.
+              {t('deleteSlotDesc')}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
@@ -938,10 +947,10 @@ const AvailableSlots = () => {
               {isDeleting ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Deleting...
+                  {t('deleting')}
                 </>
               ) : (
-                'Delete Slot'
+                t('deleteSlot')
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

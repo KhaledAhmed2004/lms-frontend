@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
+import { useTranslations } from 'next-intl';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { FileText, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,7 @@ const ApplicationDetails = () => {
   const { mutate: sendForRevision, isPending: isSendingRevision } = useSendForRevision();
 
   const isActionPending = isSelecting || isApproving || isRejecting || isSendingRevision;
+  const t = useTranslations('applicationDetails');
 
   // Handlers
   const handleSelectForInterview = () => {
@@ -59,10 +61,10 @@ const ApplicationDetails = () => {
       { id },
       {
         onSuccess: () => {
-          toast.success('Application selected for interview');
+          toast.success(t('selectedSuccess'));
         },
         onError: (error: any) => {
-          toast.error(error?.getFullMessage?.() || error?.message || 'Failed to select for interview');
+          toast.error(error?.getFullMessage?.() || error?.message || t('selectFailed'));
         },
       }
     );
@@ -73,29 +75,29 @@ const ApplicationDetails = () => {
       { id },
       {
         onSuccess: () => {
-          toast.success('Application approved - User is now a Tutor');
+          toast.success(t('approvedAsTutor'));
           router.push('/admin/application');
         },
         onError: (error: any) => {
-          toast.error(error?.getFullMessage?.() || error?.message || 'Failed to approve application');
+          toast.error(error?.getFullMessage?.() || error?.message || t('approveFailed'));
         },
       }
     );
   };
 
   const handleReject = () => {
-    const reason = prompt('Enter rejection reason:');
+    const reason = prompt(t('enterRejectionReason'));
     if (!reason) return;
 
     rejectApplication(
       { id, rejectionReason: reason },
       {
         onSuccess: () => {
-          toast.success('Application rejected');
+          toast.success(t('rejectedSuccess'));
           router.push('/admin/application');
         },
         onError: (error: any) => {
-          toast.error(error?.getFullMessage?.() || error?.message || 'Failed to reject application');
+          toast.error(error?.getFullMessage?.() || error?.message || t('rejectFailed'));
         },
       }
     );
@@ -108,7 +110,7 @@ const ApplicationDetails = () => {
 
   const handleSubmitRevision = () => {
     if (revisionNote.trim().length < 10) {
-      toast.error('Revision note must be at least 10 characters');
+      toast.error(t('revisionMinChars'));
       return;
     }
 
@@ -116,12 +118,12 @@ const ApplicationDetails = () => {
       { id, revisionNote: revisionNote.trim() },
       {
         onSuccess: () => {
-          toast.success('Application sent for revision');
+          toast.success(t('revisionSent'));
           setIsRevisionModalOpen(false);
           setRevisionNote('');
         },
         onError: (error: any) => {
-          toast.error(error?.getFullMessage?.() || error?.message || 'Failed to send for revision');
+          toast.error(error?.getFullMessage?.() || error?.message || t('revisionFailed'));
         },
       }
     );
@@ -147,15 +149,15 @@ const ApplicationDetails = () => {
   const getStatusLabel = (status: AdminApplicationStatus) => {
     switch (status) {
       case 'SUBMITTED':
-        return 'Pending Review';
+        return t('statusPending');
       case 'SELECTED_FOR_INTERVIEW':
-        return 'Selected for Interview';
+        return t('statusInterview');
       case 'APPROVED':
-        return 'Approved';
+        return t('statusApproved');
       case 'REJECTED':
-        return 'Rejected';
+        return t('statusRejected');
       case 'REVISION':
-        return 'Revision Required';
+        return t('statusRevision');
       default:
         return status;
     }
@@ -213,10 +215,10 @@ const ApplicationDetails = () => {
   if (error || !application) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-red-500">Application not found or error loading details.</p>
+        <p className="text-red-500">{t('notFound')}</p>
         <Button variant="outline" onClick={() => router.push('/admin/application')}>
           <ArrowLeft className="mr-2" size={16} />
-          Back to Applications
+          {t('backToApplications')}
         </Button>
       </div>
     );
@@ -232,7 +234,7 @@ const ApplicationDetails = () => {
           className="gap-2"
         >
           <ArrowLeft size={16} />
-          Back
+          {t('back')}
         </Button>
         <Badge className={`${getStatusColor(application.status)} border-0 text-sm px-3 py-1`}>
           {getStatusLabel(application.status)}
@@ -244,7 +246,7 @@ const ApplicationDetails = () => {
         <CardHeader>
           <div>
             <h1 className="text-xl font-bold text-gray-700">
-              Information of {application.name}
+              {t('informationOf')} {application.name}
             </h1>
           </div>
         </CardHeader>
@@ -253,15 +255,15 @@ const ApplicationDetails = () => {
             {/* Left Column */}
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Full Name</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('fullName')}</p>
                 <p className="text-gray-900 font-medium">{application.name}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Phone</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('phone')}</p>
                 <p className="text-gray-900 font-medium">{application.phoneNumber}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Address</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('address')}</p>
                 <p className="text-gray-900 font-medium">{formatAddress()}</p>
               </div>
             </div>
@@ -269,15 +271,15 @@ const ApplicationDetails = () => {
             {/* Right Column */}
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Email</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('email')}</p>
                 <p className="text-gray-900 font-medium">{application.email}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Date of Birth</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('dateOfBirth')}</p>
                 <p className="text-gray-900 font-medium">{formatDate(application.birthDate)}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Submitted At</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('submittedAt')}</p>
                 <p className="text-gray-900 font-medium">{formatDate(application.submittedAt)}</p>
               </div>
             </div>
@@ -288,8 +290,8 @@ const ApplicationDetails = () => {
       {/* Teaching Preferences Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Teaching Preferences</CardTitle>
-          <CardDescription>Subjects this tutor wants to teach</CardDescription>
+          <CardTitle>{t('teachingPreferences')}</CardTitle>
+          <CardDescription>{t('tutorSubjects')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -303,7 +305,7 @@ const ApplicationDetails = () => {
                 </Badge>
               ))
             ) : (
-              <p className="text-gray-500">No subjects selected</p>
+              <p className="text-gray-500">{t('noSubjects')}</p>
             )}
           </div>
         </CardContent>
@@ -312,7 +314,7 @@ const ApplicationDetails = () => {
       {/* Uploaded Files Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Uploaded Files</CardTitle>
+          <CardTitle>{t('files')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -324,8 +326,8 @@ const ApplicationDetails = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">CV / Resume</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('cv')}</p>
+                    <p className="text-xs text-gray-500">{t('cvType')}</p>
                   </div>
                 </div>
                 <Button
@@ -334,7 +336,7 @@ const ApplicationDetails = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(application.cv, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
@@ -347,8 +349,8 @@ const ApplicationDetails = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Abitur Certificate</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('abitur')}</p>
+                    <p className="text-xs text-gray-500">{t('abiturType')}</p>
                   </div>
                 </div>
                 <Button
@@ -357,7 +359,7 @@ const ApplicationDetails = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(application.abiturCertificate, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
@@ -370,8 +372,8 @@ const ApplicationDetails = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Official ID</p>
-                    <p className="text-xs text-gray-500">PDF / Image</p>
+                    <p className="font-medium text-gray-900">{t('officialId')}</p>
+                    <p className="text-xs text-gray-500">{t('officialIdType')}</p>
                   </div>
                 </div>
                 <Button
@@ -380,7 +382,7 @@ const ApplicationDetails = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(application.officialId, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
@@ -392,24 +394,24 @@ const ApplicationDetails = () => {
       {(application.adminNotes || application.rejectionReason || application.revisionNote) && (
         <Card className="border-gray-200">
           <CardHeader>
-            <CardTitle>Notes</CardTitle>
+            <CardTitle>{t('notes')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {application.adminNotes && (
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Admin Notes</p>
+                <p className="text-sm font-medium text-gray-600 mb-1">{t('adminNotes')}</p>
                 <p className="text-gray-900">{application.adminNotes}</p>
               </div>
             )}
             {application.rejectionReason && (
               <div>
-                <p className="text-sm font-medium text-red-600 mb-1">Rejection Reason</p>
+                <p className="text-sm font-medium text-red-600 mb-1">{t('rejectionReason')}</p>
                 <p className="text-gray-900">{application.rejectionReason}</p>
               </div>
             )}
             {application.revisionNote && (
               <div>
-                <p className="text-sm font-medium text-orange-600 mb-1">Revision Note</p>
+                <p className="text-sm font-medium text-orange-600 mb-1">{t('revisionNote')}</p>
                 <p className="text-gray-900">{application.revisionNote}</p>
               </div>
             )}
@@ -428,7 +430,7 @@ const ApplicationDetails = () => {
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"
             >
               {isSelecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Select for Interview
+              {t('selectForInterview')}
             </Button>
           )}
 
@@ -440,7 +442,7 @@ const ApplicationDetails = () => {
               className="bg-green-600 hover:bg-green-700 text-white px-8"
             >
               {isApproving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Approve as Tutor
+              {t('approveAsTutor')}
             </Button>
           )}
 
@@ -451,7 +453,7 @@ const ApplicationDetails = () => {
             variant="outline"
             className="border-orange-600 text-orange-600 hover:bg-orange-50 px-8"
           >
-            Request Revision
+            {t('requestRevision')}
           </Button>
 
           {/* Reject */}
@@ -462,7 +464,7 @@ const ApplicationDetails = () => {
             className="border-red-600 text-red-600 hover:bg-red-50 px-8"
           >
             {isRejecting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Reject
+            {t('reject')}
           </Button>
         </div>
       )}
@@ -471,24 +473,24 @@ const ApplicationDetails = () => {
       <Dialog open={isRevisionModalOpen} onOpenChange={setIsRevisionModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Request Revision</DialogTitle>
+            <DialogTitle>{t('revisionModalTitle')}</DialogTitle>
             <DialogDescription>
-              Specify what the applicant needs to fix or update in their application.
+              {t('revisionModalDesc')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="revisionNote">Reason for Revision</Label>
+              <Label htmlFor="revisionNote">{t('revisionLabel')}</Label>
               <Textarea
                 id="revisionNote"
-                placeholder="Please describe what needs to be corrected or updated..."
+                placeholder={t('revisionPlaceholder')}
                 value={revisionNote}
                 onChange={(e) => setRevisionNote(e.target.value)}
                 rows={4}
                 className="resize-none"
               />
               <p className="text-sm text-gray-500">
-                Minimum 10 characters required ({revisionNote.length}/10)
+                {t('revisionMinCharsHint')} ({revisionNote.length}/10)
               </p>
             </div>
           </div>
@@ -498,7 +500,7 @@ const ApplicationDetails = () => {
               onClick={() => setIsRevisionModalOpen(false)}
               disabled={isSendingRevision}
             >
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleSubmitRevision}
@@ -506,7 +508,7 @@ const ApplicationDetails = () => {
               className="bg-orange-600 hover:bg-orange-700 text-white"
             >
               {isSendingRevision && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Send Revision Request
+              {t('sendRevision')}
             </Button>
           </DialogFooter>
         </DialogContent>

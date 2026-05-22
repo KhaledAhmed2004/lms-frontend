@@ -55,10 +55,10 @@ export default function TopNavbar() {
     const diffHr = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHr / 24);
 
-    if (diffMin < 1) return "Just now";
-    if (diffMin < 60) return `${diffMin} min ago`;
-    if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? "s" : ""} ago`;
-    if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? "s" : ""} ago`;
+    if (diffMin < 1) return t("justNow");
+    if (diffMin < 60) return t("minAgo", { count: diffMin });
+    if (diffHr < 24) return t("hoursAgo", { count: diffHr });
+    if (diffDay < 7) return t("daysAgo", { count: diffDay });
     return date.toLocaleDateString();
   };
 
@@ -77,7 +77,7 @@ export default function TopNavbar() {
           </button>
 
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-bold text-[#0B31BD] whitespace-nowrap">
-            Schäfer Tutoring
+            {t("title")}
           </h2>
         </div>
 

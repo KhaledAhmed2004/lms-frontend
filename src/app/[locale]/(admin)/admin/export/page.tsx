@@ -31,6 +31,7 @@ import {
   useExportSubscriptions,
   useExportTrialRequests,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 // ============ EXPORT CARD COMPONENT ============
 
@@ -83,6 +84,8 @@ function ExportCard({
     onExport(cleanParams);
   };
 
+  const t = useTranslations("export");
+
   return (
     <Card className="border-gray-200 hover:shadow-md transition-shadow">
       <CardContent className="pt-6 space-y-4">
@@ -108,7 +111,9 @@ function ExportCard({
                   <SelectValue placeholder={filter.label} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All {filter.label}</SelectItem>
+                  <SelectItem value="all">
+                    {t("allFilter", { filter: filter.label })}
+                  </SelectItem>
                   {filter.options.map((opt) => (
                     <SelectItem key={opt.value} value={opt.value}>
                       {opt.label}
@@ -130,23 +135,15 @@ function ExportCard({
           ) : (
             <Download className="mr-2 h-4 w-4" />
           )}
-          {isPending ? "Downloading..." : "Download CSV"}
+          {isPending ? t("downloading") : t("downloadCsv")}
         </Button>
       </CardContent>
     </Card>
   );
 }
 
-// ============ MONTH OPTIONS ============
-
-const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
-  label: new Date(2000, i).toLocaleString("en-US", { month: "long" }),
-  value: String(i + 1),
-}));
-
-// ============ MAIN PAGE ============
-
 const ExportPage = () => {
+  const t = useTranslations("export");
   const exportUsers = useExportUsers();
   const exportApplications = useExportApplications();
   const exportSessions = useExportSessions();
@@ -155,6 +152,11 @@ const ExportPage = () => {
   const exportSubscriptions = useExportSubscriptions();
   const exportTrialRequests = useExportTrialRequests();
 
+  const MONTH_OPTIONS = Array.from({ length: 12 }, (_, i) => ({
+    label: t(`months.${i + 1}`),
+    value: String(i + 1),
+  }));
+
   const handleExport = (
     mutation: { mutateAsync: (params: any) => Promise<void> },
     label: string,
@@ -162,9 +164,9 @@ const ExportPage = () => {
     return async (params: Record<string, string>) => {
       try {
         await mutation.mutateAsync(params);
-        toast.success(`${label} exported successfully`);
+        toast.success(t("exportSuccess", { label }));
       } catch {
-        toast.error(`Failed to export ${label.toLowerCase()}`);
+        toast.error(t("exportFailed", { label: label.toLowerCase() }));
       }
     };
   };
@@ -174,85 +176,85 @@ const ExportPage = () => {
       icon: Users,
       iconBgColor: "bg-blue-50",
       iconColor: "text-blue-600",
-      title: "Users",
-      description: "Name, email, role, phone, join date",
+      title: t("users"),
+      description: t("usersDesc"),
       filters: [
         {
           key: "role",
-          label: "Role",
+          label: t("role"),
           options: [
-            { label: "Student", value: "STUDENT" },
-            { label: "Tutor", value: "TUTOR" },
+            { label: t("student"), value: "STUDENT" },
+            { label: t("tutor"), value: "TUTOR" },
           ],
         },
       ],
       mutation: exportUsers,
-      label: "Users",
+      label: t("users"),
     },
     {
       icon: FileText,
       iconBgColor: "bg-purple-50",
       iconColor: "text-purple-600",
-      title: "Applications",
-      description: "Applicant info, status, subjects, dates",
+      title: t("applications"),
+      description: t("applicationsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Submitted", value: "SUBMITTED" },
-            { label: "Resubmitted", value: "RESUBMITTED" },
-            { label: "Selected for Interview", value: "SELECTED_FOR_INTERVIEW" },
-            { label: "Approved", value: "APPROVED" },
-            { label: "Rejected", value: "REJECTED" },
-            { label: "Revision", value: "REVISION" },
+            { label: t("submitted"), value: "SUBMITTED" },
+            { label: t("resubmitted"), value: "RESUBMITTED" },
+            { label: t("selectedForInterview"), value: "SELECTED_FOR_INTERVIEW" },
+            { label: t("approved"), value: "APPROVED" },
+            { label: t("rejected"), value: "REJECTED" },
+            { label: t("revision"), value: "REVISION" },
           ],
         },
       ],
       mutation: exportApplications,
-      label: "Applications",
+      label: t("applications"),
     },
     {
       icon: Calendar,
       iconBgColor: "bg-green-50",
       iconColor: "text-green-600",
-      title: "Sessions",
-      description: "Student, tutor, subject, timing, pricing, status",
+      title: t("sessions"),
+      description: t("sessionsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Completed", value: "COMPLETED" },
-            { label: "Scheduled", value: "SCHEDULED" },
-            { label: "In Progress", value: "IN_PROGRESS" },
-            { label: "Cancelled", value: "CANCELLED" },
-            { label: "No Show", value: "NO_SHOW" },
+            { label: t("completed"), value: "COMPLETED" },
+            { label: t("scheduled"), value: "SCHEDULED" },
+            { label: t("inProgress"), value: "IN_PROGRESS" },
+            { label: t("cancelled"), value: "CANCELLED" },
+            { label: t("noShow"), value: "NO_SHOW" },
           ],
         },
       ],
       mutation: exportSessions,
-      label: "Sessions",
+      label: t("sessions"),
     },
     {
       icon: Receipt,
       iconBgColor: "bg-yellow-50",
       iconColor: "text-yellow-600",
-      title: "Billings",
-      description: "Invoice, billing period, hours, totals, payment status",
+      title: t("billings"),
+      description: t("billingsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Pending", value: "PENDING" },
-            { label: "Paid", value: "PAID" },
-            { label: "Failed", value: "FAILED" },
+            { label: t("pending"), value: "PENDING" },
+            { label: t("paid"), value: "PAID" },
+            { label: t("failed"), value: "FAILED" },
           ],
         },
         {
           key: "year",
-          label: "Year",
+          label: t("year"),
           options: [
             { label: "2026", value: "2026" },
             { label: "2025", value: "2025" },
@@ -260,32 +262,32 @@ const ExportPage = () => {
         },
         {
           key: "month",
-          label: "Month",
+          label: t("month"),
           options: MONTH_OPTIONS,
         },
       ],
       mutation: exportBillings,
-      label: "Billings",
+      label: t("billings"),
     },
     {
       icon: Wallet,
       iconBgColor: "bg-orange-50",
       iconColor: "text-orange-600",
-      title: "Earnings",
-      description: "Tutor payouts, gross/net earnings, commission",
+      title: t("earnings"),
+      description: t("earningsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Pending", value: "PENDING" },
-            { label: "Paid", value: "PAID" },
-            { label: "Processing", value: "PROCESSING" },
+            { label: t("pending"), value: "PENDING" },
+            { label: t("paid"), value: "PAID" },
+            { label: t("processing"), value: "PROCESSING" },
           ],
         },
         {
           key: "year",
-          label: "Year",
+          label: t("year"),
           options: [
             { label: "2026", value: "2026" },
             { label: "2025", value: "2025" },
@@ -293,62 +295,62 @@ const ExportPage = () => {
         },
         {
           key: "month",
-          label: "Month",
+          label: t("month"),
           options: MONTH_OPTIONS,
         },
       ],
       mutation: exportEarnings,
-      label: "Earnings",
+      label: t("earnings"),
     },
     {
       icon: CreditCard,
       iconBgColor: "bg-indigo-50",
       iconColor: "text-indigo-600",
-      title: "Subscriptions",
-      description: "Student plans, tier, pricing, dates",
+      title: t("subscriptions"),
+      description: t("subscriptionsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Active", value: "ACTIVE" },
-            { label: "Cancelled", value: "CANCELLED" },
-            { label: "Expired", value: "EXPIRED" },
+            { label: t("active"), value: "ACTIVE" },
+            { label: t("cancelled"), value: "CANCELLED" },
+            { label: t("expired"), value: "EXPIRED" },
           ],
         },
       ],
       mutation: exportSubscriptions,
-      label: "Subscriptions",
+      label: t("subscriptions"),
     },
     {
       icon: GraduationCap,
       iconBgColor: "bg-pink-50",
       iconColor: "text-pink-600",
-      title: "Trial Requests",
-      description: "Student, guardian, subject, grade, tutor, dates",
+      title: t("trialRequests"),
+      description: t("trialRequestsDesc"),
       filters: [
         {
           key: "status",
-          label: "Status",
+          label: t("status"),
           options: [
-            { label: "Pending", value: "PENDING" },
-            { label: "Accepted", value: "ACCEPTED" },
-            { label: "Completed", value: "COMPLETED" },
-            { label: "Expired", value: "EXPIRED" },
+            { label: t("pending"), value: "PENDING" },
+            { label: t("accepted"), value: "ACCEPTED" },
+            { label: t("completed"), value: "COMPLETED" },
+            { label: t("expired"), value: "EXPIRED" },
           ],
         },
       ],
       mutation: exportTrialRequests,
-      label: "Trial Requests",
+      label: t("trialRequests"),
     },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Data Export</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("title")}</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Download CSV reports for all platform data
+          {t("subtitle")}
         </p>
       </div>
 

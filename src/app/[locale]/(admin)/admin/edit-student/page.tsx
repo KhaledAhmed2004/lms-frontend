@@ -44,6 +44,7 @@ const StudentEditContent = () => {
   }, [student]);
 
   const t = useTranslations('editStudent');
+  const tc = useTranslations('common');
 
   const handleSave = () => {
     updateStudent(
@@ -100,10 +101,10 @@ const StudentEditContent = () => {
   if (error || !student) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-red-500">Student not found or error loading details.</p>
+        <p className="text-red-500">{t('notFound')}</p>
         <Button variant="outline" onClick={() => router.push('/admin/student')}>
           <ArrowLeft className="mr-2" size={16} />
-          Back to Students
+          {t('backToStudents')}
         </Button>
       </div>
     );
@@ -119,24 +120,24 @@ const StudentEditContent = () => {
           className="gap-2"
         >
           <ArrowLeft size={16} />
-          Back
+          {t('back')}
         </Button>
         <h1 className="text-xl font-bold text-gray-700">
-          Edit Student: {student.name}
+          {t('title')} {student.name}
         </h1>
       </div>
 
       {/* Personal Information Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
+          <CardTitle>{t('personalInfo')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Full Name and Email */}
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Full Name
+                {t('fullName')}
               </label>
               <Input
                 value={fullName}
@@ -146,7 +147,7 @@ const StudentEditContent = () => {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Email
+                {t('email')}
               </label>
               <Input
                 value={email}
@@ -160,7 +161,7 @@ const StudentEditContent = () => {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Phone
+                {t('phone')}
               </label>
               <Input
                 value={phone}
@@ -170,7 +171,7 @@ const StudentEditContent = () => {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Date of Birth
+                {t('dob')}
               </label>
               <Input
                 type="date"
@@ -184,7 +185,7 @@ const StudentEditContent = () => {
           {/* Location */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Location
+              {t('location')}
             </label>
             <Input
               value={location}
@@ -203,14 +204,14 @@ const StudentEditContent = () => {
           className="bg-blue-600 hover:bg-blue-700 text-white px-8"
         >
           {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Save Changes
+          {tc('saveChanges')}
         </Button>
         <Button
           variant="outline"
           onClick={() => router.push(`/admin/student-details?id=${id}`)}
           className="px-8"
         >
-          Cancel
+          {tc('cancel')}
         </Button>
       </div>
     </div>

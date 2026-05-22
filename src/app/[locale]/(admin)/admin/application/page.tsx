@@ -43,6 +43,7 @@ import { useTranslations } from "next-intl";
 const ApplicationManagement = () => {
   const t = useTranslations("applications");
   const ts = useTranslations("status");
+  const tc = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | AdminApplicationStatus>(
@@ -95,7 +96,7 @@ const ApplicationManagement = () => {
           toast.error(
             error?.getFullMessage?.() ||
             error?.message ||
-            "Failed to select for interview",
+            t("selectFailed"),
           );
         },
       },
@@ -111,7 +112,7 @@ const ApplicationManagement = () => {
           toast.error(
             error?.getFullMessage?.() ||
             error?.message ||
-            "Failed to approve application",
+            t("approveFailed"),
           );
         },
       },
@@ -130,7 +131,7 @@ const ApplicationManagement = () => {
           toast.error(
             error?.getFullMessage?.() ||
             error?.message ||
-            "Failed to reject application",
+            t("rejectFailed"),
           );
         },
       },
@@ -181,7 +182,7 @@ const ApplicationManagement = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <p className="text-red-500">
-          Error loading applications. Please try again.
+          {t("errorLoading")}
         </p>
       </div>
     );
@@ -230,7 +231,7 @@ const ApplicationManagement = () => {
     "bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black whitespace-nowrap";
 
   const tabs = [
-    { value: "all", label: "All" },
+    { value: "all", label: tc("all") },
     { value: "SUBMITTED", label: t("pending") },
     { value: "SELECTED_FOR_INTERVIEW", label: t("interview") },
     { value: "APPROVED", label: t("approved") },
@@ -295,10 +296,10 @@ const ApplicationManagement = () => {
                     ) : null}
                     <span>
                       {stat.data.growthType === "no_change"
-                        ? "No change"
+                        ? t("noChange")
                         : `${stat.data.growth > 0 ? "+" : ""}${stat.data.growth}%`}
                     </span>
-                    <span className="text-gray-500">vs last month</span>
+                    <span className="text-gray-500">{t("vsLastMonth")}</span>
                   </div>
                 )}
               </CardContent>
@@ -362,7 +363,7 @@ const ApplicationManagement = () => {
                           {t("colPhoneNumber")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Status
+                          {t("colStatus")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
                           {t("colAction")}

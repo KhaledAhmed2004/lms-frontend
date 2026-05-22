@@ -19,8 +19,11 @@ import { useScheduledMeetings, useGetInterviewMeetingToken } from "@/hooks/api";
 import { useAgora } from "@/hooks/use-agora";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 const MeetingList = () => {
+  const t = useTranslations("meetings");
+  const tc = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [joiningMeetingId, setJoiningMeetingId] = useState<string | null>(null);
@@ -39,7 +42,7 @@ const MeetingList = () => {
   // Agora hook for video call
   const agora = useAgora({
     onError: (error) => {
-      toast.error(error.message || "Failed to join meeting");
+      toast.error(error.message || t("joinFailed"));
       setJoiningMeetingId(null);
     },
   });
@@ -55,9 +58,9 @@ const MeetingList = () => {
     try {
       const tokenData = await getMeetingToken.mutateAsync(meetingId);
       await agora.join(tokenData.channelName, tokenData.token, tokenData.uid);
-      toast.success("Joined meeting successfully");
+      toast.success(t("joinedSuccess"));
     } catch (error: any) {
-      toast.error(error?.message || "Failed to join meeting");
+      toast.error(error?.message || t("joinFailed"));
     } finally {
       setJoiningMeetingId(null);
     }
@@ -66,7 +69,7 @@ const MeetingList = () => {
   // Leave meeting handler
   const handleLeaveMeeting = async () => {
     await agora.leave();
-    toast.info("Left the meeting");
+    toast.info(t("leftMeeting"));
   };
 
   // Filter meetings by search query (client-side filtering for name/email)
@@ -109,7 +112,7 @@ const MeetingList = () => {
         <Card>
           <CardContent className="py-8 text-center">
             <p className="text-red-600">
-              Failed to load scheduled meetings. Please try again later.
+              {t("errorLoading")}
             </p>
           </CardContent>
         </Card>
@@ -126,7 +129,7 @@ const MeetingList = () => {
           size={18}
         />
         <Input
-          placeholder="Search by name or email..."
+          placeholder={t("searchPlaceholder")}
           value={searchQuery}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -140,10 +143,10 @@ const MeetingList = () => {
             <div className="text-center py-12">
               <Calendar className="mx-auto h-12 w-12 text-gray-300 mb-4" />
               <p className="text-gray-600 font-medium">
-                No scheduled meetings found.
+                {t("noMeetings")}
               </p>
               <p className="text-sm text-gray-500 mt-2">
-                Meetings will appear here when applicants book interview slots.
+                {t("noMeetingsDesc")}
               </p>
             </div>
           ) : (
@@ -155,22 +158,22 @@ const MeetingList = () => {
                     <thead>
                       <tr className="border-b border-gray-200 bg-gray-50">
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Applicant Name
+                          {t("applicantName")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Email
+                          {t("email")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Subjects
+                          {t("subjects")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Scheduled Date
+                          {t("scheduledDate")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Scheduled Time
+                          {t("scheduledTime")}
                         </th>
                         <th className="text-left py-3 px-4 font-semibold text-gray-700 text-sm">
-                          Meeting Link
+                          {t("meetingLink")}
                         </th>
                       </tr>
                     </thead>
@@ -193,7 +196,7 @@ const MeetingList = () => {
                             <td className="py-3 px-4 text-gray-600 text-sm">
                               {meeting.subjects?.length > 0
                                 ? meeting.subjects.join(", ")
-                                : "N/A"}
+                                : tc("na")}
                             </td>
                             <td className="py-3 px-4 text-gray-600 text-sm">
                               {format(startTime, "dd/MM/yyyy")}
@@ -211,7 +214,7 @@ const MeetingList = () => {
                                   variant="destructive"
                                   onClick={handleLeaveMeeting}
                                 >
-                                  Leave
+                                  {t("leave")}
                                 </Button>
                               ) : (
                                 <Button
@@ -223,12 +226,12 @@ const MeetingList = () => {
                                   {joiningMeetingId === meeting._id ? (
                                     <>
                                       <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                                      Joining...
+                                      {t("joining")}
                                     </>
                                   ) : (
                                     <>
                                       <Video className="h-4 w-4 mr-1" />
-                                      Join
+                                      {t("join")}
                                     </>
                                   )}
                                 </Button>
@@ -335,6 +338,7 @@ function InterviewVideoCall({
   agora: ReturnType<typeof useAgora>;
   onLeave: () => void;
 }) {
+  const t = useTranslations("meetings");
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
   const [callDuration, setCallDuration] = useState(0);
@@ -386,7 +390,7 @@ function InterviewVideoCall({
               <Video className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-white font-medium">Interview Meeting</h3>
+              <h3 className="text-white font-medium">{t("interviewMeeting")}</h3>
               <p className="text-white/70 text-sm">{formatDuration(callDuration)}</p>
             </div>
           </div>
@@ -405,7 +409,7 @@ function InterviewVideoCall({
               <div className="w-24 h-24 rounded-full bg-gray-700 flex items-center justify-center mx-auto mb-4">
                 <Video className="w-10 h-10 text-white/50" />
               </div>
-              <p className="text-white/70">Waiting for participant...</p>
+              <p className="text-white/70">{t("waitingForParticipant")}</p>
             </div>
           )}
         </div>
