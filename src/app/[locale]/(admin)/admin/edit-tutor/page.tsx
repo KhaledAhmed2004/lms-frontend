@@ -41,6 +41,7 @@ const TutorEditContent = () => {
   const { mutate: updateTutor, isPending: isUpdating } = useAdminUpdateTutorProfile();
 
   const t = useTranslations('editTutor');
+  const tc = useTranslations('common');
 
   // Form state
   const [fullName, setFullName] = useState('');
@@ -140,10 +141,10 @@ const TutorEditContent = () => {
   if (error || !tutor) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-red-500">Tutor not found or error loading details.</p>
+        <p className="text-red-500">{t('notFound')}</p>
         <Button variant="outline" onClick={() => router.push('/admin/tutor')}>
           <ArrowLeft className="mr-2" size={16} />
-          Back to Tutors
+          {t('backToTutors')}
         </Button>
       </div>
     );
@@ -159,24 +160,24 @@ const TutorEditContent = () => {
           className="gap-2"
         >
           <ArrowLeft size={16} />
-          Back
+          {t('back')}
         </Button>
         <h1 className="text-xl font-bold text-gray-700">
-          Edit Tutor: {tutor.name}
+          {t('title')} {tutor.name}
         </h1>
       </div>
 
       {/* Personal Information Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Personal Information</CardTitle>
+          <CardTitle>{t('personalInfo')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Full Name and Email */}
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Full Name
+                {t('fullName')}
               </label>
               <Input
                 value={fullName}
@@ -186,7 +187,7 @@ const TutorEditContent = () => {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Email
+                {t('email')}
               </label>
               <Input
                 value={email}
@@ -200,7 +201,7 @@ const TutorEditContent = () => {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Phone
+                {t('phone')}
               </label>
               <Input
                 value={phone}
@@ -210,7 +211,7 @@ const TutorEditContent = () => {
             </div>
             <div>
               <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Birth Date
+                {t('dob')}
               </label>
               <Input
                 type="date"
@@ -224,7 +225,7 @@ const TutorEditContent = () => {
           {/* Address */}
           <div>
             <label className="text-sm font-medium text-gray-700 mb-2 block">
-              Address
+              {t('address')}
             </label>
             <Input
               value={address}
@@ -238,8 +239,8 @@ const TutorEditContent = () => {
       {/* Teaching Preferences Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Teaching Preferences</CardTitle>
-          <CardDescription>Subjects the tutor teaches</CardDescription>
+          <CardTitle>{t('preferences')}</CardTitle>
+          <CardDescription>{t('subjectsDescription')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Selected Subjects */}
@@ -259,7 +260,7 @@ const TutorEditContent = () => {
               </Badge>
             ))}
             {selectedSubjects.length === 0 && (
-              <p className="text-gray-500 text-sm">No subjects selected</p>
+              <p className="text-gray-500 text-sm">{t('noSubjects')}</p>
             )}
           </div>
 
@@ -267,7 +268,7 @@ const TutorEditContent = () => {
           <div className="flex gap-2">
             <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
               <SelectTrigger className="w-[300px] bg-gray-50 border-gray-200">
-                <SelectValue placeholder="Select a subject to add" />
+                <SelectValue placeholder={t('selectSubject')} />
               </SelectTrigger>
               <SelectContent>
                 {unselectedSubjects.map((subject) => (
@@ -284,7 +285,7 @@ const TutorEditContent = () => {
               className="border-blue-600 text-blue-600 hover:bg-blue-50"
             >
               <Plus size={16} className="mr-1" />
-              Add
+              {t('add')}
             </Button>
           </div>
         </CardContent>
@@ -293,8 +294,8 @@ const TutorEditContent = () => {
       {/* Uploaded Files Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Uploaded Files</CardTitle>
-          <CardDescription>View tutor documents (read-only)</CardDescription>
+          <CardTitle>{t('files')}</CardTitle>
+          <CardDescription>{t('filesDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -306,8 +307,8 @@ const TutorEditContent = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">CV / Resume</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('cv')}</p>
+                    <p className="text-xs text-gray-500">{t('cvType')}</p>
                   </div>
                 </div>
                 <Button
@@ -316,7 +317,7 @@ const TutorEditContent = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(tutor.tutorProfile?.cvUrl, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
@@ -329,8 +330,8 @@ const TutorEditContent = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Abitur Certificate</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('abitur')}</p>
+                    <p className="text-xs text-gray-500">{t('cvType')}</p>
                   </div>
                 </div>
                 <Button
@@ -339,14 +340,14 @@ const TutorEditContent = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(tutor.tutorProfile?.abiturCertificateUrl, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
 
             {/* No files */}
             {!tutor.tutorProfile?.cvUrl && !tutor.tutorProfile?.abiturCertificateUrl && (
-              <p className="text-gray-500 text-center py-4">No files uploaded</p>
+              <p className="text-gray-500 text-center py-4">{t('noFiles')}</p>
             )}
           </div>
         </CardContent>
@@ -360,14 +361,14 @@ const TutorEditContent = () => {
           className="bg-blue-600 hover:bg-blue-700 text-white px-8"
         >
           {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Save Changes
+          {tc('saveChanges')}
         </Button>
         <Button
           variant="outline"
           onClick={() => router.push(`/admin/tutor-details?id=${id}`)}
           className="px-8"
         >
-          Cancel
+          {tc('cancel')}
         </Button>
       </div>
     </div>
