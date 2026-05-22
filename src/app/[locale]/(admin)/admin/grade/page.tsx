@@ -70,9 +70,10 @@ type GradeTab = "all" | "active" | "inactive";
 
 const GradeManagement = () => {
   const t = useTranslations("grades");
-  const ts = useTranslations("status");
+  const tc = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const deferredSearchTerm = React.useDeferredValue(searchTerm);
   const [activeTab, setActiveTab] = useState<GradeTab>("all");
   const itemsPerPage = 10;
 
@@ -215,7 +216,7 @@ const GradeManagement = () => {
       },
       {
         accessorKey: "isActive",
-        header: "Status",
+        header: t("status"),
         cell: ({ row }) => {
           const isActive = row.getValue("isActive") as boolean;
           return (
@@ -227,14 +228,14 @@ const GradeManagement = () => {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-100"
               }
             >
-              {isActive ? "Active" : "Inactive"}
+              {isActive ? t("active") : t("inactive")}
             </Badge>
           );
         },
       },
       {
         accessorKey: "createdAt",
-        header: "Created At",
+        header: t("createdAt"),
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
             {formatDateShort(row.getValue("createdAt"))}
@@ -243,7 +244,7 @@ const GradeManagement = () => {
       },
       {
         id: "actions",
-        header: "Action",
+        header: t("action"),
         cell: ({ row }) => {
           const grade = row.original;
           return (
@@ -255,16 +256,16 @@ const GradeManagement = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => openEditModal(grade)}>
-                  Edit
+                  {tc("edit")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleToggleStatus(grade)}>
-                  {grade.isActive ? "Deactivate" : "Activate"}
+                  {grade.isActive ? t("deactivate") : t("activate")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-red-600"
                   onClick={() => openDeleteDialog(grade)}
                 >
-                  Delete
+                  {tc("delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -272,7 +273,7 @@ const GradeManagement = () => {
         },
       },
     ],
-    [t],
+    [t, tc],
   );
 
   // TanStack Table instance with server-side pagination
@@ -310,7 +311,7 @@ const GradeManagement = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500">Error loading grades. Please try again.</p>
+        <p className="text-red-500">{t("errorLoading")}</p>
       </div>
     );
   }
@@ -380,19 +381,19 @@ const GradeManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All
+                {tc("all")}
               </TabsTrigger>
               <TabsTrigger
                 value="active"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Active
+                {t("active")}
               </TabsTrigger>
               <TabsTrigger
                 value="inactive"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Inactive
+                {t("inactive")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -449,7 +450,7 @@ const GradeManagement = () => {
                           colSpan={columns.length}
                           className="py-8 text-center text-gray-500"
                         >
-                          No grades found
+                          {t("noGradesFound")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -493,7 +494,7 @@ const GradeManagement = () => {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="isActive">Active Status</Label>
+              <Label htmlFor="isActive">{t("activeStatus")}</Label>
               <Switch
                 id="isActive"
                 checked={formData.isActive}
@@ -508,7 +509,7 @@ const GradeManagement = () => {
               variant="outline"
               onClick={() => setIsCreateModalOpen(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleCreateGrade}
@@ -544,7 +545,7 @@ const GradeManagement = () => {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="edit-isActive">Active Status</Label>
+              <Label htmlFor="edit-isActive">{t("activeStatus")}</Label>
               <Switch
                 id="edit-isActive"
                 checked={formData.isActive}
@@ -556,7 +557,7 @@ const GradeManagement = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleEditGrade}
@@ -566,7 +567,7 @@ const GradeManagement = () => {
               {updateGrade.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Save Changes
+              {tc("saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -585,7 +586,7 @@ const GradeManagement = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{tc("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteGrade}
               className="bg-red-600 hover:bg-red-700"
@@ -594,7 +595,7 @@ const GradeManagement = () => {
               {deleteGrade.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Delete
+              {tc("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

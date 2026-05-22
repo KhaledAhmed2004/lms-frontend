@@ -66,10 +66,13 @@ import {
   useDeleteFAQ,
   FAQ,
 } from "@/hooks/api";
+import { useTranslations } from "next-intl";
 
 type FAQTab = "all" | "active" | "inactive";
 
 const FAQManagement = () => {
+  const t = useTranslations("faqs");
+  const tc = useTranslations("common");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState<FAQTab>("all");
@@ -121,11 +124,11 @@ const FAQManagement = () => {
   // Create FAQ
   const handleCreateFAQ = async () => {
     if (!formData.question.trim()) {
-      toast.error("Question is required");
+      toast.error(t("questionRequired"));
       return;
     }
     if (!formData.answer.trim()) {
-      toast.error("Answer is required");
+      toast.error(t("answerRequired"));
       return;
     }
 
@@ -135,18 +138,18 @@ const FAQManagement = () => {
         answer: formData.answer.trim(),
         isActive: formData.isActive,
       });
-      toast.success("FAQ created successfully");
+      toast.success(t("createSuccess"));
       setIsCreateModalOpen(false);
       setFormData({ question: "", answer: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to create FAQ");
+      toast.error(error?.message || t("createFailed"));
     }
   };
 
   // Edit FAQ
   const handleEditFAQ = async () => {
     if (!selectedFAQ || !formData.question.trim() || !formData.answer.trim()) {
-      toast.error("Question and answer are required");
+      toast.error(t("questionAnswerRequired"));
       return;
     }
 
@@ -157,12 +160,12 @@ const FAQManagement = () => {
         answer: formData.answer.trim(),
         isActive: formData.isActive,
       });
-      toast.success("FAQ updated successfully");
+      toast.success(t("updateSuccess"));
       setIsEditModalOpen(false);
       setSelectedFAQ(null);
       setFormData({ question: "", answer: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update FAQ");
+      toast.error(error?.message || t("updateFailed"));
     }
   };
 
@@ -172,11 +175,11 @@ const FAQManagement = () => {
 
     try {
       await deleteFAQ.mutateAsync(selectedFAQ._id);
-      toast.success("FAQ deleted successfully");
+      toast.success(t("deleteSuccess"));
       setIsDeleteDialogOpen(false);
       setSelectedFAQ(null);
     } catch (error: any) {
-      toast.error(error?.message || "Failed to delete FAQ");
+      toast.error(error?.message || t("deleteFailed"));
     }
   };
 
@@ -188,10 +191,10 @@ const FAQManagement = () => {
         isActive: !faq.isActive,
       });
       toast.success(
-        `FAQ ${faq.isActive ? "deactivated" : "activated"} successfully`
+        t(faq.isActive ? "deactivatedSuccess" : "activatedSuccess")
       );
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update FAQ status");
+      toast.error(error?.message || t("updateStatusFailed"));
     }
   };
 
@@ -223,7 +226,7 @@ const FAQManagement = () => {
     () => [
       {
         accessorKey: "question",
-        header: "Question",
+        header: t("question"),
         cell: ({ row }) => (
           <span className="text-gray-900 font-medium text-sm line-clamp-1 max-w-[300px]">
             {row.getValue("question")}
@@ -232,7 +235,7 @@ const FAQManagement = () => {
       },
       {
         accessorKey: "answer",
-        header: "Answer",
+        header: t("answer"),
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm line-clamp-1 max-w-[300px]">
             {row.getValue("answer")}
@@ -241,7 +244,7 @@ const FAQManagement = () => {
       },
       {
         accessorKey: "isActive",
-        header: "Status",
+        header: t("status"),
         cell: ({ row }) => {
           const isActive = row.getValue("isActive") as boolean;
           return (
@@ -253,14 +256,14 @@ const FAQManagement = () => {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-100"
               }
             >
-              {isActive ? "Active" : "Inactive"}
+              {isActive ? t("active") : t("inactive")}
             </Badge>
           );
         },
       },
       {
         accessorKey: "createdAt",
-        header: "Created At",
+        header: t("createdAt"),
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
             {formatDate(row.getValue("createdAt"))}
@@ -269,7 +272,7 @@ const FAQManagement = () => {
       },
       {
         id: "actions",
-        header: "Action",
+        header: t("action"),
         cell: ({ row }) => {
           const faq = row.original;
           return (
@@ -281,16 +284,16 @@ const FAQManagement = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => openEditModal(faq)}>
-                  Edit
+                  {tc("edit")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleToggleStatus(faq)}>
-                  {faq.isActive ? "Deactivate" : "Activate"}
+                  {faq.isActive ? t("deactivate") : t("activate")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-red-600"
                   onClick={() => openDeleteDialog(faq)}
                 >
-                  Delete
+                  {tc("delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -298,7 +301,7 @@ const FAQManagement = () => {
         },
       },
     ],
-    []
+    [t, tc]
   );
 
   // TanStack Table instance
@@ -338,7 +341,7 @@ const FAQManagement = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500">Error loading FAQs. Please try again.</p>
+        <p className="text-red-500">{t("errorLoading")}</p>
       </div>
     );
   }
@@ -357,7 +360,7 @@ const FAQManagement = () => {
                     <HelpCircle className="text-blue-600" size={24} />
                   </div>
                   <p className="text-sm font-medium text-gray-600 mb-2">
-                    Total FAQs
+                    {t("totalFaqs")}
                   </p>
                   <p className="text-3xl font-bold text-gray-900">
                     {pagination?.total || 0}
@@ -377,7 +380,7 @@ const FAQManagement = () => {
           className="bg-black hover:bg-gray-800"
         >
           <Plus size={18} className="mr-2" />
-          Add FAQ
+          {t("addFaq")}
         </Button>
       </div>
 
@@ -388,7 +391,7 @@ const FAQManagement = () => {
           size={18}
         />
         <Input
-          placeholder="Search FAQs..."
+          placeholder={t("searchPlaceholder")}
           value={searchTerm}
           onChange={handleSearch}
           className="pl-10 pr-4 h-11 border border-gray-300 rounded-xl focus:ring-0 focus:border-gray-400"
@@ -408,19 +411,19 @@ const FAQManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All
+                {t("all")}
               </TabsTrigger>
               <TabsTrigger
                 value="active"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Active
+                {t("active")}
               </TabsTrigger>
               <TabsTrigger
                 value="inactive"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Inactive
+                {t("inactive")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -477,7 +480,7 @@ const FAQManagement = () => {
                           colSpan={columns.length}
                           className="py-8 text-center text-gray-500"
                         >
-                          No FAQs found
+                          {t("noFaqs")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -489,12 +492,12 @@ const FAQManagement = () => {
               {faqs.length > 0 && (
                 <div className="flex items-center justify-between pt-6">
                   <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {tc("showing")} {(currentPage - 1) * itemsPerPage + 1} {tc("to")}{" "}
                     {Math.min(
                       currentPage * itemsPerPage,
                       pagination?.total || 0
                     )}{" "}
-                    of {pagination?.total || 0} results
+                    {tc("of")} {pagination?.total || 0} {tc("results")}
                   </p>
                   <Pagination className="justify-end mx-0">
                     <PaginationContent>
@@ -569,45 +572,44 @@ const FAQManagement = () => {
 
       {/* Create FAQ Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Add New FAQ</DialogTitle>
+            <DialogTitle>{t("addNewTitle")}</DialogTitle>
             <DialogDescription>
-              Create a new frequently asked question for the support page.
+              {t("addNewDescription")}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+
+          <div className="space-y-6 py-4">
             <div className="space-y-2">
-              <Label htmlFor="question">Question *</Label>
+              <Label>{t("questionLabel")}</Label>
               <Input
-                id="question"
-                placeholder="e.g., How do I schedule a tutoring session?"
                 value={formData.question}
                 onChange={(e) =>
                   setFormData({ ...formData, question: e.target.value })
                 }
+                placeholder={t("questionPlaceholder")}
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="answer">Answer *</Label>
+              <Label>{t("answerLabel")}</Label>
               <Textarea
-                id="answer"
-                placeholder="Write the answer..."
                 value={formData.answer}
                 onChange={(e) =>
                   setFormData({ ...formData, answer: e.target.value })
                 }
-                className="min-h-[120px] resize-none"
-                maxLength={2000}
+                placeholder={t("answerPlaceholder")}
+                rows={5}
               />
-              <p className="text-xs text-muted-foreground text-right">
-                {formData.answer.length}/2000
-              </p>
             </div>
+
             <div className="flex items-center justify-between">
-              <Label htmlFor="isActive">Active Status</Label>
+              <Label className="cursor-pointer" htmlFor="create-is-active">
+                {t("activeStatus")}
+              </Label>
               <Switch
-                id="isActive"
+                id="create-is-active"
                 checked={formData.isActive}
                 onCheckedChange={(checked) =>
                   setFormData({ ...formData, isActive: checked })
@@ -615,12 +617,13 @@ const FAQManagement = () => {
               />
             </div>
           </div>
+
           <DialogFooter>
             <Button
               variant="outline"
               onClick={() => setIsCreateModalOpen(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleCreateFAQ}
@@ -628,9 +631,9 @@ const FAQManagement = () => {
               className="bg-black hover:bg-gray-800"
             >
               {createFAQ.isPending && (
-                <Loader2 size={16} className="mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Create FAQ
+              {t("createFaq")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -638,43 +641,44 @@ const FAQManagement = () => {
 
       {/* Edit FAQ Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>Edit FAQ</DialogTitle>
-            <DialogDescription>Update the FAQ details.</DialogDescription>
+            <DialogTitle>{t("editFaq")}</DialogTitle>
+            <DialogDescription>
+              {t("editDescription")}
+            </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
+
+          <div className="space-y-6 py-4">
             <div className="space-y-2">
-              <Label htmlFor="edit-question">Question *</Label>
+              <Label>{t("questionLabel")}</Label>
               <Input
-                id="edit-question"
-                placeholder="e.g., How do I schedule a tutoring session?"
                 value={formData.question}
                 onChange={(e) =>
                   setFormData({ ...formData, question: e.target.value })
                 }
+                placeholder={t("questionPlaceholder")}
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="edit-answer">Answer *</Label>
+              <Label>{t("answerLabel")}</Label>
               <Textarea
-                id="edit-answer"
-                placeholder="Write the answer..."
                 value={formData.answer}
                 onChange={(e) =>
                   setFormData({ ...formData, answer: e.target.value })
                 }
-                className="min-h-[120px] resize-none"
-                maxLength={2000}
+                placeholder={t("answerPlaceholder")}
+                rows={5}
               />
-              <p className="text-xs text-muted-foreground text-right">
-                {formData.answer.length}/2000
-              </p>
             </div>
+
             <div className="flex items-center justify-between">
-              <Label htmlFor="edit-isActive">Active Status</Label>
+              <Label className="cursor-pointer" htmlFor="edit-is-active">
+                {t("activeStatus")}
+              </Label>
               <Switch
-                id="edit-isActive"
+                id="edit-is-active"
                 checked={formData.isActive}
                 onCheckedChange={(checked) =>
                   setFormData({ ...formData, isActive: checked })
@@ -682,9 +686,10 @@ const FAQManagement = () => {
               />
             </div>
           </div>
+
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-              Cancel
+              {tc("cancel")}
             </Button>
             <Button
               onClick={handleEditFAQ}
@@ -692,38 +697,35 @@ const FAQManagement = () => {
               className="bg-black hover:bg-gray-800"
             >
               {updateFAQ.isPending && (
-                <Loader2 size={16} className="mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Save Changes
+              {tc("saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("deleteConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete the FAQ &quot;{selectedFAQ?.question}&quot;. This
-              action cannot be undone.
+              {t("deleteConfirmDesc", { question: selectedFAQ?.question || "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel onClick={() => setSelectedFAQ(null)}>
+              {tc("cancel")}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteFAQ}
               className="bg-red-600 hover:bg-red-700"
-              disabled={deleteFAQ.isPending}
             >
-              {deleteFAQ.isPending && (
-                <Loader2 size={16} className="mr-2 animate-spin" />
-              )}
-              Delete
+              {tc("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

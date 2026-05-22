@@ -16,17 +16,15 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
+import { useTranslations } from 'next-intl';
 import {
   useForfeitedPaymentsSummary,
   useForfeitedFeedbacksList,
 } from '@/hooks/api/use-admin-forfeits';
 
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
 const ForfeitDashboard = () => {
+  const t = useTranslations('forfeit');
+  const te = useTranslations('export');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -58,9 +56,9 @@ const ForfeitDashboard = () => {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Forfeited Payments</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Payments forfeited by tutors who missed their feedback deadline
+          {t('subtitle')}
         </p>
       </div>
 
@@ -68,7 +66,7 @@ const ForfeitDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <p className="text-sm font-medium text-gray-500">Total Forfeited</p>
+            <p className="text-sm font-medium text-gray-500">{t('totalForfeited')}</p>
             <DollarSign className="h-5 w-5 text-red-500" />
           </CardHeader>
           <CardContent>
@@ -84,7 +82,7 @@ const ForfeitDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <p className="text-sm font-medium text-gray-500">Total Forfeits</p>
+            <p className="text-sm font-medium text-gray-500">{t('totalForfeits')}</p>
             <AlertTriangle className="h-5 w-5 text-orange-500" />
           </CardHeader>
           <CardContent>
@@ -98,7 +96,7 @@ const ForfeitDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <p className="text-sm font-medium text-gray-500">Recent Month</p>
+            <p className="text-sm font-medium text-gray-500">{t('recentMonth')}</p>
             <Users className="h-5 w-5 text-blue-500" />
           </CardHeader>
           <CardContent>
@@ -110,11 +108,11 @@ const ForfeitDashboard = () => {
                   {formatCurrency(monthlyData[0].totalAmount)}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {MONTH_NAMES[monthlyData[0]._id.month - 1]} {monthlyData[0]._id.year} ({monthlyData[0].count} forfeits)
+                  {te(`months.${monthlyData[0]._id.month}`)} {monthlyData[0]._id.year} ({t('forfeitsCount', { count: monthlyData[0].count })})
                 </p>
               </div>
             ) : (
-              <p className="text-sm text-gray-400">No data</p>
+              <p className="text-sm text-gray-400">{t('noData')}</p>
             )}
           </CardContent>
         </Card>
@@ -124,23 +122,23 @@ const ForfeitDashboard = () => {
       {monthlyData.length > 0 && (
         <Card>
           <CardHeader>
-            <h3 className="text-lg font-semibold">Monthly Breakdown</h3>
+            <h3 className="text-lg font-semibold">{t('monthlyBreakdown')}</h3>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200">
-                    <th className="text-left py-3 px-4 font-medium text-gray-500">Period</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-500">Forfeits</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-500">Total Amount</th>
+                    <th className="text-left py-3 px-4 font-medium text-gray-500">{t('period')}</th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-500">{t('forfeits')}</th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-500">{t('totalAmount')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {monthlyData.map((item) => (
                     <tr key={`${item._id.year}-${item._id.month}`} className="border-b border-gray-100">
                       <td className="py-3 px-4 font-medium text-gray-900">
-                        {MONTH_NAMES[item._id.month - 1]} {item._id.year}
+                        {te(`months.${item._id.month}`)} {item._id.year}
                       </td>
                       <td className="py-3 px-4 text-right text-gray-600">{item.count}</td>
                       <td className="py-3 px-4 text-right font-semibold text-red-600">
@@ -158,7 +156,7 @@ const ForfeitDashboard = () => {
       {/* Forfeited List */}
       <Card>
         <CardHeader>
-          <h3 className="text-lg font-semibold">Forfeited Feedbacks</h3>
+          <h3 className="text-lg font-semibold">{t('forfeitedFeedbacks')}</h3>
         </CardHeader>
         <CardContent>
           {listLoading ? (
@@ -167,7 +165,7 @@ const ForfeitDashboard = () => {
             </div>
           ) : forfeits.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No forfeited payments found
+              {t('noForfeitsFound')}
             </div>
           ) : (
             <>
@@ -175,13 +173,13 @@ const ForfeitDashboard = () => {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-500">Tutor</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500">Student</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500">Subject</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500">Deadline</th>
-                      <th className="text-left py-3 px-4 font-medium text-gray-500">Forfeited On</th>
-                      <th className="text-right py-3 px-4 font-medium text-gray-500">Amount</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-500">Status</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500">{t('tutor')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500">{t('student')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500">{t('subject')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500">{t('deadline')}</th>
+                      <th className="text-left py-3 px-4 font-medium text-gray-500">{t('forfeitedOn')}</th>
+                      <th className="text-right py-3 px-4 font-medium text-gray-500">{t('amount')}</th>
+                      <th className="text-center py-3 px-4 font-medium text-gray-500">{t('status')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -189,15 +187,15 @@ const ForfeitDashboard = () => {
                       <tr key={forfeit._id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-3 px-4">
                           <div>
-                            <p className="font-medium text-gray-900">{forfeit.tutorId?.name || 'N/A'}</p>
+                            <p className="font-medium text-gray-900">{forfeit.tutorId?.name || t('notAvailable')}</p>
                             <p className="text-xs text-gray-500">{forfeit.tutorId?.email || ''}</p>
                           </div>
                         </td>
                         <td className="py-3 px-4">
-                          <p className="text-gray-900">{forfeit.studentId?.name || 'N/A'}</p>
+                          <p className="text-gray-900">{forfeit.studentId?.name || t('notAvailable')}</p>
                         </td>
                         <td className="py-3 px-4 text-gray-600">
-                          {forfeit.sessionId?.subject || 'N/A'}
+                          {forfeit.sessionId?.subject || t('notAvailable')}
                         </td>
                         <td className="py-3 px-4 text-gray-600">
                           {formatDate(forfeit.dueDate)}
@@ -210,7 +208,7 @@ const ForfeitDashboard = () => {
                         </td>
                         <td className="py-3 px-4 text-center">
                           <Badge variant="destructive" className="text-xs">
-                            Forfeited
+                            {t('forfeited')}
                           </Badge>
                         </td>
                       </tr>
