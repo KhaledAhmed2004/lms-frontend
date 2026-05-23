@@ -898,6 +898,17 @@
     "na": "k.A.",
     "close": "Schließen"
   },
+  "editor": {
+    "heading1": "Überschrift 1",
+    "heading2": "Überschrift 2",
+    "heading3": "Überschrift 3",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "bulletList": "Aufzählung",
+    "orderedList": "Nummerierte Liste",
+    "quote": "Zitat"
+  },
   "notificationsPage": {
     "title": "Benachrichtigungen",
     "unreadCount": "{count} ungelesen",
