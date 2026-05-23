@@ -942,6 +942,11 @@
     "imageUploadTitle": "Klicken zum Hochladen oder per Drag & Drop hierher ziehen",
     "imageUploadHint": "JPG, PNG bis zu 5MB"
   },
+  "postsHeader": {
+    "title": "Alle Beiträge",
+    "description": "Verwalten Sie alle Beiträge und deren Veröffentlichungsstatus.",
+    "newPost": "Neuer Beitrag"
+  },
   "notificationsPage": {
     "title": "Benachrichtigungen",
     "unreadCount": "{count} ungelesen",

@@ -942,6 +942,11 @@
     "imageUploadTitle": "Click to upload or drag and drop",
     "imageUploadHint": "JPG, PNG up to 5MB"
   },
+  "postsHeader": {
+    "title": "All Posts",
+    "description": "Manage all posts and publishing status.",
+    "newPost": "New Post"
+  },
   "notificationsPage": {
     "title": "Notifications",
     "unreadCount": "{count} unread",
