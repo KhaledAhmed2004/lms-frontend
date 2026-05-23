@@ -14,8 +14,10 @@ import { useAdminBlogs } from "@/hooks/api/use-blogs";
 import PostsHeader from "./components/PostsHeader";
 import PostsStats from "./components/PostsStats";
 import PostsTable from "./components/PostsTable";
+import { useTranslations } from "next-intl";
 
 export default function PostsPage() {
+  const t = useTranslations("postsPage");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -46,19 +48,19 @@ export default function PostsPage() {
 
       {isLoading ? (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
-          Loading posts...
+          {t("loading")}
         </div>
       ) : posts.length === 0 ? (
         <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-500">
-          No posts found. Create your first post!
+          {t("noPosts")}
         </div>
       ) : (
         <>
           <PostsTable posts={posts} />
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-500 flex-1">
-              Showing {startIndex + 1} to {Math.min(endIndex, total)} of {total}{" "}
-              results
+              {t("showing")} {startIndex + 1} to {Math.min(endIndex, total)} of {total}{" "}
+              {t("results")}
             </p>
             <Pagination className="justify-end mx-0 w-1/2">
               <PaginationContent>

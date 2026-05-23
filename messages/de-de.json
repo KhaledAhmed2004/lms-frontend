@@ -558,11 +558,15 @@
     "commitment": "Laufzeit (Monate)",
     "displayOrder": "Anzeigereihenfolge",
     "status": "Status",
+    "active": "Aktiv",
     "inactive": "Inaktiv",
     "lastUpdated": "Zuletzt aktualisiert:",
     "errorLoading": "Fehler beim Laden der Preiskonfiguration. Bitte versuche es erneut.",
     "updatedSuccess": "{name}-Tarif erfolgreich aktualisiert",
-    "updateFailed": "Tarif konnte nicht aktualisiert werden"
+    "updateFailed": "Tarif konnte nicht aktualisiert werden",
+    "edit": "Bearbeiten",
+    "cancel": "Abbrechen",
+    "saveChanges": "Änderungen speichern"
   },
   "transactions": {
     "totalAmount": "Gesamtbetrag",
@@ -963,6 +967,44 @@
     "colActions": "Aktionen",
     "edit": "Bearbeiten",
     "delete": "Beitrag löschen"
+  },
+  "postsEdit": {
+    "loading": "Beitrag wird geladen...",
+    "notFound": "Beitrag nicht gefunden",
+    "notFoundDesc": "Wir konnten keinen Beitrag mit der ID {id} finden",
+    "title": "Beitrag bearbeiten"
+  },
+  "postsNew": {
+    "title": "Neuer Beitrag"
+  },
+  "postsPage": {
+    "loading": "Beiträge werden geladen...",
+    "noPosts": "Keine Beiträge gefunden. Erstelle deinen ersten Beitrag!",
+    "showing": "Zeige",
+    "results": "Ergebnisse"
+  },
+  "postsData": {
+    "post1": {
+      "title": "Wie Sie Ihr Abitur meistern: Ein kompletter 8-Wochen-Lernplan",
+      "category": "Abitur",
+      "tags": {
+        "grade10": "#10. Klasse",
+        "grade12": "#12. Klasse",
+        "vocabulary": "#Wortschatz",
+        "calculus": "#Analysis",
+        "writing": "#Schreiben",
+        "finals": "#Abschlussprüfungen"
+      },
+      "cta": "Kostenlose Probestunde buchen"
+    },
+    "post5": {
+      "title": "Wie man unter Prüfungsbedingungen den perfekten Aufsatz schreibt"
+    },
+    "status": {
+      "published": "veröffentlicht",
+      "draft": "Entwurf",
+      "scheduled": "geplant"
+    }
   },
   "notificationsPage": {
     "title": "Benachrichtigungen",

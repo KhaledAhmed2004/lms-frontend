@@ -558,11 +558,15 @@
     "commitment": "Commitment (Months)",
     "displayOrder": "Display Order",
     "status": "Status",
+    "active": "Active",
     "inactive": "Inactive",
     "lastUpdated": "Last updated:",
     "errorLoading": "Error loading pricing config. Please try again.",
     "updatedSuccess": "{name} plan updated successfully",
-    "updateFailed": "Failed to update plan"
+    "updateFailed": "Failed to update plan",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes"
   },
   "transactions": {
     "totalAmount": "Total Amount",
@@ -963,6 +967,44 @@
     "colActions": "Actions",
     "edit": "Edit",
     "delete": "Delete post"
+  },
+  "postsEdit": {
+    "loading": "Loading post...",
+    "notFound": "Post not found",
+    "notFoundDesc": "We could not find a post with id {id}.",
+    "title": "Edit Post"
+  },
+  "postsNew": {
+    "title": "New Post"
+  },
+  "postsPage": {
+    "loading": "Loading posts...",
+    "noPosts": "No posts found. Create your first post!",
+    "showing": "Showing",
+    "results": "results"
+  },
+  "postsData": {
+    "post1": {
+      "title": "How to Ace Your Abitur: A Complete 8-Week Study Plan",
+      "category": "Abitur",
+      "tags": {
+        "grade10": "#Grade 10",
+        "grade12": "#Grade 12",
+        "vocabulary": "#Vocabulary",
+        "calculus": "#Calculus",
+        "writing": "#Writing",
+        "finals": "#Finals"
+      },
+      "cta": "Book Free Trial"
+    },
+    "post5": {
+      "title": "How to Write a Perfect Essay Under Exam Conditions"
+    },
+    "status": {
+      "published": "published",
+      "draft": "draft",
+      "scheduled": "scheduled"
+    }
   },
   "notificationsPage": {
     "title": "Notifications",
