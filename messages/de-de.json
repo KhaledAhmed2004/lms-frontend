@@ -947,6 +947,23 @@
     "description": "Verwalten Sie alle Beiträge und deren Veröffentlichungsstatus.",
     "newPost": "Neuer Beitrag"
   },
+  "postsStats": {
+    "totalPosts": "Gesamtanzahl der Beiträge",
+    "published": "Veröffentlicht",
+    "drafts": "Entwürfe"
+  },
+  "postsTable": {
+    "deleteConfirm": "Sind Sie sicher, dass Sie \"{title}\" löschen möchten?",
+    "deleteSuccess": "Beitrag erfolgreich gelöscht",
+    "deleteError": "Löschen des Beitrags fehlgeschlagen",
+    "colTitle": "Titel",
+    "colStatus": "Status",
+    "colCategory": "Kategorie",
+    "colCreated": "Erstellt",
+    "colActions": "Aktionen",
+    "edit": "Bearbeiten",
+    "delete": "Beitrag löschen"
+  },
   "notificationsPage": {
     "title": "Benachrichtigungen",
     "unreadCount": "{count} ungelesen",

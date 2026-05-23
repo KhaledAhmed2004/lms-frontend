@@ -1,4 +1,5 @@
 import { CheckCircle2, FileText, FileWarning } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 type PostsStatsProps = {
   totalPosts: number;
@@ -33,11 +34,12 @@ export default function PostsStats({
   published,
   drafts,
 }: PostsStatsProps) {
+  const t = useTranslations("postsStats");
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <StatCard label="Total Posts" value={totalPosts} icon={FileText} />
-      <StatCard label="Published" value={published} icon={CheckCircle2} />
-      <StatCard label="Drafts" value={drafts} icon={FileWarning} />
+      <StatCard label={t("totalPosts")} value={totalPosts} icon={FileText} />
+      <StatCard label={t("published")} value={published} icon={CheckCircle2} />
+      <StatCard label={t("drafts")} value={drafts} icon={FileWarning} />
     </div>
   );
 }

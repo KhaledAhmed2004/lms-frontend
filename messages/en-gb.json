@@ -947,6 +947,23 @@
     "description": "Manage all posts and publishing status.",
     "newPost": "New Post"
   },
+  "postsStats": {
+    "totalPosts": "Total Posts",
+    "published": "Published",
+    "drafts": "Drafts"
+  },
+  "postsTable": {
+    "deleteConfirm": "Are you sure you want to delete \"{title}\"?",
+    "deleteSuccess": "Post deleted successfully",
+    "deleteError": "Failed to delete post",
+    "colTitle": "Title",
+    "colStatus": "Status",
+    "colCategory": "Category",
+    "colCreated": "Created",
+    "colActions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete post"
+  },
   "notificationsPage": {
     "title": "Notifications",
     "unreadCount": "{count} unread",
