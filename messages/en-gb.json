@@ -882,5 +882,19 @@
     "deactivate": "Deactivate",
     "na": "N/A",
     "close": "Close"
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "unreadCount": "{count} unread",
+    "markAllAsRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "allCaughtUp": "You're all caught up! No new notifications.",
+    "justNow": "Just now",
+    "minAgo": "min ago",
+    "hour": "hour",
+    "hoursSuffix": "s",
+    "day": "day",
+    "daysSuffix": "s",
+    "ago": "ago"
   }
 }

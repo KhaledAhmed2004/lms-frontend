@@ -882,5 +882,19 @@
     "deactivate": "Deaktivieren",
     "na": "k.A.",
     "close": "Schließen"
+  },
+  "notificationsPage": {
+    "title": "Benachrichtigungen",
+    "unreadCount": "{count} ungelesen",
+    "markAllAsRead": "Alle als gelesen markieren",
+    "noNotifications": "Keine Benachrichtigungen",
+    "allCaughtUp": "Du bist auf dem aktuellen Stand! Keine neuen Benachrichtigungen.",
+    "justNow": "Gerade eben",
+    "minAgo": "Min. zuvor",
+    "hour": "Stunde",
+    "hoursSuffix": "n",
+    "day": "Tag",
+    "daysSuffix": "e",
+    "ago": "zuvor"
   }
 }
