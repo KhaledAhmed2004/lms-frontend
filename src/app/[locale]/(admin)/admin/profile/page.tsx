@@ -4,8 +4,10 @@ import React, { useState, useRef } from 'react';
 import { Edit, Check, X, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useTranslations } from 'next-intl';
 
 export default function ProfilePage() {
+  const t = useTranslations('profile');
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [profilePic, setProfilePic] = useState<string>(
@@ -112,31 +114,31 @@ export default function ProfilePage() {
               {/* Name & Role */}
               <div className="flex-1 pt-4">
                 <h1 className="text-3xl font-bold text-gray-900">{formData.name}</h1>
-                <p className="text-lg text-gray-600 mt-1">Admin</p>
+                <p className="text-lg text-gray-600 mt-1">{t('admin')}</p>
               </div>
             </div>
 
             {/* Personal Information */}
             <div className="border-t border-gray-200 pt-8">
               <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold text-gray-900">Personal Information</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{t('personalInfo')}</h2>
                 {!isEditing ? (
                   <Button
                     onClick={handleEditClick}
                     className="bg-orange-500 hover:bg-orange-600 text-white font-medium"
                   >
                     <Edit className="w-4 h-4 mr-2" />
-                    Edit Profile
+                    {t('editProfile')}
                   </Button>
                 ) : (
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={handleCancel}>
                       <X className="w-4 h-4 mr-2" />
-                      Cancel
+                      {t('cancel')}
                     </Button>
                     <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
                       <Check className="w-4 h-4 mr-2" />
-                      Save Changes
+                      {t('saveChanges')}
                     </Button>
                   </div>
                 )}
@@ -145,49 +147,49 @@ export default function ProfilePage() {
               {/* View / Edit Mode */}
               {!isEditing ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-gray-700">
-                  <InfoRow label="Full Name" value={formData.name} />
-                  <InfoRow label="Date of Birth" value={formData.dateOfBirth} />
-                  <InfoRow label="Email Address" value={formData.email} />
-                  <InfoRow label="Phone Number" value={formData.phoneNumber} />
-                  <InfoRow label="Address" value={`${formData.street} ${formData.number}`} />
-                  <InfoRow label="City" value={`${formData.zip} ${formData.city}`} />
+                  <InfoRow label={t('fullName')} value={formData.name} />
+                  <InfoRow label={t('dateOfBirth')} value={formData.dateOfBirth} />
+                  <InfoRow label={t('emailAddress')} value={formData.email} />
+                  <InfoRow label={t('phoneNumber')} value={formData.phoneNumber} />
+                  <InfoRow label={t('address')} value={`${formData.street} ${formData.number}`} />
+                  <InfoRow label={t('city')} value={`${formData.zip} ${formData.city}`} />
                 </div>
               ) : (
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('dateOfBirth')}</label>
                       <Input value={tempFormData.dateOfBirth} onChange={(e) => handleInputChange('dateOfBirth', e.target.value)} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('phoneNumber')}</label>
                       <Input value={tempFormData.phoneNumber} onChange={(e) => handleInputChange('phoneNumber', e.target.value)} />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t('emailAddress')}</label>
                     <Input type="email" value={tempFormData.email} onChange={(e) => handleInputChange('email', e.target.value)} />
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Street</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('street')}</label>
                       <Input value={tempFormData.street} onChange={(e) => handleInputChange('street', e.target.value)} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">House Number</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('houseNumber')}</label>
                       <Input value={tempFormData.number} onChange={(e) => handleInputChange('number', e.target.value)} />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">ZIP Code</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('zipCode')}</label>
                       <Input value={tempFormData.zip} onChange={(e) => handleInputChange('zip', e.target.value)} />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t('city')}</label>
                       <Input value={tempFormData.city} onChange={(e) => handleInputChange('city', e.target.value)} />
                     </div>
                   </div>
@@ -202,13 +204,13 @@ export default function ProfilePage() {
       {showPhotoModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Change Profile Picture</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('changePhoto')}</h3>
 
             <div className="flex justify-center mb-8">
               <div className="relative">
                 <img
                   src={tempPhoto || profilePic}
-                  alt="Preview"
+                  alt={t('preview')}
                   className="w-48 h-48 rounded-full object-cover border-4 border-gray-200"
                 />
                 {tempPhoto && (
@@ -235,19 +237,19 @@ export default function ProfilePage() {
                 onClick={() => document.getElementById('photo-upload')?.click()}
               >
                 <Camera className="w-4 h-4 mr-2" />
-                Choose Photo
+                {t('choosePhoto')}
               </Button>
               <Button
                 onClick={handleSavePhoto}
                 disabled={!tempPhoto}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
               >
-                Save Photo
+                {t('savePhoto')}
               </Button>
             </div>
 
             <Button variant="ghost" className="w-full mt-4" onClick={handleCancelPhoto}>
-              Cancel
+              {t('cancel')}
             </Button>
           </div>
         </div>
