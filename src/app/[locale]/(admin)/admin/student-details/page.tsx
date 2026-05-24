@@ -14,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   useStudent,
   useBlockStudent,
@@ -22,6 +23,8 @@ import {
 } from '@/hooks/api';
 
 const StudentDetailsContent = () => {
+  const t = useTranslations('studentDetails');
+  const locale = useLocale();
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get('id') || '';
@@ -40,10 +43,10 @@ const StudentDetailsContent = () => {
   const handleBlock = () => {
     blockStudent(id, {
       onSuccess: () => {
-        toast.success('Student blocked successfully');
+        toast.success(t('blockSuccess'));
       },
       onError: (error: any) => {
-        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to block student');
+        toast.error(error?.getFullMessage?.() || error?.message || t('blockFailed'));
       },
     });
   };
@@ -51,10 +54,10 @@ const StudentDetailsContent = () => {
   const handleUnblock = () => {
     unblockStudent(id, {
       onSuccess: () => {
-        toast.success('Student unblocked successfully');
+        toast.success(t('unblockSuccess'));
       },
       onError: (error: any) => {
-        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to unblock student');
+        toast.error(error?.getFullMessage?.() || error?.message || t('unblockFailed'));
       },
     });
   };
@@ -62,17 +65,17 @@ const StudentDetailsContent = () => {
   const handleToggleSpecial = () => {
     toggleSpecial(id, {
       onSuccess: (data: any) => {
-        toast.success(data?.message || 'Special status updated');
+        toast.success(data?.message || t('specialStatusUpdated'));
       },
       onError: (error: any) => {
-        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to update special status');
+        toast.error(error?.getFullMessage?.() || error?.message || t('specialStatusFailed'));
       },
     });
   };
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return '-';
-    return new Date(dateString).toLocaleDateString('en-GB', {
+    return new Date(dateString).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-GB', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -86,7 +89,7 @@ const StudentDetailsContent = () => {
   };
 
   const getStatusLabel = (status: string) => {
-    return status === 'ACTIVE' ? 'Active' : 'Blocked';
+    return status === 'ACTIVE' ? t('active') : t('blocked');
   };
 
   // Loading state
