@@ -89,7 +89,8 @@ const SessionManagement = () => {
 
   const formatDateTime = (dateString?: string) => {
     if (!dateString) return t("notAvailable");
-    return new Date(dateString).toLocaleString(locale === "de" ? "de-DE" : "en-US", {
+    const date = new Date(dateString!);
+    return date.toLocaleString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
@@ -101,7 +102,7 @@ const SessionManagement = () => {
 
   const formatScheduledTime = (startTime?: string, endTime?: string) => {
     if (!startTime) return t("notScheduled");
-    const start = new Date(startTime);
+    const start = new Date(startTime!);
     const dateStr = start.toLocaleDateString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
@@ -113,7 +114,7 @@ const SessionManagement = () => {
       hour12: locale !== "de",
     });
     if (!endTime) return `${dateStr} - ${startTimeStr}`;
-    const end = new Date(endTime);
+    const end = new Date(endTime!);
     const endTimeStr = end.toLocaleTimeString(locale === "de" ? "de-DE" : "en-US", {
       hour: "numeric",
       minute: "2-digit",

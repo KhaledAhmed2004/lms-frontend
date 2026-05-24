@@ -103,8 +103,9 @@ const Overview = () => {
   ];
 
   // Format relative time (e.g., "2 hours ago")
-  const formatRelativeTime = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatRelativeTime = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString!);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 

@@ -324,17 +324,16 @@ const StudentManagement = () => {
               {confirmAction?.type === "block" ? t("blockStudent") : t("unblockStudent")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {confirmAction?.type === "block" ? "Are you sure you want to block" : "Are you sure you want to unblock"}{" "}
-              <span className="font-medium text-gray-900">
-                {confirmAction?.name}
-              </span>
-              ?
-              {confirmAction?.type === "block" &&
-                " They will not be able to access the platform."}
+              {confirmAction?.type === "block"
+                ? t("blockConfirmTitle", { name: confirmAction?.name || "" })
+                : t("unblockConfirmTitle", { name: confirmAction?.name || "" })}
+              {confirmAction?.type === "block" && (
+                <span className="block mt-1">{t("blockConfirmDesc")}</span>
+              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmedAction}
               className={

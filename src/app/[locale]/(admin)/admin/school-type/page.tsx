@@ -202,8 +202,10 @@ const SchoolTypeManagement = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-GB", {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString!);
+    return date.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "2-digit",
@@ -246,7 +248,7 @@ const SchoolTypeManagement = () => {
         header: t("createdAt"),
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
-            {formatDate(row.getValue("createdAt"))}
+            {formatDate(row.getValue("createdAt") as string)}
           </span>
         ),
       },

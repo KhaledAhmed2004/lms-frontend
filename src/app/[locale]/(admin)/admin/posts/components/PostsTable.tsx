@@ -22,9 +22,10 @@ export default function PostsTable({ posts }: PostsTableProps) {
   const locale = useLocale();
   const deleteBlog = useDeleteBlog();
 
-  function formatDate(dateString: string) {
+  function formatDate(dateString?: string) {
     if (!dateString) return "-";
-    return new Date(dateString).toLocaleDateString(locale === "de" ? "de-DE" : "en-GB", {
+    const date = new Date(dateString!);
+    return date.toLocaleDateString(locale === "de" ? "de-DE" : "en-GB", {
       year: "numeric",
       month: "short",
       day: "numeric",

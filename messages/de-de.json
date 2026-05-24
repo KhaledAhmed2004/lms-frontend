@@ -162,7 +162,11 @@
     "noStudents": "Keine Schüler gefunden",
     "errorLoading": "Fehler beim Laden der Schüler. Bitte versuche es erneut.",
     "blockedSuccess": "Schüler erfolgreich gesperrt",
-    "unblockedSuccess": "Schüler erfolgreich entsperrt"
+    "unblockedSuccess": "Schüler erfolgreich entsperrt",
+    "blockConfirmTitle": "Sind Sie sicher, dass Sie {name} blockieren möchten?",
+    "unblockConfirmTitle": "Sind Sie sicher, dass Sie {name} entsperren möchten?",
+    "blockConfirmDesc": "Sie werden keinen Zugang zur Plattform haben.",
+    "cancel": "Abbrechen"
   },
   "tutors": {
     "totalTutors": "Tutor gesamt",
@@ -1056,6 +1060,8 @@
     "yes": "Ja",
     "no": "Nein",
     "completedTrial": "Abgeschlossene Probestunde",
+    "actions": "Aktionen",
+    "actionsDesc": "Schülerkonto und Status verwalten",
     "editProfile": "Profil bearbeiten",
     "removeSpecial": "Sonderstatus entfernen",
     "markAsSpecial": "Als Spezial kennzeichnen",

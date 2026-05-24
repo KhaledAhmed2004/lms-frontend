@@ -162,7 +162,11 @@
     "noStudents": "No students found",
     "errorLoading": "Error loading students. Please try again.",
     "blockedSuccess": "Student blocked successfully",
-    "unblockedSuccess": "Student unblocked successfully"
+    "unblockedSuccess": "Student unblocked successfully",
+    "blockConfirmTitle": "Are you sure you want to block {name}?",
+    "unblockConfirmTitle": "Are you sure you want to unblock {name}?",
+    "blockConfirmDesc": "They will not be able to access the platform.",
+    "cancel": "Cancel"
   },
   "tutors": {
     "totalTutors": "Total Tutors",
@@ -1056,6 +1060,8 @@
     "yes": "Yes",
     "no": "No",
     "completedTrial": "Completed Trial",
+    "actions": "Actions",
+    "actionsDesc": "Manage student account and status",
     "editProfile": "Edit Profile",
     "removeSpecial": "Remove Special",
     "markAsSpecial": "Mark as Special",
