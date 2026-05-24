@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   BarChart3,
   Users,
@@ -80,11 +80,15 @@ const Overview = () => {
   };
 
   // Month names for chart
-  const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const monthNames = useMemo(() => [
+    t('monthsShort.1'), t('monthsShort.2'), t('monthsShort.3'), t('monthsShort.4'),
+    t('monthsShort.5'), t('monthsShort.6'), t('monthsShort.7'), t('monthsShort.8'),
+    t('monthsShort.9'), t('monthsShort.10'), t('monthsShort.11'), t('monthsShort.12')
+  ], [t]);
 
   // Transform revenue data for chart
   const revenueData = revenueByMonth?.map((item) => ({
-    month: monthNames[item.month - 1] || `M${item.month}`,
+    month: monthNames[item.month - 1] || `${t('monthPrefix')}${item.month}`,
     revenue: item.totalRevenue || 0,
   })) || [];
 
@@ -99,8 +103,9 @@ const Overview = () => {
   ];
 
   // Format relative time (e.g., "2 hours ago")
-  const formatRelativeTime = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatRelativeTime = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString!);
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
@@ -109,7 +114,7 @@ const Overview = () => {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} ${t('hoursAgo')}`;
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} ${t('daysAgo')}`;
 
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString(locale === "de" ? "de-DE" : "en-GB", { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   // Get activities from API
@@ -263,7 +268,7 @@ const Overview = () => {
                       border: "1px solid #e5e7eb",
                       borderRadius: "8px",
                     }}
-                    formatter={(value) => `$${value}`}
+                    formatter={(value) => formatCurrency(Number(value))}
                   />
                   <Area
                     type="monotone"

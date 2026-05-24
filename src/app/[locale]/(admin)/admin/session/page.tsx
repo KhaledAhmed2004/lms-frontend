@@ -88,8 +88,9 @@ const SessionManagement = () => {
   };
 
   const formatDateTime = (dateString?: string) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleString(locale === "de" ? "de-DE" : "en-US", {
+    if (!dateString) return t("notAvailable");
+    const date = new Date(dateString!);
+    return date.toLocaleString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
       year: "numeric",
@@ -101,7 +102,7 @@ const SessionManagement = () => {
 
   const formatScheduledTime = (startTime?: string, endTime?: string) => {
     if (!startTime) return t("notScheduled");
-    const start = new Date(startTime);
+    const start = new Date(startTime!);
     const dateStr = start.toLocaleDateString(locale === "de" ? "de-DE" : "en-US", {
       month: "short",
       day: "2-digit",
@@ -113,7 +114,7 @@ const SessionManagement = () => {
       hour12: locale !== "de",
     });
     if (!endTime) return `${dateStr} - ${startTimeStr}`;
-    const end = new Date(endTime);
+    const end = new Date(endTime!);
     const endTimeStr = end.toLocaleTimeString(locale === "de" ? "de-DE" : "en-US", {
       hour: "numeric",
       minute: "2-digit",
@@ -338,7 +339,7 @@ const SessionManagement = () => {
                           >
                             <td className="py-3 px-4 text-gray-900 font-medium text-sm">
                               <div className="flex items-center gap-2">
-                                {session.studentName || "N/A"}
+                                {session.studentName || t("notAvailable")}
                                 {session.type === "TRIAL_REQUEST" && (
                                   <Badge className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
                                     {t("trialRequest")}
@@ -449,19 +450,19 @@ const SessionManagement = () => {
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{t("detail.studentName")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentName || "N/A"}
+                      {selectedSession.studentName || t("notAvailable")}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{t("detail.studentEmail")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentEmail || "N/A"}
+                      {selectedSession.studentEmail || t("notAvailable")}
                     </p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-600 mb-1">{t("detail.studentPhone")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.studentPhone || "N/A"}
+                      {selectedSession.studentPhone || t("notAvailable")}
                     </p>
                   </div>
                 </div>
@@ -476,19 +477,19 @@ const SessionManagement = () => {
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{t("detail.tutorName")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorName || "N/A"}
+                      {selectedSession.tutorName || t("notAvailable")}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-600 mb-1">{t("detail.tutorEmail")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorEmail || "N/A"}
+                      {selectedSession.tutorEmail || t("notAvailable")}
                     </p>
                   </div>
                   <div className="col-span-2">
                     <p className="text-xs text-gray-600 mb-1">{t("detail.tutorPhone")}</p>
                     <p className="text-sm text-gray-900">
-                      {selectedSession.tutorPhone || "N/A"}
+                      {selectedSession.tutorPhone || t("notAvailable")}
                     </p>
                   </div>
                 </div>

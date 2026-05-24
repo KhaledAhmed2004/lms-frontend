@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import Editon from "./Editon";
 import { useCreateBlog, useUpdateBlog } from "@/hooks/api/use-blogs";
 import type { PostRecord } from "./types";
+import { useTranslations } from "next-intl";
 
 type PostFormProps = {
   title: string;
@@ -25,6 +26,7 @@ function StatusPill({
   active: boolean;
   onClick: () => void;
 }) {
+  const t = useTranslations("postForm.status");
   return (
     <button
       type="button"
@@ -35,12 +37,13 @@ function StatusPill({
           : "bg-gray-100 text-gray-600 hover:bg-gray-200"
       }`}
     >
-      {status}
+      {t(status)}
     </button>
   );
 }
 
 export default function PostForm({ title, post }: PostFormProps) {
+  const t = useTranslations("postForm");
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const createBlog = useCreateBlog();
@@ -63,11 +66,11 @@ export default function PostForm({ title, post }: PostFormProps) {
 
   const primaryActionLabel = useMemo(() => {
     if (isPending)
-      return status === "draft" ? "Saving..." : "Publishing...";
-    if (isEditMode) return status === "draft" ? "Update Draft" : "Update & Publish";
-    if (status === "draft") return "Save Draft";
-    return "Publish Now";
-  }, [status, isPending, isEditMode]);
+      return status === "draft" ? t("saving") : t("publishing");
+    if (isEditMode) return status === "draft" ? t("updateDraft") : t("updatePublish");
+    if (status === "draft") return t("saveDraft");
+    return t("publishNow");
+  }, [status, isPending, isEditMode, t]);
 
   const handleTagKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter") return;
@@ -94,7 +97,7 @@ export default function PostForm({ title, post }: PostFormProps) {
       if (!file) return;
 
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image must be under 5MB");
+        toast.error(t("errorImageSize"));
         return;
       }
 
@@ -115,15 +118,15 @@ export default function PostForm({ title, post }: PostFormProps) {
 
   const handleSubmit = async () => {
     if (!postTitle.trim()) {
-      toast.error("Post title is required");
+      toast.error(t("errorTitleRequired"));
       return;
     }
     if (!content.trim()) {
-      toast.error("Post content is required");
+      toast.error(t("errorContentRequired"));
       return;
     }
     if (!category.trim()) {
-      toast.error("Category is required");
+      toast.error(t("errorCategoryRequired"));
       return;
     }
 
@@ -138,7 +141,7 @@ export default function PostForm({ title, post }: PostFormProps) {
           tags,
           featuredImage: featuredImage ?? undefined,
         });
-        toast.success("Post updated successfully");
+        toast.success(t("successUpdated"));
       } else {
         await createBlog.mutateAsync({
           title: postTitle.trim(),
@@ -150,13 +153,13 @@ export default function PostForm({ title, post }: PostFormProps) {
         });
         toast.success(
           status === "draft"
-            ? "Draft saved successfully"
-            : "Post published successfully",
+            ? t("successDraftSaved")
+            : t("successPublished"),
         );
       }
       router.push("/admin/posts");
     } catch {
-      toast.error("Failed to save post. Please try again.");
+      toast.error(t("errorSaveFailed"));
     }
   };
 
@@ -167,7 +170,7 @@ export default function PostForm({ title, post }: PostFormProps) {
           {title}
         </h1>
         <p className="text-sm sm:text-base text-gray-500">
-          Use the editor below to create and publish your post.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -175,12 +178,12 @@ export default function PostForm({ title, post }: PostFormProps) {
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
             <label className="text-sm font-semibold text-gray-700">
-              Post Title
+              {t("titleLabel")}
             </label>
             <input
               value={postTitle}
               onChange={(event) => setPostTitle(event.target.value)}
-              placeholder="Add a headline for your post"
+              placeholder={t("titlePlaceholder")}
               className="mt-2 w-full text-lg sm:text-xl font-semibold text-gray-900 border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#0B31BD]"
             />
           </div>
@@ -190,7 +193,7 @@ export default function PostForm({ title, post }: PostFormProps) {
               <Editon
                 value={content}
                 onChange={setContent}
-                placeholder="Start writing your article here. Use the toolbar above to format text, add images, and insert links..."
+                placeholder={t("contentPlaceholder")}
               />
             </div>
           </div>
@@ -221,24 +224,24 @@ export default function PostForm({ title, post }: PostFormProps) {
 
           <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
             <label className="text-sm font-semibold text-gray-700">
-              Category
+              {t("categoryLabel")}
             </label>
             <input
               value={category}
               onChange={(event) => setCategory(event.target.value)}
-              placeholder="e.g. Study Tips"
+              placeholder={t("categoryPlaceholder")}
               className="w-full mt-2 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B31BD]"
             />
 
             <div>
               <label className="text-sm font-semibold text-gray-700">
-                Tags
+                {t("tagsLabel")}
               </label>
               <input
                 value={tagInput}
                 onChange={(event) => setTagInput(event.target.value)}
                 onKeyDown={handleTagKeyDown}
-                placeholder="Type a tag and press Enter"
+                placeholder={t("tagsPlaceholder")}
                 className="mt-2 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#0B31BD]"
               />
               <div className="mt-2 flex flex-wrap gap-2">
@@ -252,7 +255,7 @@ export default function PostForm({ title, post }: PostFormProps) {
                       type="button"
                       onClick={() => handleRemoveTag(tag)}
                       className="text-[#0B31BD] hover:text-[#0929a3]"
-                      aria-label={`Remove ${tag}`}
+                      aria-label={`${t("removeTag")} ${tag}`}
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -264,7 +267,7 @@ export default function PostForm({ title, post }: PostFormProps) {
 
           <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
             <label className="text-sm font-semibold text-gray-700">
-              Featured Image
+              {t("imageLabel")}
             </label>
             <input
               ref={fileInputRef}
@@ -277,7 +280,7 @@ export default function PostForm({ title, post }: PostFormProps) {
               <div className="relative mt-2">
                 <img
                   src={imagePreview}
-                  alt="Featured preview"
+                  alt={t("imagePreviewAlt")}
                   className="w-full h-40 object-cover rounded-lg"
                 />
                 <button
@@ -296,9 +299,9 @@ export default function PostForm({ title, post }: PostFormProps) {
               >
                 <Upload className="w-6 h-6 mx-auto mb-2 text-gray-400" />
                 <p className="font-semibold text-gray-700">
-                  Click to upload or drag and drop
+                  {t("imageUploadTitle")}
                 </p>
-                <p className="text-xs text-gray-400 mt-1">JPG, PNG up to 5MB</p>
+                <p className="text-xs text-gray-400 mt-1">{t("imageUploadHint")}</p>
               </button>
             )}
           </div>

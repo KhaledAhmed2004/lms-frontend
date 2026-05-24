@@ -87,7 +87,7 @@ const PlanCard = ({
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-md text-sm font-medium transition"
           >
             <Pencil size={14} />
-            Edit {/* User didn't request translated button texts, assuming keep as is or can use generalized */}
+            {t("edit")}
           </button>
         ) : (
           <button
@@ -95,7 +95,7 @@ const PlanCard = ({
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-md text-sm font-medium transition"
           >
             <X size={14} />
-            Cancel
+            {t("cancel")}
           </button>
         )}
       </div>
@@ -310,7 +310,7 @@ const PlanCard = ({
                   onCheckedChange={(checked) => updateField("isActive", checked)}
                 />
                 <span className="text-sm text-gray-600">
-                  {editedPlan.isActive ? "Active" : t("inactive")}
+                  {editedPlan.isActive ? t("active") : t("inactive")}
                 </span>
               </div>
             </div>
@@ -327,7 +327,7 @@ const PlanCard = ({
             ) : (
                <Save size={16} className="mr-2" />
             )}
-            Save Changes
+            {t("saveChanges")}
           </Button>
         </div>
       )}

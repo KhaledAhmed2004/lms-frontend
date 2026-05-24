@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { useDeleteBlog } from "@/hooks/api/use-blogs";
 import type { PostRecord } from "./types";
+import { useTranslations, useLocale } from "next-intl";
 
 type PostsTableProps = {
   posts: PostRecord[];
@@ -15,24 +16,28 @@ const statusStyles: Record<string, string> = {
   draft: "bg-gray-100 text-gray-700",
 };
 
-function formatDate(dateString: string) {
-  if (!dateString) return "-";
-  return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export default function PostsTable({ posts }: PostsTableProps) {
+  const t = useTranslations("postsTable");
+  const ts = useTranslations("postForm.status");
+  const locale = useLocale();
   const deleteBlog = useDeleteBlog();
 
+  function formatDate(dateString?: string) {
+    if (!dateString) return "-";
+    const date = new Date(dateString!);
+    return date.toLocaleDateString(locale === "de" ? "de-DE" : "en-GB", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
+
   const handleDelete = (post: PostRecord) => {
-    if (!confirm(`Are you sure you want to delete "${post.title}"?`)) return;
+    if (!confirm(t("deleteConfirm", { title: post.title }))) return;
 
     deleteBlog.mutate(post._id, {
-      onSuccess: () => toast.success("Post deleted successfully"),
-      onError: () => toast.error("Failed to delete post"),
+      onSuccess: () => toast.success(t("deleteSuccess")),
+      onError: () => toast.error(t("deleteError")),
     });
   };
 
@@ -43,19 +48,19 @@ export default function PostsTable({ posts }: PostsTableProps) {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Title
+                {t("colTitle")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Status
+                {t("colStatus")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Category
+                {t("colCategory")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Created
+                {t("colCreated")}
               </th>
               <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                Actions
+                {t("colActions")}
               </th>
             </tr>
           </thead>
@@ -80,7 +85,7 @@ export default function PostsTable({ posts }: PostsTableProps) {
                         statusStyles[post.status] ?? "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {post.status}
+                      {ts(post.status)}
                     </span>
                   </td>
                   <td
@@ -100,14 +105,14 @@ export default function PostsTable({ posts }: PostsTableProps) {
                         className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-[#0B31BD] rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors"
                       >
                         <Pencil className="w-3.5 h-3.5" />
-                        Edit
+                        {t("edit")}
                       </Link>
                       <button
                         type="button"
                         onClick={() => handleDelete(post)}
                         disabled={deleteBlog.isPending}
                         className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50"
-                        aria-label="Delete post"
+                        aria-label={t("delete")}
                       >
                         {deleteBlog.isPending ? (
                           <Loader2 className="w-4 h-4 animate-spin" />

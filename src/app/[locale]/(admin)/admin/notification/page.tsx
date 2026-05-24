@@ -7,8 +7,10 @@ import {
   useAdminMarkNotificationAsRead,
   useAdminMarkAllNotificationsAsRead,
 } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 export default function NotificationsPage() {
+  const t = useTranslations('notificationsPage');
   const { data: notificationData, isLoading } = useAdminNotifications();
   const { mutate: markAsRead } = useAdminMarkNotificationAsRead();
   const { mutate: markAllAsRead } = useAdminMarkAllNotificationsAsRead();
@@ -24,10 +26,12 @@ export default function NotificationsPage() {
     const diffHr = Math.floor(diffMin / 60);
     const diffDay = Math.floor(diffHr / 24);
 
-    if (diffMin < 1) return 'Just now';
-    if (diffMin < 60) return `${diffMin} min ago`;
-    if (diffHr < 24) return `${diffHr} hour${diffHr > 1 ? 's' : ''} ago`;
-    if (diffDay < 7) return `${diffDay} day${diffDay > 1 ? 's' : ''} ago`;
+    if (diffMin < 1) return t('justNow');
+    if (diffMin < 60) return `${diffMin} ${t('minAgo')}`;
+    if (diffHr < 24)
+      return `${diffHr} ${t('hour')}${diffHr > 1 ? t('hoursSuffix') : ''} ${t('ago')}`;
+    if (diffDay < 7)
+      return `${diffDay} ${t('day')}${diffDay > 1 ? t('daysSuffix') : ''} ${t('ago')}`;
     return date.toLocaleDateString();
   };
 
@@ -45,10 +49,10 @@ export default function NotificationsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+            <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
             {unreadCount > 0 ? (
               <span className="px-2.5 py-0.5 bg-red-100 text-red-700 text-sm font-medium rounded-full">
-                {unreadCount} unread
+                {t('unreadCount', { count: unreadCount })}
               </span>
             ) : null}
           </div>
@@ -57,7 +61,7 @@ export default function NotificationsPage() {
               onClick={() => markAllAsRead()}
               className="text-blue-600 hover:text-blue-700 font-medium text-sm"
             >
-              Mark all as read
+              {t('markAllAsRead')}
             </button>
           ) : null}
         </div>
@@ -108,7 +112,7 @@ export default function NotificationsPage() {
           ) : (
             <div className="text-center py-12 bg-white rounded-lg">
               <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-              <p className="text-gray-500">No notifications</p>
+              <p className="text-gray-500">{t('noNotifications')}</p>
             </div>
           )}
         </div>
@@ -116,9 +120,7 @@ export default function NotificationsPage() {
         {/* All caught up */}
         {notifications.length > 0 && unreadCount === 0 ? (
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              You&apos;re all caught up! No new notifications.
-            </p>
+            <p className="text-sm text-gray-600">{t('allCaughtUp')}</p>
           </div>
         ) : null}
       </div>

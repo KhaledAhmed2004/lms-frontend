@@ -126,7 +126,22 @@
     "justNow": "Just now",
     "minAgo": "min ago",
     "hoursAgo": "hours ago",
-    "daysAgo": "days ago"
+    "daysAgo": "days ago",
+    "monthPrefix": "M",
+    "monthsShort": {
+      "1": "Jan",
+      "2": "Feb",
+      "3": "Mar",
+      "4": "Apr",
+      "5": "May",
+      "6": "Jun",
+      "7": "Jul",
+      "8": "Aug",
+      "9": "Sep",
+      "10": "Oct",
+      "11": "Nov",
+      "12": "Dec"
+    }
   },
   "students": {
     "totalStudents": "Total Students",
@@ -147,7 +162,11 @@
     "noStudents": "No students found",
     "errorLoading": "Error loading students. Please try again.",
     "blockedSuccess": "Student blocked successfully",
-    "unblockedSuccess": "Student unblocked successfully"
+    "unblockedSuccess": "Student unblocked successfully",
+    "blockConfirmTitle": "Are you sure you want to block {name}?",
+    "unblockConfirmTitle": "Are you sure you want to unblock {name}?",
+    "blockConfirmDesc": "They will not be able to access the platform.",
+    "cancel": "Cancel"
   },
   "tutors": {
     "totalTutors": "Total Tutors",
@@ -186,6 +205,7 @@
     "noSessions": "No sessions found",
     "trialRequest": "Trial Request",
     "notScheduled": "Not scheduled yet",
+    "notAvailable": "N/A",
     "detail": {
       "trialTitle": "Trial Request Details",
       "sessionTitle": "Session Details",
@@ -503,7 +523,30 @@
     "nameRequired": "School type name is required",
     "createdSuccess": "School type created successfully",
     "updatedSuccess": "School type updated successfully",
-    "deletedSuccess": "School type deleted successfully"
+    "deletedSuccess": "School type deleted successfully",
+    "createFailed": "Failed to create school type",
+    "updateFailed": "Failed to update school type",
+    "deleteFailed": "Failed to delete school type",
+    "statusUpdateFailed": "Failed to update school type status",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "createdAt": "Created At",
+    "action": "Action",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete",
+    "all": "All",
+    "noSchoolTypes": "No school types found",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results",
+    "activeStatus": "Active Status",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "errorLoading": "Error loading school types. Please try again."
   },
   "meetings": {
     "joinFailed": "Failed to join meeting",
@@ -543,11 +586,15 @@
     "commitment": "Commitment (Months)",
     "displayOrder": "Display Order",
     "status": "Status",
+    "active": "Active",
     "inactive": "Inactive",
     "lastUpdated": "Last updated:",
     "errorLoading": "Error loading pricing config. Please try again.",
     "updatedSuccess": "{name} plan updated successfully",
-    "updateFailed": "Failed to update plan"
+    "updateFailed": "Failed to update plan",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes"
   },
   "transactions": {
     "totalAmount": "Total Amount",
@@ -882,5 +929,180 @@
     "deactivate": "Deactivate",
     "na": "N/A",
     "close": "Close"
+  },
+  "editor": {
+    "heading1": "Heading 1",
+    "heading2": "Heading 2",
+    "heading3": "Heading 3",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "bulletList": "Bullet List",
+    "orderedList": "Ordered List",
+    "quote": "Quote"
+  },
+  "postForm": {
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "saving": "Saving...",
+    "publishing": "Publishing...",
+    "updateDraft": "Update Draft",
+    "updatePublish": "Update & Publish",
+    "saveDraft": "Save Draft",
+    "publishNow": "Publish Now",
+    "errorImageSize": "Image must be under 5MB",
+    "errorTitleRequired": "Post title is required",
+    "errorContentRequired": "Post content is required",
+    "errorCategoryRequired": "Category is required",
+    "successUpdated": "Post updated successfully",
+    "successDraftSaved": "Draft saved successfully",
+    "successPublished": "Post published successfully",
+    "errorSaveFailed": "Failed to save post. Please try again.",
+    "subtitle": "Use the editor below to create and publish your post.",
+    "titleLabel": "Post Title",
+    "titlePlaceholder": "Add a headline for your post",
+    "contentPlaceholder": "Start writing your article here. Use the toolbar above to format text, add images, and insert links...",
+    "categoryLabel": "Category",
+    "categoryPlaceholder": "e.g. Study Tips",
+    "tagsLabel": "Tags",
+    "tagsPlaceholder": "Type a tag and press Enter",
+    "removeTag": "Remove",
+    "imageLabel": "Featured Image",
+    "imagePreviewAlt": "Featured preview",
+    "imageUploadTitle": "Click to upload or drag and drop",
+    "imageUploadHint": "JPG, PNG up to 5MB"
+  },
+  "postsHeader": {
+    "title": "All Posts",
+    "description": "Manage all posts and publishing status.",
+    "newPost": "New Post"
+  },
+  "postsStats": {
+    "totalPosts": "Total Posts",
+    "published": "Published",
+    "drafts": "Drafts"
+  },
+  "postsTable": {
+    "deleteConfirm": "Are you sure you want to delete \"{title}\"?",
+    "deleteSuccess": "Post deleted successfully",
+    "deleteError": "Failed to delete post",
+    "colTitle": "Title",
+    "colStatus": "Status",
+    "colCategory": "Category",
+    "colCreated": "Created",
+    "colActions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete post"
+  },
+  "postsEdit": {
+    "loading": "Loading post...",
+    "notFound": "Post not found",
+    "notFoundDesc": "We could not find a post with id {id}.",
+    "title": "Edit Post"
+  },
+  "postsNew": {
+    "title": "New Post"
+  },
+  "postsPage": {
+    "loading": "Loading posts...",
+    "noPosts": "No posts found. Create your first post!",
+    "showing": "Showing",
+    "results": "results"
+  },
+  "profile": {
+    "title": "Profile",
+    "admin": "Admin",
+    "personalInfo": "Personal Information",
+    "editProfile": "Edit Profile",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "fullName": "Full Name",
+    "dateOfBirth": "Date of Birth",
+    "emailAddress": "Email Address",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "street": "Street",
+    "houseNumber": "House Number",
+    "zipCode": "ZIP Code",
+    "changePhoto": "Change Profile Picture",
+    "preview": "Preview",
+    "choosePhoto": "Choose Photo",
+    "savePhoto": "Save Photo"
+  },
+  "studentDetails": {
+    "blockSuccess": "Student blocked successfully",
+    "blockFailed": "Failed to block student",
+    "unblockSuccess": "Student unblocked successfully",
+    "unblockFailed": "Failed to unblock student",
+    "specialStatusUpdated": "Special status updated",
+    "specialStatusFailed": "Failed to update special status",
+    "active": "Active",
+    "blocked": "Blocked",
+    "notFound": "Student not found or error loading details.",
+    "backToStudents": "Back to Students",
+    "back": "Back",
+    "specialStatus": "Special (€25/hr)",
+    "edit": "Edit",
+    "informationOf": "Information of {name}",
+    "fullName": "Full Name",
+    "phone": "Phone",
+    "location": "Location",
+    "email": "Email",
+    "dateOfBirth": "Date of Birth",
+    "memberSince": "Member Since",
+    "statistics": "Statistics",
+    "activityOverview": "Student activity overview",
+    "trialRequests": "Trial Requests",
+    "sessionRequests": "Session Requests",
+    "yes": "Yes",
+    "no": "No",
+    "completedTrial": "Completed Trial",
+    "actions": "Actions",
+    "actionsDesc": "Manage student account and status",
+    "editProfile": "Edit Profile",
+    "removeSpecial": "Remove Special",
+    "markAsSpecial": "Mark as Special",
+    "blockStudent": "Block Student",
+    "unblockStudent": "Unblock Student"
+  },
+  "postsData": {
+    "post1": {
+      "title": "How to Ace Your Abitur: A Complete 8-Week Study Plan",
+      "category": "Abitur",
+      "tags": {
+        "grade10": "#Grade 10",
+        "grade12": "#Grade 12",
+        "vocabulary": "#Vocabulary",
+        "calculus": "#Calculus",
+        "writing": "#Writing",
+        "finals": "#Finals"
+      },
+      "cta": "Book Free Trial"
+    },
+    "post5": {
+      "title": "How to Write a Perfect Essay Under Exam Conditions"
+    },
+    "status": {
+      "published": "published",
+      "draft": "draft",
+      "scheduled": "scheduled"
+    }
+  },
+  "notificationsPage": {
+    "title": "Notifications",
+    "unreadCount": "{count} unread",
+    "markAllAsRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "allCaughtUp": "You're all caught up! No new notifications.",
+    "justNow": "Just now",
+    "minAgo": "min ago",
+    "hour": "hour",
+    "hoursSuffix": "s",
+    "day": "day",
+    "daysSuffix": "s",
+    "ago": "ago"
   }
 }

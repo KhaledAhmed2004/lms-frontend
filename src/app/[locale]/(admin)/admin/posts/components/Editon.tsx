@@ -5,6 +5,7 @@ import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 
 type EditorProps = {
   value: string;
@@ -13,6 +14,7 @@ type EditorProps = {
 };
 
 export default function Editon({ value, onChange, placeholder }: EditorProps) {
+  const t = useTranslations("editor");
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -48,6 +50,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
       <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-3 py-2 bg-gray-50">
         <button
           type="button"
+          title={t("heading1")}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 1 }).run()
           }
@@ -61,6 +64,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("heading2")}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
@@ -74,6 +78,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("heading3")}
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 3 }).run()
           }
@@ -87,6 +92,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("bold")
@@ -98,6 +104,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("italic")}
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("italic")
@@ -109,6 +116,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("underline")}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("underline")
@@ -120,6 +128,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("bulletList")}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("bulletList")
@@ -131,6 +140,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("orderedList")}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("orderedList")
@@ -142,6 +152,7 @@ export default function Editon({ value, onChange, placeholder }: EditorProps) {
         </button>
         <button
           type="button"
+          title={t("quote")}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`px-2 py-1 rounded text-xs font-semibold ${
             editor.isActive("blockquote")

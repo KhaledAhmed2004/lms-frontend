@@ -126,7 +126,22 @@
     "justNow": "Gerade eben",
     "minAgo": "Min. zuvor",
     "hoursAgo": "Std. zuvor",
-    "daysAgo": "Tage zuvor"
+    "daysAgo": "Tage zuvor",
+    "monthPrefix": "M",
+    "monthsShort": {
+      "1": "Jan",
+      "2": "Feb",
+      "3": "Mär",
+      "4": "Apr",
+      "5": "Mai",
+      "6": "Jun",
+      "7": "Jul",
+      "8": "Aug",
+      "9": "Sep",
+      "10": "Okt",
+      "11": "Nov",
+      "12": "Dez"
+    }
   },
   "students": {
     "totalStudents": "Schüler gesamt",
@@ -147,7 +162,11 @@
     "noStudents": "Keine Schüler gefunden",
     "errorLoading": "Fehler beim Laden der Schüler. Bitte versuche es erneut.",
     "blockedSuccess": "Schüler erfolgreich gesperrt",
-    "unblockedSuccess": "Schüler erfolgreich entsperrt"
+    "unblockedSuccess": "Schüler erfolgreich entsperrt",
+    "blockConfirmTitle": "Sind Sie sicher, dass Sie {name} blockieren möchten?",
+    "unblockConfirmTitle": "Sind Sie sicher, dass Sie {name} entsperren möchten?",
+    "blockConfirmDesc": "Sie werden keinen Zugang zur Plattform haben.",
+    "cancel": "Abbrechen"
   },
   "tutors": {
     "totalTutors": "Tutor gesamt",
@@ -186,6 +205,7 @@
     "noSessions": "Keine Stunden gefunden",
     "trialRequest": "Probestunde-Anfrage",
     "notScheduled": "Noch nicht geplant",
+    "notAvailable": "Nicht verfügbar",
     "detail": {
       "trialTitle": "Details der Probestunde-Anfrage",
       "sessionTitle": "Stundendetails",
@@ -503,7 +523,30 @@
     "nameRequired": "Name der Schulform ist erforderlich",
     "createdSuccess": "Schulform erfolgreich erstellt",
     "updatedSuccess": "Schulform erfolgreich aktualisiert",
-    "deletedSuccess": "Schulform erfolgreich gelöscht"
+    "deletedSuccess": "Schulform erfolgreich gelöscht",
+    "createFailed": "Erstellung des Schultyps fehlgeschlagen",
+    "updateFailed": "Aktualisierung des Schultyps fehlgeschlagen",
+    "deleteFailed": "Löschen des Schultyps fehlgeschlagen",
+    "statusUpdateFailed": "Statusaktualisierung des Schultyps fehlgeschlagen",
+    "status": "Status",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "createdAt": "Erstellt am",
+    "action": "Aktion",
+    "edit": "Bearbeiten",
+    "deactivate": "Deaktivieren",
+    "activate": "Aktivieren",
+    "delete": "Löschen",
+    "all": "Alle",
+    "noSchoolTypes": "Keine Schultypen gefunden",
+    "showing": "Zeige",
+    "to": "bis",
+    "of": "von",
+    "results": "Ergebnissen",
+    "activeStatus": "Aktivstatus",
+    "cancel": "Abbrechen",
+    "saveChanges": "Änderungen speichern",
+    "errorLoading": "Fehler beim Laden der Schultypen. Bitte erneut versuchen."
   },
   "meetings": {
     "joinFailed": "Fehler beim Beitreten zum Meeting",
@@ -543,11 +586,15 @@
     "commitment": "Laufzeit (Monate)",
     "displayOrder": "Anzeigereihenfolge",
     "status": "Status",
+    "active": "Aktiv",
     "inactive": "Inaktiv",
     "lastUpdated": "Zuletzt aktualisiert:",
     "errorLoading": "Fehler beim Laden der Preiskonfiguration. Bitte versuche es erneut.",
     "updatedSuccess": "{name}-Tarif erfolgreich aktualisiert",
-    "updateFailed": "Tarif konnte nicht aktualisiert werden"
+    "updateFailed": "Tarif konnte nicht aktualisiert werden",
+    "edit": "Bearbeiten",
+    "cancel": "Abbrechen",
+    "saveChanges": "Änderungen speichern"
   },
   "transactions": {
     "totalAmount": "Gesamtbetrag",
@@ -882,5 +929,180 @@
     "deactivate": "Deaktivieren",
     "na": "k.A.",
     "close": "Schließen"
+  },
+  "editor": {
+    "heading1": "Überschrift 1",
+    "heading2": "Überschrift 2",
+    "heading3": "Überschrift 3",
+    "bold": "Fett",
+    "italic": "Kursiv",
+    "underline": "Unterstrichen",
+    "bulletList": "Aufzählung",
+    "orderedList": "Nummerierte Liste",
+    "quote": "Zitat"
+  },
+  "postForm": {
+    "status": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht"
+    },
+    "saving": "Speichern...",
+    "publishing": "Wird veröffentlicht...",
+    "updateDraft": "Entwurf aktualisieren",
+    "updatePublish": "Aktualisieren & Veröffentlichen",
+    "saveDraft": "Entwurf speichern",
+    "publishNow": "Jetzt veröffentlichen",
+    "errorImageSize": "Bild muss kleiner als 5MB sein",
+    "errorTitleRequired": "Beitragstitel ist erforderlich",
+    "errorContentRequired": "Beitragsinhalt ist erforderlich",
+    "errorCategoryRequired": "Kategorie ist erforderlich",
+    "successUpdated": "Beitrag erfolgreich aktualisiert",
+    "successDraftSaved": "Entwurf erfolgreich gespeichert",
+    "successPublished": "Beitrag erfolgreich veröffentlicht",
+    "errorSaveFailed": "Beitrag konnte nicht gespeichert werden. Bitte erneut versuchen.",
+    "subtitle": "Nutze den untenstehenden Editor, um deinen Beitrag zu erstellen und zu veröffentlichen.",
+    "titleLabel": "Beitragstitel",
+    "titlePlaceholder": "Füge eine Überschrift für deinen Beitrag hinzu",
+    "contentPlaceholder": "Beginne hier mit dem Schreiben deines Artikels. Verwende die obere Werkzeugleiste zum Formatieren, Bilder hinzufügen und Links einfügen...",
+    "categoryLabel": "Kategorie",
+    "categoryPlaceholder": "z.B. Lerntipps",
+    "tagsLabel": "Schlagwörter",
+    "tagsPlaceholder": "Gib ein Schlagwort ein und drücke Enter",
+    "removeTag": "Entfernen",
+    "imageLabel": "Hauptbild",
+    "imagePreviewAlt": "Vorschaubild Vorschau",
+    "imageUploadTitle": "Klicken zum Hochladen oder per Drag & Drop hierher ziehen",
+    "imageUploadHint": "JPG, PNG bis zu 5MB"
+  },
+  "postsHeader": {
+    "title": "Alle Beiträge",
+    "description": "Verwalten Sie alle Beiträge und deren Veröffentlichungsstatus.",
+    "newPost": "Neuer Beitrag"
+  },
+  "postsStats": {
+    "totalPosts": "Gesamtanzahl der Beiträge",
+    "published": "Veröffentlicht",
+    "drafts": "Entwürfe"
+  },
+  "postsTable": {
+    "deleteConfirm": "Sind Sie sicher, dass Sie \"{title}\" löschen möchten?",
+    "deleteSuccess": "Beitrag erfolgreich gelöscht",
+    "deleteError": "Löschen des Beitrags fehlgeschlagen",
+    "colTitle": "Titel",
+    "colStatus": "Status",
+    "colCategory": "Kategorie",
+    "colCreated": "Erstellt",
+    "colActions": "Aktionen",
+    "edit": "Bearbeiten",
+    "delete": "Beitrag löschen"
+  },
+  "postsEdit": {
+    "loading": "Beitrag wird geladen...",
+    "notFound": "Beitrag nicht gefunden",
+    "notFoundDesc": "Wir konnten keinen Beitrag mit der ID {id} finden",
+    "title": "Beitrag bearbeiten"
+  },
+  "postsNew": {
+    "title": "Neuer Beitrag"
+  },
+  "postsPage": {
+    "loading": "Beiträge werden geladen...",
+    "noPosts": "Keine Beiträge gefunden. Erstelle deinen ersten Beitrag!",
+    "showing": "Zeige",
+    "results": "Ergebnisse"
+  },
+  "profile": {
+    "title": "Profil",
+    "admin": "Administrator",
+    "personalInfo": "Persönliche Informationen",
+    "editProfile": "Profil bearbeiten",
+    "cancel": "Abbrechen",
+    "saveChanges": "Änderungen speichern",
+    "fullName": "Vollständiger Name",
+    "dateOfBirth": "Geburtsdatum",
+    "emailAddress": "E-Mail-Adresse",
+    "phoneNumber": "Telefonnummer",
+    "address": "Adresse",
+    "city": "Stadt",
+    "street": "Straße",
+    "houseNumber": "Hausnummer",
+    "zipCode": "Postleitzahl",
+    "changePhoto": "Profilbild ändern",
+    "preview": "Vorschau",
+    "choosePhoto": "Foto auswählen",
+    "savePhoto": "Foto speichern"
+  },
+  "studentDetails": {
+    "blockSuccess": "Schüler erfolgreich gesperrt",
+    "blockFailed": "Schüler konnte nicht gesperrt werden",
+    "unblockSuccess": "Schüler erfolgreich entsperrt",
+    "unblockFailed": "Schüler konnte nicht entsperrt werden",
+    "specialStatusUpdated": "Sonderstatus aktualisiert",
+    "specialStatusFailed": "Sonderstatus konnte nicht aktualisiert werden",
+    "active": "Aktiv",
+    "blocked": "Gesperrt",
+    "notFound": "Schüler nicht gefunden oder Fehler beim Laden der Details.",
+    "backToStudents": "Zurück zu den Schülern",
+    "back": "Zurück",
+    "specialStatus": "Sonderstatus (€25/Stunde)",
+    "edit": "Bearbeiten",
+    "informationOf": "Informationen von {name}",
+    "fullName": "Vollständiger Name",
+    "phone": "Telefon",
+    "location": "Ort",
+    "email": "E-Mail",
+    "dateOfBirth": "Geburtsdatum",
+    "memberSince": "Mitglied seit",
+    "statistics": "Statistiken",
+    "activityOverview": "Übersicht der Schüleraktivitäten",
+    "trialRequests": "Anfragen für Probestunden",
+    "sessionRequests": "Anfragen für Sitzungen",
+    "yes": "Ja",
+    "no": "Nein",
+    "completedTrial": "Abgeschlossene Probestunde",
+    "actions": "Aktionen",
+    "actionsDesc": "Schülerkonto und Status verwalten",
+    "editProfile": "Profil bearbeiten",
+    "removeSpecial": "Sonderstatus entfernen",
+    "markAsSpecial": "Als Spezial kennzeichnen",
+    "blockStudent": "Schüler sperren",
+    "unblockStudent": "Schüler entsperren"
+  },
+  "postsData": {
+    "post1": {
+      "title": "Wie Sie Ihr Abitur meistern: Ein kompletter 8-Wochen-Lernplan",
+      "category": "Abitur",
+      "tags": {
+        "grade10": "#10. Klasse",
+        "grade12": "#12. Klasse",
+        "vocabulary": "#Wortschatz",
+        "calculus": "#Analysis",
+        "writing": "#Schreiben",
+        "finals": "#Abschlussprüfungen"
+      },
+      "cta": "Kostenlose Probestunde buchen"
+    },
+    "post5": {
+      "title": "Wie man unter Prüfungsbedingungen den perfekten Aufsatz schreibt"
+    },
+    "status": {
+      "published": "veröffentlicht",
+      "draft": "Entwurf",
+      "scheduled": "geplant"
+    }
+  },
+  "notificationsPage": {
+    "title": "Benachrichtigungen",
+    "unreadCount": "{count} ungelesen",
+    "markAllAsRead": "Alle als gelesen markieren",
+    "noNotifications": "Keine Benachrichtigungen",
+    "allCaughtUp": "Du bist auf dem aktuellen Stand! Keine neuen Benachrichtigungen.",
+    "justNow": "Gerade eben",
+    "minAgo": "Min. zuvor",
+    "hour": "Stunde",
+    "hoursSuffix": "n",
+    "day": "Tag",
+    "daysSuffix": "e",
+    "ago": "zuvor"
   }
 }

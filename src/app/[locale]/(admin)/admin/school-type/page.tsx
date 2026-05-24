@@ -135,7 +135,7 @@ const SchoolTypeManagement = () => {
       setIsCreateModalOpen(false);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to create school type");
+      toast.error(error?.message || t("createFailed"));
     }
   };
 
@@ -157,7 +157,7 @@ const SchoolTypeManagement = () => {
       setSelectedSchoolType(null);
       setFormData({ name: "", isActive: true });
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update school type");
+      toast.error(error?.message || t("updateFailed"));
     }
   };
 
@@ -171,7 +171,7 @@ const SchoolTypeManagement = () => {
       setIsDeleteDialogOpen(false);
       setSelectedSchoolType(null);
     } catch (error: any) {
-      toast.error(error?.message || "Failed to delete school type");
+      toast.error(error?.message || t("deleteFailed"));
     }
   };
 
@@ -184,7 +184,7 @@ const SchoolTypeManagement = () => {
       });
       toast.success(t("updatedSuccess"));
     } catch (error: any) {
-      toast.error(error?.message || "Failed to update school type status");
+      toast.error(error?.message || t("statusUpdateFailed"));
     }
   };
 
@@ -202,8 +202,10 @@ const SchoolTypeManagement = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-GB", {
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString!);
+    return date.toLocaleDateString("en-GB", {
       day: "2-digit",
       month: "2-digit",
       year: "2-digit",
@@ -224,7 +226,7 @@ const SchoolTypeManagement = () => {
       },
       {
         accessorKey: "isActive",
-        header: "Status",
+        header: t("status"),
         cell: ({ row }) => {
           const isActive = row.getValue("isActive") as boolean;
           return (
@@ -236,23 +238,23 @@ const SchoolTypeManagement = () => {
                   : "bg-gray-100 text-gray-600 hover:bg-gray-100"
               }
             >
-              {isActive ? "Active" : "Inactive"}
+              {isActive ? t("active") : t("inactive")}
             </Badge>
           );
         },
       },
       {
         accessorKey: "createdAt",
-        header: "Created At",
+        header: t("createdAt"),
         cell: ({ row }) => (
           <span className="text-gray-600 text-sm">
-            {formatDate(row.getValue("createdAt"))}
+            {formatDate(row.getValue("createdAt") as string)}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Action",
+        header: t("action"),
         cell: ({ row }) => {
           const schoolType = row.original;
           return (
@@ -264,16 +266,16 @@ const SchoolTypeManagement = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => openEditModal(schoolType)}>
-                  Edit
+                  {t("edit")}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleToggleStatus(schoolType)}>
-                  {schoolType.isActive ? "Deactivate" : "Activate"}
+                  {schoolType.isActive ? t("deactivate") : t("activate")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-red-600"
                   onClick={() => openDeleteDialog(schoolType)}
                 >
-                  Delete
+                  {t("delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -281,7 +283,7 @@ const SchoolTypeManagement = () => {
         },
       },
     ],
-    [t]
+    [t, ts]
   );
 
   // TanStack Table instance with server-side pagination
@@ -320,7 +322,7 @@ const SchoolTypeManagement = () => {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <p className="text-red-500">
-          Error loading school types. Please try again.
+          {t("errorLoading")}
         </p>
       </div>
     );
@@ -391,19 +393,19 @@ const SchoolTypeManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All
+                {t("all")}
               </TabsTrigger>
               <TabsTrigger
                 value="active"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Active
+                {t("active")}
               </TabsTrigger>
               <TabsTrigger
                 value="inactive"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                Inactive
+                {t("inactive")}
               </TabsTrigger>
             </TabsList>
           </CardHeader>
@@ -460,7 +462,7 @@ const SchoolTypeManagement = () => {
                           colSpan={columns.length}
                           className="py-8 text-center text-gray-500"
                         >
-                          No school types found
+                          {t("noSchoolTypes")}
                         </TableCell>
                       </TableRow>
                     )}
@@ -472,12 +474,12 @@ const SchoolTypeManagement = () => {
               {schoolTypes.length > 0 && (
                 <div className="flex items-center justify-between pt-6">
                   <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {t("showing")} {(currentPage - 1) * itemsPerPage + 1} {t("to")}{" "}
                     {Math.min(
                       currentPage * itemsPerPage,
                       pagination?.total || 0
                     )}{" "}
-                    of {pagination?.total || 0} results
+                    {t("of")} {pagination?.total || 0} {t("results")}
                   </p>
                   <Pagination className="justify-end mx-0">
                     <PaginationContent>
@@ -572,7 +574,7 @@ const SchoolTypeManagement = () => {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="isActive">Active Status</Label>
+              <Label htmlFor="isActive">{t("activeStatus")}</Label>
               <Switch
                 id="isActive"
                 checked={formData.isActive}
@@ -587,7 +589,7 @@ const SchoolTypeManagement = () => {
               variant="outline"
               onClick={() => setIsCreateModalOpen(false)}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleCreateSchoolType}
@@ -623,7 +625,7 @@ const SchoolTypeManagement = () => {
               />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="edit-isActive">Active Status</Label>
+              <Label htmlFor="edit-isActive">{t("activeStatus")}</Label>
               <Switch
                 id="edit-isActive"
                 checked={formData.isActive}
@@ -635,7 +637,7 @@ const SchoolTypeManagement = () => {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsEditModalOpen(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               onClick={handleEditSchoolType}
@@ -645,7 +647,7 @@ const SchoolTypeManagement = () => {
               {updateSchoolType.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Save Changes
+              {t("saveChanges")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -664,7 +666,7 @@ const SchoolTypeManagement = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteSchoolType}
               className="bg-red-600 hover:bg-red-700"
@@ -673,7 +675,7 @@ const SchoolTypeManagement = () => {
               {deleteSchoolType.isPending && (
                 <Loader2 size={16} className="mr-2 animate-spin" />
               )}
-              Delete
+              {t("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
