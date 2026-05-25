@@ -658,9 +658,18 @@
     "responsePlaceholder": "Write your response to the user...",
     "saving": "Saving...",
     "saveResponse": "Save Response",
-    "statusUpdated": "Ticket status updated successfully",
-    "notesAdded": "Notes added successfully",
-    "priorityUpdated": "Priority updated"
+    "statusUpdated": "Status updated",
+    "notesAdded": "Notes added",
+    "priorityUpdated": "Priority updated",
+    "statusUpdateFailed": "Failed to update status",
+    "notesUpdateFailed": "Failed to add notes",
+    "priorityUpdateFailed": "Failed to update priority",
+    "all": "All",
+    "cancel": "Cancel",
+    "showing": "Showing",
+    "to": "to",
+    "of": "of",
+    "results": "results"
   },
   "slots": {
     "title": "Interview Slots",
@@ -1104,5 +1113,17 @@
     "day": "day",
     "daysSuffix": "s",
     "ago": "ago"
+  },
+  "termsConditions": {
+    "title": "Legal Policy Management",
+    "description": "Manage all legal policies in one place. Select a policy type from the dropdown to edit its content. These policies will be displayed to users on the website.",
+    "updateSuccess": "has been successfully updated and now appears on the website.",
+    "selectType": "Select Policy Type",
+    "selectTypePlaceholder": "Choose a policy type",
+    "editor": "Editor",
+    "writePaste": "Write or paste your",
+    "contentHere": "content here...",
+    "lastUpdated": "Last updated:",
+    "save": "Save"
   }
 }

@@ -658,9 +658,18 @@
     "responsePlaceholder": "Schreibe deine Antwort an den Benutzer...",
     "saving": "Wird gespeichert...",
     "saveResponse": "Antwort speichern",
-    "statusUpdated": "Ticket-Status erfolgreich aktualisiert",
-    "notesAdded": "Notizen erfolgreich hinzugefügt",
-    "priorityUpdated": "Priorität aktualisiert"
+    "statusUpdated": "Status aktualisiert",
+    "notesAdded": "Notizen hinzugefügt",
+    "priorityUpdated": "Priorität aktualisiert",
+    "statusUpdateFailed": "Status konnte nicht aktualisiert werden",
+    "notesUpdateFailed": "Notizen konnten nicht hinzugefügt werden",
+    "priorityUpdateFailed": "Priorität konnte nicht aktualisiert werden",
+    "all": "Alle",
+    "cancel": "Abbrechen",
+    "showing": "Zeige",
+    "to": "bis",
+    "of": "von",
+    "results": "Ergebnisse"
   },
   "slots": {
     "title": "Interview-Termine",
@@ -1104,5 +1113,17 @@
     "day": "Tag",
     "daysSuffix": "e",
     "ago": "zuvor"
+  },
+  "termsConditions": {
+    "title": "Verwaltung rechtlicher Richtlinien",
+    "description": "Verwalten Sie alle rechtlichen Richtlinien an einem Ort. Wählen Sie einen Richtlinientyp aus dem Dropdown-Menü, um dessen Inhalt zu bearbeiten. Diese Richtlinien werden den Nutzern auf der Website angezeigt.",
+    "updateSuccess": "wurde erfolgreich aktualisiert und erscheint nun auf der Website.",
+    "selectType": "Richtlinientyp auswählen",
+    "selectTypePlaceholder": "Wählen Sie einen Richtlinientyp",
+    "editor": "Editor",
+    "writePaste": "Schreiben oder fügen Sie Ihren",
+    "contentHere": "Inhalt hier ein...",
+    "lastUpdated": "Zuletzt aktualisiert:",
+    "save": "Speichern"
   }
 }

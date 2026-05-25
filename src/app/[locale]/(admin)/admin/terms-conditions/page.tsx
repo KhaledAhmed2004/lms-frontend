@@ -22,8 +22,10 @@ import {
   POLICY_TYPE,
   POLICY_TYPE_LABELS,
 } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 const LegalPoliciesPage = () => {
+  const t = useTranslations('termsConditions');
   const [selectedPolicyType, setSelectedPolicyType] = useState<POLICY_TYPE>(POLICY_TYPE.PRIVACY_POLICY);
   const [policyContent, setPolicyContent] = useState('');
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
@@ -75,11 +77,10 @@ const LegalPoliciesPage = () => {
       {/* Header Section */}
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Legal Policy Management
+          {t('title')}
         </h1>
         <p className="text-gray-600 text-sm">
-          Manage all legal policies from one place. Select a policy type from the dropdown to edit its content.
-          These policies will be displayed to users on the website.
+          {t('description')}
         </p>
       </div>
 
@@ -88,7 +89,7 @@ const LegalPoliciesPage = () => {
         <Alert className="bg-green-50 border-green-200">
           <CheckCircle className="h-4 w-4 text-green-600" />
           <AlertDescription className="text-green-800 ml-2">
-            {POLICY_TYPE_LABELS[selectedPolicyType]} has been successfully updated and will now appear on the website.
+            {POLICY_TYPE_LABELS[selectedPolicyType]} {t('updateSuccess')}
           </AlertDescription>
         </Alert>
       )}
@@ -96,7 +97,7 @@ const LegalPoliciesPage = () => {
       {/* Policy Selector */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Select Policy Type</CardTitle>
+          <CardTitle>{t('selectType')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Select
@@ -104,7 +105,7 @@ const LegalPoliciesPage = () => {
             onValueChange={(value) => setSelectedPolicyType(value as POLICY_TYPE)}
           >
             <SelectTrigger className="w-full md:w-80">
-              <SelectValue placeholder="Select a policy type" />
+              <SelectValue placeholder={t('selectTypePlaceholder')} />
             </SelectTrigger>
             <SelectContent>
               {policyOptions.map((option) => (
@@ -121,7 +122,7 @@ const LegalPoliciesPage = () => {
       <Card className="border-gray-200">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            {POLICY_TYPE_LABELS[selectedPolicyType]} Editor
+            {POLICY_TYPE_LABELS[selectedPolicyType]} {t('editor')}
             {policyLoading && <Loader2 className="h-4 w-4 animate-spin" />}
           </CardTitle>
         </CardHeader>
@@ -131,7 +132,7 @@ const LegalPoliciesPage = () => {
               id="policyContent"
               value={policyContent}
               onChange={(e) => setPolicyContent(e.target.value)}
-              placeholder={`Write or paste your ${POLICY_TYPE_LABELS[selectedPolicyType]} content here...`}
+              placeholder={`${t('writePaste')} ${POLICY_TYPE_LABELS[selectedPolicyType]} ${t('contentHere')}`}
               className="w-full h-80 p-4 border border-gray-200 rounded-lg focus:border-gray-300 focus:ring-0 focus:outline-none resize-none bg-white text-gray-900 placeholder-gray-400"
               disabled={policyLoading}
             />
@@ -139,7 +140,7 @@ const LegalPoliciesPage = () => {
           {/* Last Updated Info */}
           {selectedPolicy?.updatedAt && (
             <p className="text-sm text-gray-500">
-              Last updated: {new Date(selectedPolicy.updatedAt).toLocaleString()}
+              {t('lastUpdated')} {new Date(selectedPolicy.updatedAt).toLocaleString()}
             </p>
           )}
         </CardContent>
@@ -152,7 +153,7 @@ const LegalPoliciesPage = () => {
         className="w-full md:w-1/3 bg-[#002AC8] text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {upsertMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-        Save {POLICY_TYPE_LABELS[selectedPolicyType]}
+        {t('save')} {POLICY_TYPE_LABELS[selectedPolicyType]}
       </button>
     </div>
   );

@@ -139,7 +139,7 @@ const SupportTicketManagement = () => {
       setNewStatus('');
       setAdminNotes('');
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to update status');
+      toast.error(error?.response?.data?.message || t('statusUpdateFailed'));
     }
   };
 
@@ -156,7 +156,7 @@ const SupportTicketManagement = () => {
       setSelectedTicket(null);
       setAdminNotes('');
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to add notes');
+      toast.error(error?.response?.data?.message || t('notesUpdateFailed'));
     }
   };
 
@@ -165,7 +165,7 @@ const SupportTicketManagement = () => {
       await updatePriorityMutation.mutateAsync({ ticketId, priority });
       toast.success(t('priorityUpdated'));
     } catch (error: any) {
-      toast.error(error?.response?.data?.message || 'Failed to update priority');
+      toast.error(error?.response?.data?.message || t('priorityUpdateFailed'));
     }
   };
 
@@ -317,7 +317,7 @@ const SupportTicketManagement = () => {
                 value="all"
                 className="bg-transparent border-0 rounded-none border-b-2 border-transparent data-[state=active]:border-b-2 data-[state=active]:border-black"
               >
-                All
+                {t('all')}
               </TabsTrigger>
               <TabsTrigger
                 value={TICKET_STATUS.OPEN}
@@ -470,9 +470,9 @@ const SupportTicketManagement = () => {
               {tickets.length > 0 && (
                 <div className="flex items-center justify-between pt-6">
                   <p className="text-sm text-gray-500 whitespace-nowrap">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to{' '}
-                    {Math.min(currentPage * itemsPerPage, pagination?.total || 0)} of{' '}
-                    {pagination?.total || 0} results
+                    {t('showing')} {((currentPage - 1) * itemsPerPage) + 1} {t('to')}{' '}
+                    {Math.min(currentPage * itemsPerPage, pagination?.total || 0)} {t('of')}{' '}
+                    {pagination?.total || 0} {t('results')}
                   </p>
                   <Pagination className="justify-end mx-0">
                     <PaginationContent>
@@ -647,7 +647,7 @@ const SupportTicketManagement = () => {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowStatusModal(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleUpdateStatus}
@@ -690,7 +690,7 @@ const SupportTicketManagement = () => {
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setShowNotesModal(false)}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button
               onClick={handleAddNotes}
