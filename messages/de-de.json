@@ -837,6 +837,25 @@
     "of": "von",
     "next": "Weiter"
   },
+  "newSessionRequestModal": {
+    "success": "Vorschlag erfolgreich erstellt!",
+    "error": "Vorschlag konnte nicht erstellt werden",
+    "title": "Neuen Vorschlag machen",
+    "subject": "Fach *",
+    "selectSubject": "Fach auswählen",
+    "loading": "Lädt...",
+    "gradeLevel": "Klasse *",
+    "selectGrade": "Klasse wählen",
+    "schoolType": "Schulform *",
+    "selectSchoolType": "Schulform auswählen",
+    "learningGoals": "Lernziele (Optional)",
+    "learningGoalsPlaceholder": "Gib uns Informationen, damit wir einen passenden Tutor finden können.",
+    "attachDocuments": "Dokumente anhängen (Optional)",
+    "uploadFiles": "Dateien hochladen",
+    "filesSelected": "{count} Datei(en) ausgewählt",
+    "cancel": "Abbrechen",
+    "submit": "Anfrage senden"
+  },
   "requests": {
     "openRequests": "Offen",
     "acceptedRequests": "Angenommen",

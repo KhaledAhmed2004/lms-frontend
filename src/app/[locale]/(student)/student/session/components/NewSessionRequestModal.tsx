@@ -18,6 +18,7 @@ import { useActiveSubjects } from '@/hooks/api/use-subjects';
 import { useCreateSessionRequest } from '@/hooks/api/use-session-requests';
 import { useActiveGrades } from '@/hooks/api/use-grades';
 import { useActiveSchoolTypes } from '@/hooks/api/use-school-types';
+import { useTranslations } from 'next-intl';
 
 interface NewSessionRequestModalProps {
   isOpen: boolean;
@@ -25,6 +26,7 @@ interface NewSessionRequestModalProps {
 }
 
 export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestModalProps) {
+  const t = useTranslations('newSessionRequestModal');
   // Simplified form: only subject, gradeLevel, schoolType, learningGoals, documents
   // No description or preferredDateTime needed (unlike trial request)
   const [formData, setFormData] = useState({
@@ -56,7 +58,7 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
       });
 
       // Show success toast
-      toast.success('Session request created successfully!');
+      toast.success(t('success'));
 
       // Reset form and close
       setFormData({
@@ -69,7 +71,7 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
       onClose();
     } catch (error) {
       console.error('Failed to create session request:', error);
-      toast.error('Failed to create session request');
+      toast.error(t('error'));
     }
   };
 
@@ -83,24 +85,24 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Request a New Session</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Subject */}
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject *</Label>
+            <Label htmlFor="subject">{t('subject')}</Label>
             <Select
               value={formData.subject}
               onValueChange={(value) => setFormData({ ...formData, subject: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a subject" />
+                <SelectValue placeholder={t('selectSubject')} />
               </SelectTrigger>
               <SelectContent>
                 {subjectsLoading ? (
                   <SelectItem value="loading" disabled>
-                    Loading...
+                    {t('loading')}
                   </SelectItem>
                 ) : (
                   subjects?.map((subject) => (
@@ -115,18 +117,18 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
 
           {/* Grade Level */}
           <div className="space-y-2">
-            <Label htmlFor="gradeLevel">Grade Level *</Label>
+            <Label htmlFor="gradeLevel">{t('gradeLevel')}</Label>
             <Select
               value={formData.gradeLevel}
               onValueChange={(value) => setFormData({ ...formData, gradeLevel: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select grade level" />
+                <SelectValue placeholder={t('selectGrade')} />
               </SelectTrigger>
               <SelectContent>
                 {gradesLoading ? (
                   <SelectItem value="loading" disabled>
-                    Loading...
+                    {t('loading')}
                   </SelectItem>
                 ) : (
                   grades?.map((grade) => (
@@ -141,18 +143,18 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
 
           {/* School Type */}
           <div className="space-y-2">
-            <Label htmlFor="schoolType">School Type *</Label>
+            <Label htmlFor="schoolType">{t('schoolType')}</Label>
             <Select
               value={formData.schoolType}
               onValueChange={(value) => setFormData({ ...formData, schoolType: value })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select school type" />
+                <SelectValue placeholder={t('selectSchoolType')} />
               </SelectTrigger>
               <SelectContent>
                 {schoolTypesLoading ? (
                   <SelectItem value="loading" disabled>
-                    Loading...
+                    {t('loading')}
                   </SelectItem>
                 ) : (
                   schoolTypes?.map((type) => (
@@ -167,10 +169,10 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
 
           {/* Learning Goals */}
           <div className="space-y-2">
-            <Label htmlFor="learningGoals">Learning Goals (Optional)</Label>
+            <Label htmlFor="learningGoals">{t('learningGoals')}</Label>
             <Textarea
               id="learningGoals"
-              placeholder="What do you want to achieve from this session?"
+              placeholder={t('learningGoalsPlaceholder')}
               value={formData.learningGoals}
               onChange={(e) => setFormData({ ...formData, learningGoals: e.target.value })}
               rows={2}
@@ -179,7 +181,7 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
 
           {/* Documents Upload */}
           <div className="space-y-2">
-            <Label>Attach Documents (Optional)</Label>
+            <Label>{t('attachDocuments')}</Label>
             <div className="border-2 border-dashed rounded-lg p-4 text-center">
               <input
                 type="file"
@@ -191,12 +193,12 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
               <label htmlFor="documents" className="cursor-pointer">
                 <Upload className="mx-auto h-8 w-8 text-gray-400" />
                 <p className="mt-2 text-sm text-gray-500">
-                  Click to upload files
+                  {t('uploadFiles')}
                 </p>
               </label>
               {documents.length > 0 && (
                 <div className="mt-2 text-sm text-gray-600">
-                  {documents.length} file(s) selected
+                  {t('filesSelected', { count: documents.length })}
                 </div>
               )}
             </div>
@@ -205,11 +207,11 @@ export function NewSessionRequestModal({ isOpen, onClose }: NewSessionRequestMod
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('cancel')}
             </Button>
             <Button type="submit" disabled={createRequest.isPending}>
               {createRequest.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Submit Request
+              {t('submit')}
             </Button>
           </div>
         </form>

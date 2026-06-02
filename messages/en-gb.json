@@ -933,6 +933,25 @@
     "of": "of",
     "next": "Next"
   },
+  "newSessionRequestModal": {
+    "success": "Session request created successfully!",
+    "error": "Failed to create session request",
+    "title": "Request a New Session",
+    "subject": "Subject *",
+    "selectSubject": "Select a subject",
+    "loading": "Loading...",
+    "gradeLevel": "Grade Level *",
+    "selectGrade": "Select grade level",
+    "schoolType": "School Type *",
+    "selectSchoolType": "Select school type",
+    "learningGoals": "Learning Goals (Optional)",
+    "learningGoalsPlaceholder": "What do you want to achieve from this session?",
+    "attachDocuments": "Attach Documents (Optional)",
+    "uploadFiles": "Click to upload files",
+    "filesSelected": "{count} file(s) selected",
+    "cancel": "Cancel",
+    "submit": "Submit Request"
+  },
   "student": {
     "requestSentSuccess": "Your request has been sent successfully!",
     "subscriptionActivated": "Subscription activated successfully!",
