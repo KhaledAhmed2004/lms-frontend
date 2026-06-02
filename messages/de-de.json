@@ -57,6 +57,7 @@
     "reset": {
       "title": "Passwort zurücksetzen",
       "subtitle": "Gib deine E-Mail ein und wir senden dir einen Link zum Zurücksetzen",
+      "emailLabel": "E-Mail",
       "emailPlaceholder": "E-Mail eingeben",
       "button": "Link anfordern",
       "backToLogin": "Zurück zur Anmeldung"
@@ -68,7 +69,8 @@
       "placeholder": "Neues Passwort eingeben",
       "confirmLabel": "Neues Passwort wiederholen",
       "confirmPlaceholder": "Neues Passwort eingeben",
-      "button": "Passwort festlegen"
+      "button": "Passwort festlegen",
+      "errorPasswordMismatch": "Passwörter stimmen nicht überein"
     }
   },
   "nav": {
@@ -87,6 +89,9 @@
     "availableSlot": "Verfügbare Termine",
     "legalPolicies": "Rechtliche Dokumente",
     "support": "Support",
+    "messages": "Nachrichten",
+    "resources": "Materialien",
+    "subscription": "Abonnement",
     "allPosts": "Alle Beiträge",
     "faq": "FAQ",
     "export": "Export",
@@ -184,7 +189,13 @@
     "colSubject": "Fach",
     "colRegistration": "Registrierungsdatum",
     "colSessions": "Nachhilfestunden",
-    "colAction": "Aktion"
+    "colAction": "Aktion",
+    "errorLoading": "Fehler beim Laden der Tutoren. Bitte versuchen Sie es erneut.",
+    "blockConfirmTitle": "Möchten Sie diesen Tutor wirklich sperren",
+    "unblockConfirmTitle": "Möchten Sie diesen Tutor wirklich entsperren",
+    "confirmQuestion": "?",
+    "blockConfirmDesc": "Sie werden keinen Zugriff mehr auf die Plattform haben.",
+    "cancel": "Abbrechen"
   },
   "sessions": {
     "totalSessions": "Stunden gesamt",
@@ -928,6 +939,7 @@
   },
   "common": {
     "showing": "Zeige {start} bis {end} von {total} Ergebnissen",
+    "loading": "Wird geladen...",
     "previous": "Zurück",
     "next": "Weiter",
     "cancel": "Abbrechen",

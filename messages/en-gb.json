@@ -57,6 +57,7 @@
     "reset": {
       "title": "Reset Password",
       "subtitle": "Enter the email and we will send you a link to reset your password",
+      "emailLabel": "E-Mail",
       "emailPlaceholder": "Enter your email",
       "button": "Request Reset Link",
       "backToLogin": "Back to login"
@@ -68,7 +69,8 @@
       "placeholder": "Enter new password",
       "confirmLabel": "Confirm New Password",
       "confirmPlaceholder": "Confirm new password",
-      "button": "Set Password"
+      "button": "Set Password",
+      "errorPasswordMismatch": "Passwords do not match"
     }
   },
   "nav": {
@@ -87,6 +89,9 @@
     "availableSlot": "Available Slot",
     "legalPolicies": "Legal Policies",
     "support": "Support",
+    "messages": "Messages",
+    "resources": "Resources",
+    "subscription": "Subscription",
     "allPosts": "All Posts",
     "faq": "FAQ",
     "export": "Export",
@@ -184,7 +189,13 @@
     "colSubject": "Subject",
     "colRegistration": "Registration Date",
     "colSessions": "Sessions",
-    "colAction": "Action"
+    "colAction": "Action",
+    "errorLoading": "Error loading tutors. Please try again.",
+    "blockConfirmTitle": "Are you sure you want to block",
+    "unblockConfirmTitle": "Are you sure you want to unblock",
+    "confirmQuestion": "?",
+    "blockConfirmDesc": "They will not be able to access the platform.",
+    "cancel": "Cancel"
   },
   "sessions": {
     "totalSessions": "Total Sessions",
@@ -928,6 +939,7 @@
   },
   "common": {
     "showing": "Showing {start} to {end} of {total} results",
+    "loading": "Loading...",
     "previous": "Previous",
     "next": "Next",
     "cancel": "Cancel",

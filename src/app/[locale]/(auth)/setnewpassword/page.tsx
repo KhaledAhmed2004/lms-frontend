@@ -14,7 +14,7 @@ const SetNewPasswordPage = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      console.error('Passwords do not match');
+      console.error(t('errorPasswordMismatch'));
       return;
     }
     console.log('Set new password:', { newPassword });

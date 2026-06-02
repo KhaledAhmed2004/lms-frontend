@@ -33,7 +33,7 @@ const ResetPasswordPage = () => {
             {/* Email Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-900 block">
-                Email
+                {t("emailLabel")}
               </label>
               <Input
                 type="email"

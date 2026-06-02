@@ -85,7 +85,7 @@ export default function TopNavbar() {
           </button>
 
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[#0B31BD] truncate">
-            Schäfer Tutoring
+            {t("title")}
           </h2>
         </div>
 
@@ -177,7 +177,7 @@ export default function TopNavbar() {
                 {user?.name || "Student"}
               </h3>
               <p className="text-xs lg:text-sm whitespace-nowrap text-end">
-                Student
+                {t("student")}
               </p>
             </div>
             <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full overflow-hidden border-2 border-[#0B31BD] flex-shrink-0">
