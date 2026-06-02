@@ -48,6 +48,7 @@ function FeedbackModal({
   const [comment, setComment] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const createReview = useCreateReview();
+  const t = useTranslations("sessionPage");
   const tStudent = useTranslations("student");
 
   const handleSubmit = async () => {
@@ -75,7 +76,7 @@ function FeedbackModal({
       }, 2000);
     } catch (error) {
       console.error("Failed to submit review:", error);
-      toast.error("Failed to submit feedback. Please try again.");
+      toast.error(t("feedbackError"));
     }
   };
 
@@ -94,13 +95,13 @@ function FeedbackModal({
         aria-describedby={undefined}
       >
         <VisuallyHidden>
-          <DialogTitle>Feedback Modal</DialogTitle>
+          <DialogTitle>{t("feedbackDialogTitle")}</DialogTitle>
         </VisuallyHidden>
 
         {!showSuccess ? (
           <div className="py-6 sm:py-8 px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Share Your Feedback
+              {t("feedbackTitle")}
             </h2>
             {session && (
               <p className="text-sm text-gray-600">
@@ -133,7 +134,7 @@ function FeedbackModal({
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="Add a comment (optional)"
+              placeholder={t("commentOptional")}
               className="w-full p-3 border border-gray-200 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#002AC8]/20"
               rows={3}
             />
@@ -145,7 +146,7 @@ function FeedbackModal({
                 onClick={handleClose}
                 className="flex-1 h-9 sm:h-10 text-sm sm:text-base"
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -155,7 +156,7 @@ function FeedbackModal({
                 {createReview.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  "Submit"
+                  t("submit")
                 )}
               </Button>
             </div>
@@ -166,7 +167,7 @@ function FeedbackModal({
               <Check className="w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 text-white" />
             </div>
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Success!
+              {t("feedbackSuccess")}
             </h3>
             <p className="text-base sm:text-lg text-gray-600">
               {tStudent("reviewSubmitted")}
@@ -207,6 +208,7 @@ function CancelRequestModal({
   onConfirm: () => void;
   isPending: boolean;
 }) {
+  const t = useTranslations("sessionPage");
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
@@ -214,14 +216,14 @@ function CancelRequestModal({
         aria-describedby={undefined}
       >
         <VisuallyHidden>
-          <DialogTitle>Cancel Request</DialogTitle>
+          <DialogTitle>{t("cancelModalTitle")}</DialogTitle>
         </VisuallyHidden>
         <div className="py-6 sm:py-8 px-4 sm:px-6 space-y-4 sm:space-y-6">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center">
-            Cancel Request
+            {t("cancelModalTitle")}
           </h2>
           <p className="text-sm text-gray-600 text-center">
-            Are you sure you want to cancel this session request?
+            {t("areYouSure")}
           </p>
 
           <div className="flex gap-3 sm:gap-4 pt-3 sm:pt-4">
@@ -230,7 +232,7 @@ function CancelRequestModal({
               onClick={onClose}
               className="flex-1 h-9 sm:h-10 text-sm sm:text-base"
             >
-              Keep Request
+              {t("keepRequest")}
             </Button>
             <Button
               onClick={onConfirm}
@@ -240,7 +242,7 @@ function CancelRequestModal({
               {isPending ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                "Cancel Request"
+                t("cancelRequest")
               )}
             </Button>
           </div>
@@ -262,6 +264,7 @@ function SessionRequestCard({
   onExtend: () => void;
   isExtending: boolean;
 }) {
+  const t = useTranslations("sessionPage");
   const subjectName =
     typeof request.subject === "object"
       ? request.subject.name
@@ -280,25 +283,25 @@ function SessionRequestCard({
       case "PENDING":
         return (
           <span className="text-xs px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded font-medium">
-            Pending
+            {t("statusPending")}
           </span>
         );
       case "ACCEPTED":
         return (
           <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded font-medium">
-            Accepted
+            {t("statusAccepted")}
           </span>
         );
       case "EXPIRED":
         return (
           <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded font-medium">
-            Expired
+            {t("statusExpired")}
           </span>
         );
       case "CANCELLED":
         return (
           <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 rounded font-medium">
-            Cancelled
+            {t("statusCancelled")}
           </span>
         );
       default:
@@ -317,7 +320,7 @@ function SessionRequestCard({
           {getStatusBadge()}
           {request.requestType === "TRIAL" && (
             <span className="text-xs px-2 py-0.5 bg-orange-100 text-orange-600 rounded font-medium">
-              Trial
+              {t("trial")}
             </span>
           )}
         </div>
@@ -338,7 +341,7 @@ function SessionRequestCard({
                 className={`flex-shrink-0 ${isExpiringSoon ? "text-red-500" : "text-gray-400"}`}
               />
               <span>
-                Expires {formatDistanceToNow(expiresAt, { addSuffix: true })}
+                {t("expires")} {formatDistanceToNow(expiresAt, { addSuffix: true })}
               </span>
             </div>
           )}
@@ -369,7 +372,7 @@ function SessionRequestCard({
               ) : (
                 <RefreshCw className="w-3 h-3 mr-1" />
               )}
-              Extend
+              {t("extend")}
             </Button>
           )}
           <Button
@@ -379,7 +382,7 @@ function SessionRequestCard({
             className="text-xs text-red-600 border-red-200 hover:bg-red-50"
           >
             <X className="w-3 h-3 mr-1" />
-            Cancel
+            {t("cancel")}
           </Button>
         </div>
       )}
@@ -401,6 +404,7 @@ function SessionCard({
   formatDate: (date: string) => string;
   formatTime: (date: string) => string;
 }) {
+  const t = useTranslations("sessionPage");
   const canJoin = isUpcoming && canJoinSession(session);
   // Backend returns 'COMPLETED' when review exists, 'PENDING' when not
   const hasReviewed =
@@ -422,7 +426,7 @@ function SessionCard({
           </h3>
           {session.isTrial && (
             <span className="text-xs px-2 py-0.5 bg-orange-100 text-orange-600 rounded font-medium">
-              Trial Session
+              {t("trialSession")}
             </span>
           )}
         </div>
@@ -460,7 +464,7 @@ function SessionCard({
           }`}
         >
           <Video size={16} />
-          {canJoin ? "Join Session" : "Not Started Yet"}
+          {canJoin ? t("joinSession") : t("notStartedYet")}
         </button>
       ) : (
         <button
@@ -472,7 +476,7 @@ function SessionCard({
               : "bg-[#002AC8] text-white hover:bg-blue-700"
           }`}
         >
-          {hasReviewed ? "Feedback Done" : "Give Feedback"}
+          {hasReviewed ? t("feedbackDone") : t("giveFeedback")}
         </button>
       )}
     </div>
@@ -480,6 +484,7 @@ function SessionCard({
 }
 
 export default function StudentSession() {
+  const t = useTranslations("sessionPage");
   const locale = useLocale();
   const dateLocale = locale === "de" ? de : enGB;
   const timeFormatString = locale === "de" ? "HH:mm" : "h:mm a";
@@ -543,11 +548,11 @@ export default function StudentSession() {
     if (!selectedRequest) return;
     try {
       await cancelRequest.mutateAsync(selectedRequest._id);
-      toast.success("Request cancelled successfully");
+      toast.success(t("requestCancelledSuccess"));
       setIsCancelModalOpen(false);
       setSelectedRequest(null);
     } catch (error) {
-      toast.error("Failed to cancel request");
+      toast.error(t("requestCancelledError"));
     }
   };
 
@@ -555,9 +560,9 @@ export default function StudentSession() {
     setExtendingRequestId(requestId);
     try {
       await extendRequest.mutateAsync(requestId);
-      toast.success("Request extended by 7 days");
+      toast.success(t("requestExtendedSuccess"));
     } catch (error) {
-      toast.error("Failed to extend request");
+      toast.error(t("requestExtendedError"));
     } finally {
       setExtendingRequestId(null);
     }
@@ -600,7 +605,7 @@ export default function StudentSession() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Upcoming ({upcomingSessions?.length || 0})
+            {t("upcomingTab")} ({upcomingSessions?.length || 0})
           </button>
           <button
             onClick={() => setActiveTab("completed")}
@@ -610,7 +615,7 @@ export default function StudentSession() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Completed ({completedSessions?.length || 0})
+            {t("completedTab")} ({completedSessions?.length || 0})
           </button>
           <button
             onClick={() => setActiveTab("requests")}
@@ -620,7 +625,7 @@ export default function StudentSession() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            My Requests ({pendingRequestsCount})
+            {t("myRequestsTab")} ({pendingRequestsCount})
           </button>
         </div>
 
@@ -653,9 +658,9 @@ export default function StudentSession() {
             ) : (
               <div className="text-center py-12 text-gray-500">
                 <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-                <p className="text-lg font-medium">No session requests</p>
+                <p className="text-lg font-medium">{t("noSessionRequests")}</p>
                 <p className="text-sm mt-1">
-                  Click "New Request" to request a tutoring session
+                  {t("newRequestInstructions")}
                 </p>
               </div>
             )
@@ -676,13 +681,13 @@ export default function StudentSession() {
               <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
               <p className="text-lg font-medium">
                 {activeTab === "upcoming"
-                  ? "No upcoming sessions"
-                  : "No completed sessions yet"}
+                  ? t("noUpcomingSessions")
+                  : t("noCompletedSessions")}
               </p>
               <p className="text-sm mt-1">
                 {activeTab === "upcoming"
-                  ? "Your scheduled sessions will appear here"
-                  : "Your completed sessions will appear here"}
+                  ? t("upcomingSessionsPlaceholder")
+                  : t("completedSessionsPlaceholder")}
               </p>
             </div>
           )}
