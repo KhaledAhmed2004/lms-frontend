@@ -2,46 +2,48 @@
 
 import React, { useState } from 'react';
 import { User, AlertCircle, MessageSquare, Star } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function NotificationsPage() {
+  const t = useTranslations('notificationsPage');
   const [notifications, setNotifications] = useState([
     {
       id: 1,
       type: 'success',
       icon: User,
-      message: 'User "john@example.com" has successfully upgraded from Free to Pro.',
-      timestamp: '2 min ago',
+      message: t('mockup1'),
+      timestamp: `2 ${t('minAgo')}`,
       read: false,
     },
     {
       id: 2,
       type: 'error',
       icon: AlertCircle,
-      message: 'User "sadia.user42@gmail.com" attempted to upgrade to Pro but encountered an issue',
-      timestamp: '10 mins ago',
+      message: t('mockup2'),
+      timestamp: `10 ${t('minAgo')}`,
       read: false,
     },
     {
       id: 3,
       type: 'suggestion',
       icon: MessageSquare,
-      message: 'User "rahim.khan12" submitted a new suggestion: "Please add a savings goal tracker."',
-      timestamp: '30 min ago',
+      message: t('mockup3'),
+      timestamp: `30 ${t('minAgo')}`,
       read: false,
     },
     {
       id: 4,
       type: 'review',
       icon: Star,
-      message: 'User "tasnia_98" left a 5-star review on the Play Store: "Very useful app. Helped me track my expenses easily!"',
-      timestamp: '2 hours ago',
+      message: t('mockup4'),
+      timestamp: `2 ${t('hour')}${t('hoursSuffix')} ${t('ago')}`,
       read: false,
     },
     {
       id: 5,
       type: 'request',
       icon: MessageSquare,
-      message: 'User "robin_dev23" has submitted a request to review the app.',
+      message: t('mockup5'),
       timestamp: 'Yesterday',
       read: true,
     },
@@ -96,12 +98,12 @@ export default function NotificationsPage() {
       <div className="mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('title')}</h1>
           <button
             onClick={handleMarkAllAsRead}
             className="text-blue-600 hover:text-blue-700 font-medium text-sm"
           >
-            Mark all as read
+            {t('markAllAsRead')}
           </button>
         </div>
 
@@ -141,7 +143,7 @@ export default function NotificationsPage() {
             })
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">No notifications</p>
+              <p className="text-gray-500">{t('noNotifications')}</p>
             </div>
           )}
         </div>
@@ -150,7 +152,7 @@ export default function NotificationsPage() {
         {notifications.every(n => n.read) && (
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              You&apos;re all caught up! No new notifications.
+              {t('allCaughtUp')}
             </p>
           </div>
         )}
