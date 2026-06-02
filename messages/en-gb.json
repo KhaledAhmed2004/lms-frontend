@@ -616,7 +616,14 @@
     "typeStudentPayment": "Student Payment",
     "typeTutorPayout": "Tutor Payout",
     "loadingTransactions": "Loading transactions...",
-    "noTransactions": "No transactions found"
+    "noTransactions": "No transactions found",
+    "viewDetails": "View Details",
+    "transactionDetails": "Transaction Details",
+    "userInfo": "User Information",
+    "noDescription": "No description provided",
+    "sessions": "Sessions",
+    "totalHours": "Total Hours",
+    "showing": "Showing {start} to {end} of {total} {transactions}"
   },
   "support": {
     "totalTickets": "Total Tickets",
