@@ -21,8 +21,10 @@ import {
   useTutorReviews,
   useTutorReviewStats,
 } from '@/hooks/api';
+import { useTranslations } from 'next-intl';
 
 const TutorDetailsContent = () => {
+  const t = useTranslations('tutorDetails');
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = searchParams.get('id') || '';
@@ -42,10 +44,10 @@ const TutorDetailsContent = () => {
   const handleBlock = () => {
     blockTutor(id, {
       onSuccess: () => {
-        toast.success('Tutor blocked successfully');
+        toast.success(t('blockSuccess'));
       },
       onError: (error: any) => {
-        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to block tutor');
+        toast.error(error?.getFullMessage?.() || error?.message || t('blockFailed'));
       },
     });
   };
@@ -53,16 +55,16 @@ const TutorDetailsContent = () => {
   const handleUnblock = () => {
     unblockTutor(id, {
       onSuccess: () => {
-        toast.success('Tutor unblocked successfully');
+        toast.success(t('unblockSuccess'));
       },
       onError: (error: any) => {
-        toast.error(error?.getFullMessage?.() || error?.message || 'Failed to unblock tutor');
+        toast.error(error?.getFullMessage?.() || error?.message || t('unblockFailed'));
       },
     });
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return '-';
+    if (!dateString) return t('na');
     return new Date(dateString).toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
@@ -77,7 +79,7 @@ const TutorDetailsContent = () => {
   };
 
   const getStatusLabel = (status: string) => {
-    return status === 'ACTIVE' ? 'Active' : 'Blocked';
+    return status === 'ACTIVE' ? t('active') : t('blocked');
   };
 
   const renderStars = (rating: number) => {
@@ -135,10 +137,10 @@ const TutorDetailsContent = () => {
   if (error || !tutor) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
-        <p className="text-red-500">Tutor not found or error loading details.</p>
+        <p className="text-red-500">{t('notFound')}</p>
         <Button variant="outline" onClick={() => router.push('/admin/tutor')}>
           <ArrowLeft className="mr-2" size={16} />
-          Back to Tutors
+          {t('backToTutors')}
         </Button>
       </div>
     );
@@ -154,7 +156,7 @@ const TutorDetailsContent = () => {
           className="gap-2"
         >
           <ArrowLeft size={16} />
-          Back
+          {t('back')}
         </Button>
         <div className="flex items-center gap-3">
           <Badge className={`${getStatusColor(tutor.status)} border-0 text-sm px-3 py-1`}>
@@ -166,7 +168,7 @@ const TutorDetailsContent = () => {
             className="gap-2"
           >
             <Edit size={16} />
-            Edit
+            {t('edit')}
           </Button>
         </div>
       </div>
@@ -176,7 +178,7 @@ const TutorDetailsContent = () => {
         <CardHeader>
           <div>
             <h1 className="text-xl font-bold text-gray-700">
-              Information of {tutor.name}
+              {t('informationOf')} {tutor.name}
             </h1>
           </div>
         </CardHeader>
@@ -185,17 +187,17 @@ const TutorDetailsContent = () => {
             {/* Left Column */}
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Full Name</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('fullName')}</p>
                 <p className="text-gray-900 font-medium">{tutor.name}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Phone</p>
-                <p className="text-gray-900 font-medium">{tutor.phone || '-'}</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('phone')}</p>
+                <p className="text-gray-900 font-medium">{tutor.phone || t('na')}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Address</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('address')}</p>
                 <p className="text-gray-900 font-medium">
-                  {tutor.tutorProfile?.address || tutor.location || '-'}
+                  {tutor.tutorProfile?.address || tutor.location || t('na')}
                 </p>
               </div>
             </div>
@@ -203,17 +205,17 @@ const TutorDetailsContent = () => {
             {/* Right Column */}
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Email</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('email')}</p>
                 <p className="text-gray-900 font-medium">{tutor.email}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Date of Birth</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('dateOfBirth')}</p>
                 <p className="text-gray-900 font-medium">
                   {formatDate(tutor.tutorProfile?.birthDate || tutor.dateOfBirth)}
                 </p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-2">Member Since</p>
+                <p className="text-sm font-medium text-gray-600 mb-2">{t('memberSince')}</p>
                 <p className="text-gray-900 font-medium">{formatDate(tutor.createdAt)}</p>
               </div>
             </div>
@@ -224,8 +226,8 @@ const TutorDetailsContent = () => {
       {/* Statistics Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Statistics</CardTitle>
-          <CardDescription>Tutor performance overview</CardDescription>
+          <CardTitle>{t('statistics')}</CardTitle>
+          <CardDescription>{t('performanceOverview')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-4 gap-6">
@@ -233,25 +235,25 @@ const TutorDetailsContent = () => {
               <p className="text-2xl font-bold text-gray-900">
                 {tutor.tutorProfile?.totalSessions || 0}
               </p>
-              <p className="text-sm text-gray-600">Total Sessions</p>
+              <p className="text-sm text-gray-600">{t('totalSessions')}</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <p className="text-2xl font-bold text-gray-900">
                 {tutor.tutorProfile?.completedSessions || 0}
               </p>
-              <p className="text-sm text-gray-600">Completed</p>
+              <p className="text-sm text-gray-600">{t('completed')}</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <p className="text-2xl font-bold text-gray-900">
                 {tutor.tutorProfile?.totalStudents || 0}
               </p>
-              <p className="text-sm text-gray-600">Students</p>
+              <p className="text-sm text-gray-600">{t('students')}</p>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <p className="text-2xl font-bold text-gray-900">
                 {tutor.tutorProfile?.level || 'STARTER'}
               </p>
-              <p className="text-sm text-gray-600">Level</p>
+              <p className="text-sm text-gray-600">{t('level')}</p>
             </div>
           </div>
         </CardContent>
@@ -260,8 +262,8 @@ const TutorDetailsContent = () => {
       {/* Teaching Preferences Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Teaching Preferences</CardTitle>
-          <CardDescription>Subjects this tutor teaches</CardDescription>
+          <CardTitle>{t('preferences')}</CardTitle>
+          <CardDescription>{t('subjectsDescription')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-2">
@@ -275,7 +277,7 @@ const TutorDetailsContent = () => {
                 </Badge>
               ))
             ) : (
-              <p className="text-gray-500">No subjects assigned</p>
+              <p className="text-gray-500">{t('noSubjects')}</p>
             )}
           </div>
         </CardContent>
@@ -284,9 +286,9 @@ const TutorDetailsContent = () => {
       {/* Reviews Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Reviews</CardTitle>
+          <CardTitle>{t('reviews')}</CardTitle>
           <CardDescription>
-            {reviewStats?.totalReviews || 0} reviews - Average: {reviewStats?.averageOverallRating?.toFixed(1) || '0.0'}/5
+            {reviewStats?.totalReviews || 0} {t('reviewsAverage')} {reviewStats?.averageOverallRating?.toFixed(1) || '0.0'}/5
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -300,15 +302,15 @@ const TutorDetailsContent = () => {
                       {review.overallRating}/5
                     </span>
                     {!review.isPublic && (
-                      <Badge variant="outline" className="text-xs bg-yellow-50">Private</Badge>
+                      <Badge variant="outline" className="text-xs bg-yellow-50">{t('private')}</Badge>
                     )}
                   </div>
                   <p className="text-sm text-gray-700 mb-2">
-                    {review.comment || 'No comment provided'}
+                    {review.comment || t('noComment')}
                   </p>
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <span>
-                      By: {typeof review.studentId === 'object' ? review.studentId?.name : 'Anonymous'}
+                      {t('by')} {typeof review.studentId === 'object' ? review.studentId?.name : t('anonymous')}
                     </span>
                     <span>{formatDate(review.createdAt)}</span>
                   </div>
@@ -316,7 +318,7 @@ const TutorDetailsContent = () => {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-8">No reviews yet</p>
+            <p className="text-gray-500 text-center py-8">{t('noReviews')}</p>
           )}
         </CardContent>
       </Card>
@@ -324,7 +326,7 @@ const TutorDetailsContent = () => {
       {/* Uploaded Files Section */}
       <Card className="border-gray-200">
         <CardHeader>
-          <CardTitle>Uploaded Files</CardTitle>
+          <CardTitle>{t('files')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -336,8 +338,8 @@ const TutorDetailsContent = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">CV / Resume</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('cv')}</p>
+                    <p className="text-xs text-gray-500">{t('cvType')}</p>
                   </div>
                 </div>
                 <Button
@@ -346,7 +348,7 @@ const TutorDetailsContent = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(tutor.tutorProfile?.cvUrl, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
@@ -359,8 +361,8 @@ const TutorDetailsContent = () => {
                     <FileText size={20} className="text-gray-600" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">Abitur Certificate</p>
-                    <p className="text-xs text-gray-500">PDF</p>
+                    <p className="font-medium text-gray-900">{t('abitur')}</p>
+                    <p className="text-xs text-gray-500">{t('cvType')}</p>
                   </div>
                 </div>
                 <Button
@@ -369,14 +371,14 @@ const TutorDetailsContent = () => {
                   className="border-blue-600 text-blue-600 hover:bg-blue-50"
                   onClick={() => window.open(tutor.tutorProfile?.abiturCertificateUrl, '_blank')}
                 >
-                  View File
+                  {t('viewFile')}
                 </Button>
               </div>
             )}
 
             {/* No files */}
             {!tutor.tutorProfile?.cvUrl && !tutor.tutorProfile?.abiturCertificateUrl && (
-              <p className="text-gray-500 text-center py-4">No files uploaded</p>
+              <p className="text-gray-500 text-center py-4">{t('noFiles')}</p>
             )}
           </div>
         </CardContent>
@@ -390,7 +392,7 @@ const TutorDetailsContent = () => {
           className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8"
         >
           <Edit className="mr-2 h-4 w-4" />
-          Edit Profile
+          {t('editProfile')}
         </Button>
         {tutor.status === 'ACTIVE' ? (
           <Button
@@ -400,7 +402,7 @@ const TutorDetailsContent = () => {
             className="border-red-600 text-red-600 hover:bg-red-50 px-8"
           >
             {isBlocking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Block Tutor
+            {t('blockTutor')}
           </Button>
         ) : (
           <Button
@@ -409,7 +411,7 @@ const TutorDetailsContent = () => {
             className="bg-green-600 hover:bg-green-700 text-white px-8"
           >
             {isUnblocking && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Unblock Tutor
+            {t('unblockTutor')}
           </Button>
         )}
       </div>
