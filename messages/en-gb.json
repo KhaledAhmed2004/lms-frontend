@@ -111,6 +111,20 @@
       "errorPasswordMismatch": "Passwords do not match"
     }
   },
+  "teacherHeader": {
+    "newStudentRequest": "New Student Request",
+    "sessionReminder": "Session Reminder",
+    "paymentReceived": "Payment Received",
+    "newMessage": "New Message",
+    "newStudentRequestMsg": "Emma Wilson has requested a chemistry tutoring session",
+    "sessionReminderMsg": "You have a math session with John Smith in 30 minutes",
+    "paymentReceivedMsg": "Payment of $75 has been credited to your account",
+    "newMessageMsg": "Sarah Johnson sent you a message",
+    "fiveMinAgo": "5 min ago",
+    "oneHourAgo": "1 hour ago",
+    "twoHoursAgo": "2 hours ago",
+    "yesterday": "Yesterday"
+  },
   "nav": {
     "overview": "Overview",
     "student": "Student",
@@ -970,6 +984,43 @@
     "page": "Page",
     "of": "of",
     "next": "Next"
+  },
+  "subscriptionPage": {
+    "subscriptionUsage": "Subscription Usage",
+    "noPlan": "No Plan",
+    "noActivePlan": "No Active Plan",
+    "changePlan": "Change Plan",
+    "usage": "Usage",
+    "lesson": "Lesson",
+    "lessons": "Lessons",
+    "left": "Left",
+    "sessionsCompleted": "Sessions completed:",
+    "noMinimumCommitment": "No minimum commitment",
+    "usageSoFar": "Your current usage amounts to",
+    "thisMonth": "this month",
+    "noActiveSubscription": "No active subscription. Subscribe to a plan to start tracking your usage.",
+    "paymentHistory": "Payment History",
+    "period": "Period",
+    "sessions": "Sessions",
+    "amount": "Amount",
+    "action": "Action",
+    "download": "Download",
+    "noInvoice": "No invoice",
+    "noInvoiceAvailable": "No invoice available",
+    "noPaymentMethods": "No payment methods saved yet.",
+    "addFirstPaymentMethod": "Add your first payment method",
+    "setDefault": "Set Default",
+    "deletePaymentMethodConfirm": "Are you sure you want to delete this payment method?",
+    "noPaymentHistory": "No payment history yet."
+  },
+  "changePlanModal": {
+    "title": "Change Your Plan",
+    "description": "Select a plan that best fits your learning needs.",
+    "current": "Current",
+    "perHour": "/hour",
+    "cancel": "Cancel",
+    "currentPlan": "Current Plan",
+    "changePlan": "Change Plan"
   },
   "newSessionRequestModal": {
     "success": "Session request created successfully!",

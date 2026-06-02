@@ -111,6 +111,20 @@
       "errorPasswordMismatch": "Passwörter stimmen nicht überein"
     }
   },
+  "teacherHeader": {
+    "newStudentRequest": "Neue Anfragen",
+    "sessionReminder": "Erinnerung",
+    "paymentReceived": "Zahlung erhalten",
+    "newMessage": "Neue Nachricht",
+    "newStudentRequestMsg": "Emma Wilson hat eine Chemie-Nachhilfestunde angefragt",
+    "sessionReminderMsg": "Du hast eine Mathe-Stunde mit John Smith in 30 Minuten",
+    "paymentReceivedMsg": "Eine Zahlung von 75 $ wurde deinem Konto gutgeschrieben",
+    "newMessageMsg": "Sarah Johnson hat dir eine Nachricht gesendet",
+    "fiveMinAgo": "vor 5 Min.",
+    "oneHourAgo": "vor 1 Std.",
+    "twoHoursAgo": "vor 2 Std.",
+    "yesterday": "Gestern"
+  },
   "nav": {
     "overview": "Übersicht",
     "student": "Schüler",
@@ -874,6 +888,43 @@
     "page": "Seite",
     "of": "von",
     "next": "Weiter"
+  },
+  "subscriptionPage": {
+    "subscriptionUsage": "Nutzung",
+    "noPlan": "Kein Abonnement",
+    "noActivePlan": "Kein aktives Abonnement",
+    "changePlan": "Abonnement ändern",
+    "usage": "Nutzung",
+    "lesson": "Einheit",
+    "lessons": "Einheiten",
+    "left": "Verbleibend",
+    "sessionsCompleted": "Abgeschlossene Einheiten",
+    "noMinimumCommitment": "Keine Mindestlaufzeit",
+    "usageSoFar": "Nutzung bisher",
+    "thisMonth": "Monat",
+    "noActiveSubscription": "Kein aktives Abo. Plan auswählen, um Nutzung zu sehen.",
+    "paymentHistory": "Zahlungsverlauf",
+    "period": "Zeitraum",
+    "sessions": "Einheiten",
+    "amount": "Betrag",
+    "action": "Aktion",
+    "download": "Herunterladen",
+    "noInvoice": "Keine Rechnung",
+    "noInvoiceAvailable": "Keine Rechnung verfügbar",
+    "noPaymentMethods": "Keine Zahlungsmethode gespeichert.",
+    "addFirstPaymentMethod": "Erste Zahlungsmethode hinzufügen",
+    "setDefault": "Als Standard festlegen",
+    "deletePaymentMethodConfirm": "Sind Sie sicher, dass Sie diese Zahlungsmethode löschen möchten?",
+    "noPaymentHistory": "Noch kein Zahlungsverlauf."
+  },
+  "changePlanModal": {
+    "title": "Abonnement ändern",
+    "description": "Wähle dein passendes Abonnement.",
+    "current": "Aktuell",
+    "perHour": "/Stunde",
+    "cancel": "Abbrechen",
+    "currentPlan": "Aktuelles Abonnement",
+    "changePlan": "Abonnement ändern"
   },
   "newSessionRequestModal": {
     "success": "Vorschlag erfolgreich erstellt!",

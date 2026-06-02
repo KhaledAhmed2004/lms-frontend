@@ -22,10 +22,12 @@ import {
 import { Download } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { AddPaymentMethodModal } from "./components/AddPaymentMethodModal";
 import { ChangePlanModal } from "./components/ChangePlanModal";
 
 export default function StudentSubscriptionPage() {
+  const t = useTranslations("subscriptionPage");
   const [currentPage, setCurrentPage] = useState(1);
   const [isAddPaymentModalOpen, setIsAddPaymentModalOpen] = useState(false);
   const [isChangePlanModalOpen, setIsChangePlanModalOpen] = useState(false);
@@ -59,7 +61,7 @@ export default function StudentSubscriptionPage() {
   // Get plan display name
   const planName = planUsage?.plan.name
     ? PLAN_DISPLAY_NAMES[planUsage.plan.name]
-    : "No Plan";
+    : t("noPlan");
   const planDetails = planUsage?.plan.name
     ? PLAN_DETAILS[planUsage.plan.name]
     : null;
@@ -68,7 +70,7 @@ export default function StudentSubscriptionPage() {
   const totalPages = paymentHistoryData?.pagination.totalPages || 1;
 
   const handleDeletePaymentMethod = async (paymentMethodId: string) => {
-    if (confirm("Are you sure you want to delete this payment method?")) {
+    if (confirm(t("deletePaymentMethodConfirm"))) {
       deletePaymentMethod.mutate(paymentMethodId);
     }
   };
@@ -81,7 +83,7 @@ export default function StudentSubscriptionPage() {
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       {/* Subscription Usage Section */}
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-        Subscription Usage
+        {t("subscriptionUsage")}
       </h2>
       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6 space-y-4 sm:space-y-5 lg:space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4 sm:mb-5 lg:mb-6">
@@ -106,7 +108,7 @@ export default function StudentSubscriptionPage() {
           ) : (
             <div className="flex items-center gap-1.5 sm:gap-2 bg-gray-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg w-fit">
               <span className="font-semibold text-sm sm:text-base">
-                No Active Plan
+                {t("noActivePlan")}
               </span>
             </div>
           )}
@@ -118,7 +120,7 @@ export default function StudentSubscriptionPage() {
               onClick={() => setIsChangePlanModalOpen(true)}
               className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#FF8A00] hover:bg-[#ee8607] text-white font-semibold rounded-lg transition-colors text-sm sm:text-base"
             >
-              Change Plan
+              {t("changePlan")}
             </button>
           )}
         </div>
@@ -135,13 +137,13 @@ export default function StudentSubscriptionPage() {
             {planUsage?.usage.hoursRemaining !== null ? (
               <>
                 <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
-                  <span>Usage {usagePercentage}%</span>
+                  <span>{t("usage")} {usagePercentage}%</span>
                   <span className="text-[#3052D2]">
                     {planUsage.usage.hoursRemaining}{" "}
                     {planUsage.usage.hoursRemaining === 1
-                      ? "Lesson"
-                      : "Lessons"}{" "}
-                    Left
+                      ? t("lesson")
+                      : t("lessons")}{" "}
+                    {t("left")}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 sm:h-3">
@@ -155,9 +157,9 @@ export default function StudentSubscriptionPage() {
               /* FLEXIBLE plan - no usage limits */
               <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600">
                 <span>
-                  Sessions completed: {planUsage.usage.sessionsCompleted}
+                  {t("sessionsCompleted")}: {planUsage.usage.sessionsCompleted}
                 </span>
-                <span className="text-[#3052D2]">No minimum commitment</span>
+                <span className="text-[#3052D2]">{t("noMinimumCommitment")}</span>
               </div>
             )}
             <div className="bg-[#FFF4E6] border border-[#FFB256] rounded-lg p-2.5 sm:p-3 flex items-start gap-2 mt-3 sm:mt-5">
@@ -169,19 +171,18 @@ export default function StudentSubscriptionPage() {
                 className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0"
               />
               <p className="text-xs sm:text-sm text-amber-800">
-                Your current usage amounts to{" "}
+                {t("usageSoFar")}{" "}
                 <span className="font-semibold">
                   {planUsage.spending.currentMonthSpending.toFixed(2)}€
                 </span>{" "}
-                this month
+                {t("thisMonth")}
               </p>
             </div>
           </div>
         ) : (
           <div className="text-center py-8 text-gray-500">
             <p>
-              No active subscription. Subscribe to a plan to start tracking your
-              usage.
+              {t("noActiveSubscription")}
             </p>
           </div>
         )}
@@ -300,7 +301,7 @@ export default function StudentSubscriptionPage() {
                       disabled={setDefaultPaymentMethod.isPending}
                       className="px-3 py-1.5 text-xs font-medium text-[#002AC8] hover:bg-blue-50 rounded transition-colors disabled:opacity-50"
                     >
-                      Set Default
+                      {t("setDefault")}
                     </button>
                   )}
                   <button
@@ -321,12 +322,12 @@ export default function StudentSubscriptionPage() {
         ) : (
           <div className="text-center py-8 text-gray-500">
             <CreditCard className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-            <p>No payment methods saved yet.</p>
+            <p>{t("noPaymentMethods")}</p>
             <button
               onClick={() => setIsAddPaymentModalOpen(true)}
               className="mt-3 text-[#002AC8] font-medium hover:underline"
             >
-              Add your first payment method
+              {t("addFirstPaymentMethod")}
             </button>
           </div>
         )}
@@ -334,7 +335,7 @@ export default function StudentSubscriptionPage() {
 
       {/* Payment Overview Section */}
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-5 lg:mb-6">
-        Payment History
+        {t("paymentHistory")}
       </h2>
       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
         {/* <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4 sm:mb-5 lg:mb-6">
@@ -355,16 +356,16 @@ export default function StudentSubscriptionPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                      Period
+                      {t("period")}
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                      Sessions
+                      {t("sessions")}
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                      Amount
+                      {t("amount")}
                     </th>
                     <th className="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider border-b border-gray-200">
-                      Action
+                      {t("action")}
                     </th>
                   </tr>
                 </thead>
@@ -397,11 +398,11 @@ export default function StudentSubscriptionPage() {
                             className="bg-[#002AC8] text-white px-6 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center gap-2"
                           >
                             <Download className="w-4 h-4" />
-                            Download
+                            {t("download")}
                           </a>
                         ) : (
                           <span className="text-gray-400 text-sm">
-                            No invoice
+                            {t("noInvoice")}
                           </span>
                         )}
                       </td>
@@ -421,7 +422,7 @@ export default function StudentSubscriptionPage() {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Period
+                        {t("period")}
                       </p>
                       <p className="text-sm font-semibold text-gray-900">
                         {record.period}
@@ -429,7 +430,7 @@ export default function StudentSubscriptionPage() {
                     </div>
                     <div>
                       <p className="text-xs text-gray-500 font-medium">
-                        Sessions
+                        {t("sessions")}
                       </p>
                       <p className="text-sm font-semibold text-gray-900">
                         {record.sessions}
@@ -437,7 +438,7 @@ export default function StudentSubscriptionPage() {
                     </div>
                     <div className="col-span-2">
                       <p className="text-xs text-gray-500 font-medium">
-                        Amount
+                        {t("amount")}
                       </p>
                       <p className="text-base font-bold text-gray-900">
                         {record.amount.toFixed(2)} {record.currency}
@@ -452,11 +453,11 @@ export default function StudentSubscriptionPage() {
                       className="w-full bg-[#002AC8] text-white px-4 py-2 rounded-lg hover:bg-[#0024a8] transition-colors font-medium inline-flex items-center justify-center gap-2"
                     >
                       <Download className="w-4 h-4" />
-                      Download
+                      {t("download")}
                     </a>
                   ) : (
                     <span className="text-gray-400 text-sm block text-center">
-                      No invoice available
+                      {t("noInvoiceAvailable")}
                     </span>
                   )}
                 </div>
@@ -532,7 +533,7 @@ export default function StudentSubscriptionPage() {
           </>
         ) : (
           <div className="text-center py-8 text-gray-500">
-            <p>No payment history yet.</p>
+            <p>{t("noPaymentHistory")}</p>
           </div>
         )}
       </div>
