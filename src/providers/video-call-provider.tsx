@@ -47,9 +47,11 @@ interface VideoCallContextType {
   // Agora state
   localVideoTrack: any;
   localAudioTrack: any;
+  localScreenTrack: any;
   remoteUsers: any[];
   isAudioMuted: boolean;
   isVideoMuted: boolean;
+  isScreenSharing: boolean;
   isAudioOnly: boolean;
   deviceError: DeviceErrorType | null;
 
@@ -60,6 +62,7 @@ interface VideoCallContextType {
   endCall: () => void;
   toggleAudio: () => void;
   toggleVideo: () => void;
+  toggleScreenShare: () => void;
 
   // Session-based call (for tutoring sessions)
   joinSessionCall: (sessionId: string, otherUserId: string, otherUserName: string, endTime?: Date) => void;
@@ -384,9 +387,11 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
 
     localVideoTrack: agora.localVideoTrack,
     localAudioTrack: agora.localAudioTrack,
+    localScreenTrack: agora.localScreenTrack,
     remoteUsers: agora.remoteUsers,
     isAudioMuted: agora.isAudioMuted,
     isVideoMuted: agora.isVideoMuted,
+    isScreenSharing: agora.isScreenSharing,
     isAudioOnly: agora.isAudioOnly,
     deviceError: agora.deviceError,
 
@@ -396,6 +401,7 @@ export default function VideoCallProvider({ children }: { children: ReactNode })
     endCall,
     toggleAudio: agora.toggleAudio,
     toggleVideo: agora.toggleVideo,
+    toggleScreenShare: agora.isScreenSharing ? agora.stopScreenShare : agora.startScreenShare,
 
     joinSessionCall,
   };

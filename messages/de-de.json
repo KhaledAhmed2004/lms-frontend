@@ -111,6 +111,22 @@
       "errorPasswordMismatch": "Passwörter stimmen nicht überein"
     }
   },
+  "videoCall": {
+    "shareScreen": "Bildschirm teilen",
+    "stopSharing": "Teilen beenden",
+    "muteMic": "Mikrofon stummgeschaltet",
+    "unmuteMic": "Mikrofon einschalten",
+    "turnOffVideo": "Video ausschalten",
+    "turnOnVideo": "Video einschalten",
+    "endCall": "Anruf beenden",
+    "waitingForParticipant": "Warten auf den anderen Teilnehmer...",
+    "fullscreen": "Vollbild",
+    "exitFullscreen": "Vollbild beenden",
+    "unknown": "Unbekannt",
+    "connecting": "Verbinde...",
+    "participant": "Teilnehmer",
+    "cameraOff": "Kamera aus"
+  },
   "teacherHeader": {
     "newStudentRequest": "Neue Anfragen",
     "sessionReminder": "Erinnerung",

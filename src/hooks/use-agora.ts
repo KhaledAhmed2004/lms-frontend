@@ -6,6 +6,7 @@ import type {
   IAgoraRTCRemoteUser,
   ICameraVideoTrack,
   IMicrophoneAudioTrack,
+  ILocalVideoTrack,
 } from 'agora-rtc-sdk-ng';
 
 // Agora App ID from environment variable
@@ -22,15 +23,18 @@ interface UseAgoraOptions {
   onLocalJoined?: (uid: number) => void;  // Called when local user successfully joins
   onError?: (error: Error) => void;
   onDeviceError?: (errorType: DeviceErrorType, message: string) => void;  // Called for device-specific errors
+  onScreenShareStopped?: () => void; // Called when user stops screen share via browser UI
 }
 
 interface AgoraState {
   localVideoTrack: ICameraVideoTrack | null;
   localAudioTrack: IMicrophoneAudioTrack | null;
+  localScreenTrack: ILocalVideoTrack | null;
   remoteUsers: IAgoraRTCRemoteUser[];
   callState: CallState;
   isAudioMuted: boolean;
   isVideoMuted: boolean;
+  isScreenSharing: boolean;
   error: string | null;
   deviceError: DeviceErrorType | null;
   isAudioOnly: boolean;  // True if joined with audio only due to camera issues
@@ -73,10 +77,12 @@ export function useAgora(options: UseAgoraOptions = {}) {
   const [state, setState] = useState<AgoraState>({
     localVideoTrack: null,
     localAudioTrack: null,
+    localScreenTrack: null,
     remoteUsers: [],
     callState: 'idle',
     isAudioMuted: false,
     isVideoMuted: false,
+    isScreenSharing: false,
     error: null,
     deviceError: null,
     isAudioOnly: false,
@@ -261,6 +267,8 @@ export function useAgora(options: UseAgoraOptions = {}) {
       state.localAudioTrack?.close();
       state.localVideoTrack?.stop();
       state.localVideoTrack?.close();
+      state.localScreenTrack?.stop();
+      state.localScreenTrack?.close();
 
       // Leave the channel
       await client.leave();
@@ -268,10 +276,12 @@ export function useAgora(options: UseAgoraOptions = {}) {
       setState({
         localVideoTrack: null,
         localAudioTrack: null,
+        localScreenTrack: null,
         remoteUsers: [],
         callState: 'idle',
         isAudioMuted: false,
         isVideoMuted: false,
+        isScreenSharing: false,
         error: null,
         deviceError: null,
         isAudioOnly: false,
@@ -285,12 +295,94 @@ export function useAgora(options: UseAgoraOptions = {}) {
         callState: 'idle',
         localVideoTrack: null,
         localAudioTrack: null,
+        localScreenTrack: null,
         remoteUsers: [],
         deviceError: null,
         isAudioOnly: false,
+        isScreenSharing: false,
       }));
     }
-  }, [state.localAudioTrack, state.localVideoTrack]);
+  }, [state.localAudioTrack, state.localVideoTrack, state.localScreenTrack]);
+
+  // Start screen sharing
+  const startScreenShare = useCallback(async () => {
+    const client = clientRef.current;
+    const AgoraRTC = agoraRef.current;
+    if (!client || !AgoraRTC || state.isScreenSharing) return;
+
+    try {
+      // Create screen track
+      const screenTrack = await AgoraRTC.createScreenVideoTrack({
+        encoderConfig: '1080p_1',
+      }, 'auto');
+
+      // Handle "Stop Sharing" from browser UI
+      if (screenTrack instanceof Array) {
+        // Some browser versions return [video, audio]
+        const videoTrack = screenTrack[0];
+        videoTrack.on('track-ended', () => {
+          stopScreenShare();
+          options.onScreenShareStopped?.();
+        });
+      } else {
+        screenTrack.on('track-ended', () => {
+          stopScreenShare();
+          options.onScreenShareStopped?.();
+        });
+      }
+
+      // If we have a regular video track, unpublish it first
+      if (state.localVideoTrack) {
+        await client.unpublish(state.localVideoTrack);
+      }
+
+      // Publish screen track
+      const trackToPublish = screenTrack instanceof Array ? screenTrack[0] : screenTrack;
+      await client.publish(trackToPublish);
+
+      setState(prev => ({
+        ...prev,
+        localScreenTrack: trackToPublish,
+        isScreenSharing: true,
+      }));
+
+      console.log('Started screen sharing');
+    } catch (error) {
+      console.error('Failed to start screen sharing:', error);
+      // If failed, make sure video track is published again
+      if (state.localVideoTrack) {
+        await client.publish(state.localVideoTrack);
+      }
+    }
+  }, [state.isScreenSharing, state.localVideoTrack, options]);
+
+  // Stop screen sharing
+  const stopScreenShare = useCallback(async () => {
+    const client = clientRef.current;
+    if (!client || !state.isScreenSharing || !state.localScreenTrack) return;
+
+    try {
+      // Unpublish screen track
+      await client.unpublish(state.localScreenTrack);
+      state.localScreenTrack.stop();
+      state.localScreenTrack.close();
+
+      // Re-publish regular video track if it exists
+      if (state.localVideoTrack) {
+        await client.publish(state.localVideoTrack);
+      }
+
+      setState(prev => ({
+        ...prev,
+        localScreenTrack: null,
+        isScreenSharing: false,
+      }));
+
+      console.log('Stopped screen sharing');
+    } catch (error) {
+      console.error('Failed to stop screen sharing:', error);
+    }
+  }, [state.isScreenSharing, state.localScreenTrack, state.localVideoTrack]);
 
   // Toggle audio mute
   const toggleAudio = useCallback(async () => {
@@ -316,6 +408,8 @@ export function useAgora(options: UseAgoraOptions = {}) {
     leave,
     toggleAudio,
     toggleVideo,
+    startScreenShare,
+    stopScreenShare,
   };
 }
 

@@ -1,7 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Search, Calendar, Video, Loader2, Mic, MicOff, VideoOff, PhoneOff } from "lucide-react";
+import {
+  Search,
+  Calendar,
+  Video,
+  Loader2,
+  Mic,
+  MicOff,
+  VideoOff,
+  PhoneOff,
+  Monitor,
+  MonitorOff,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -341,24 +352,39 @@ function InterviewVideoCall({
   const t = useTranslations("meetings");
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
+  const localScreenVideoRef = useRef<HTMLDivElement>(null);
   const [callDuration, setCallDuration] = useState(0);
+
+  // Play local screen track
+  useEffect(() => {
+    if (agora.localScreenTrack && localScreenVideoRef.current) {
+      agora.localScreenTrack.play(localScreenVideoRef.current);
+    }
+    return () => {
+      agora.localScreenTrack?.stop();
+    };
+  }, [agora.localScreenTrack]);
 
   // Play local video
   useEffect(() => {
-    if (agora.localVideoTrack && localVideoRef.current) {
+    if (agora.localVideoTrack && localVideoRef.current && !agora.isVideoMuted && !agora.isScreenSharing) {
       agora.localVideoTrack.play(localVideoRef.current);
     }
-  }, [agora.localVideoTrack]);
+    return () => {
+      agora.localVideoTrack?.stop();
+    };
+  }, [agora.localVideoTrack, agora.isVideoMuted, agora.isScreenSharing]);
 
   // Play remote video
   useEffect(() => {
-    if (agora.remoteUsers.length > 0 && remoteVideoRef.current) {
-      const remoteUser = agora.remoteUsers[0];
-      if (remoteUser.videoTrack) {
-        remoteUser.videoTrack.play(remoteVideoRef.current);
-      }
+    const remoteUser = agora.remoteUsers[0];
+    if (remoteUser?.videoTrack && remoteVideoRef.current) {
+      remoteUser.videoTrack.play(remoteVideoRef.current);
     }
-  }, [agora.remoteUsers]);
+    return () => {
+      remoteUser?.videoTrack?.stop();
+    };
+  }, [agora.remoteUsers, agora.isScreenSharing]);
 
   // Call duration timer
   useEffect(() => {
@@ -380,6 +406,14 @@ function InterviewVideoCall({
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const toggleScreenShare = () => {
+    if (agora.isScreenSharing) {
+      agora.stopScreenShare();
+    } else {
+      agora.startScreenShare();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
       {/* Header */}
@@ -398,11 +432,13 @@ function InterviewVideoCall({
       </div>
 
       {/* Video Area */}
-      <div className="flex-1 relative">
-        {/* Remote Video (Main) */}
+      <div className="flex-1 relative overflow-hidden">
+        {/* Remote Video or Local Screen Share (Main) */}
         <div
           ref={remoteVideoRef}
-          className="absolute inset-0 bg-gray-800 flex items-center justify-center"
+          className={`absolute inset-0 bg-gray-800 flex items-center justify-center ${
+            agora.isScreenSharing ? "hidden" : ""
+          }`}
         >
           {agora.remoteUsers.length === 0 && (
             <div className="text-center">
@@ -414,18 +450,39 @@ function InterviewVideoCall({
           )}
         </div>
 
-        {/* Local Video (PiP) */}
-        <div
-          ref={localVideoRef}
-          className={`absolute bottom-24 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg ${
-            agora.isVideoMuted ? "hidden" : ""
-          }`}
-        />
-        {agora.isVideoMuted && (
-          <div className="absolute bottom-24 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg flex items-center justify-center">
-            <VideoOff className="w-8 h-8 text-white/50" />
-          </div>
+        {/* Local Screen Share */}
+        {agora.isScreenSharing && (
+          <div
+            ref={localScreenVideoRef}
+            className="absolute inset-0 w-full h-full bg-black flex items-center justify-center"
+          />
         )}
+
+        {/* Local Video or Remote Video (PiP) */}
+        <div className="absolute bottom-24 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg z-10">
+          {agora.isScreenSharing ? (
+            /* Show Remote User in PiP when local screen is sharing */
+            <div ref={remoteVideoRef} className="w-full h-full object-cover" />
+          ) : (
+            /* Show Local Video in PiP normally */
+            <div
+              ref={localVideoRef}
+              className={`w-full h-full object-cover ${agora.isVideoMuted ? "hidden" : ""}`}
+            />
+          )}
+
+          {/* Placeholder for PiP when muted or no video */}
+          {((!agora.isScreenSharing && agora.isVideoMuted) ||
+            (agora.isScreenSharing &&
+              (agora.remoteUsers.length === 0 ||
+                !agora.remoteUsers[0]?.videoTrack))) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+              <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                <VideoOff className="w-6 h-6 text-white/50" />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Controls */}
@@ -460,6 +517,22 @@ function InterviewVideoCall({
               <VideoOff className="w-6 h-6 text-white" />
             ) : (
               <Video className="w-6 h-6 text-white" />
+            )}
+          </button>
+
+          {/* Toggle Screen Share */}
+          <button
+            onClick={toggleScreenShare}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
+              agora.isScreenSharing
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-white/20 hover:bg-white/30"
+            }`}
+          >
+            {agora.isScreenSharing ? (
+              <MonitorOff className="w-6 h-6 text-white" />
+            ) : (
+              <Monitor className="w-6 h-6 text-white" />
             )}
           </button>
 

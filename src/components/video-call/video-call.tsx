@@ -7,10 +7,13 @@ import {
   Mic,
   MicOff,
   Minimize2,
+  Monitor,
+  MonitorOff,
   PhoneOff,
   Video,
   VideoOff,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
 interface VideoCallProps {
@@ -18,21 +21,26 @@ interface VideoCallProps {
 }
 
 export default function VideoCall({ onClose }: VideoCallProps) {
+  const t = useTranslations("videoCall");
   const {
     isInCall,
     currentCall,
     callState,
     localVideoTrack,
+    localScreenTrack,
     remoteUsers,
     isAudioMuted,
     isVideoMuted,
+    isScreenSharing,
     endCall,
     toggleAudio,
     toggleVideo,
+    toggleScreenShare,
   } = useVideoCall();
 
   const localVideoRef = useRef<HTMLDivElement>(null);
   const remoteVideoRef = useRef<HTMLDivElement>(null);
+  const localScreenVideoRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [callDuration, setCallDuration] = useState(0);
   const [remainingTime, setRemainingTime] = useState<number | null>(null);
@@ -49,22 +57,36 @@ export default function VideoCall({ onClose }: VideoCallProps) {
   // Production: 60 min session + 5 min warning = 65 min total
   const WARNING_THRESHOLD_MS = TEST_MODE ? 1 * 60 * 1000 : 5 * 60 * 1000;
 
+  // Play local screen track
+  useEffect(() => {
+    if (localScreenTrack && localScreenVideoRef.current) {
+      localScreenTrack.play(localScreenVideoRef.current);
+    }
+    return () => {
+      localScreenTrack?.stop();
+    };
+  }, [localScreenTrack]);
+
   // Play local video
   useEffect(() => {
-    if (localVideoTrack && localVideoRef.current) {
+    if (localVideoTrack && localVideoRef.current && !isVideoMuted && !isScreenSharing) {
       localVideoTrack.play(localVideoRef.current);
     }
-  }, [localVideoTrack]);
+    return () => {
+      localVideoTrack?.stop();
+    };
+  }, [localVideoTrack, isVideoMuted, isScreenSharing]);
 
   // Play remote video
   useEffect(() => {
-    if (remoteUsers.length > 0 && remoteVideoRef.current) {
-      const remoteUser = remoteUsers[0];
-      if (remoteUser.videoTrack) {
-        remoteUser.videoTrack.play(remoteVideoRef.current);
-      }
+    const remoteUser = remoteUsers[0];
+    if (remoteUser?.videoTrack && remoteVideoRef.current) {
+      remoteUser.videoTrack.play(remoteVideoRef.current);
     }
-  }, [remoteUsers]);
+    return () => {
+      remoteUser?.videoTrack?.stop();
+    };
+  }, [remoteUsers, isScreenSharing]);
 
   // Call duration timer
   useEffect(() => {
@@ -158,11 +180,11 @@ export default function VideoCall({ onClose }: VideoCallProps) {
             </div>
             <div>
               <h3 className="text-white font-medium">
-                {currentCall?.otherUser?.name || "Unknown"}
+                {currentCall?.otherUser?.name || t("unknown")}
               </h3>
               <p className="text-white/70 text-sm">
                 {callState === "connecting"
-                  ? "Connecting..."
+                  ? t("connecting")
                   : formatDuration(callDuration)}
               </p>
             </div>
@@ -170,6 +192,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
           <button
             onClick={toggleFullscreen}
             className="text-white/70 hover:text-white p-2"
+            title={isFullscreen ? t("exitFullscreen") : t("fullscreen")}
           >
             {isFullscreen ? (
               <Minimize2 className="w-5 h-5" />
@@ -193,11 +216,13 @@ export default function VideoCall({ onClose }: VideoCallProps) {
       )}
 
       {/* Video Area */}
-      <div className="flex-1 relative">
-        {/* Remote Video (Main) */}
+      <div className="flex-1 relative overflow-hidden">
+        {/* Remote Video or Local Screen Share (Main) */}
         <div
           ref={remoteVideoRef}
-          className="absolute inset-0 bg-gray-800 flex items-center justify-center"
+          className={`absolute inset-0 bg-gray-800 flex items-center justify-center ${
+            isScreenSharing ? "hidden" : ""
+          }`}
         >
           {(remoteUsers.length === 0 || !remoteUsers[0]?.videoTrack) && (
             <div className="text-center">
@@ -208,25 +233,47 @@ export default function VideoCall({ onClose }: VideoCallProps) {
               </div>
               <p className="text-white/70">
                 {callState === "connecting"
-                  ? "Connecting..."
+                  ? t("connecting")
                   : remoteUsers.length === 0
-                    ? "Waiting for participant..."
-                    : `${currentCall?.otherUser?.name || "Participant"} — camera off`}
+                    ? t("waitingForParticipant")
+                    : `${currentCall?.otherUser?.name || t("participant")} — ${t("cameraOff")}`}
               </p>
             </div>
           )}
         </div>
 
-        {/* Local Video (PiP) */}
+        {/* Local Screen Share */}
+        {isScreenSharing && (
+          <div
+            ref={localScreenVideoRef}
+            className="absolute inset-0 w-full h-full bg-black flex items-center justify-center"
+          />
+        )}
+
+        {/* Local Video or Remote Video (PiP) */}
         <div
-          ref={localVideoRef}
-          className={`absolute bottom-4 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg ${
-            isVideoMuted ? "hidden" : ""
-          }`}
+          className="absolute bottom-4 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg z-10"
         >
-          {isVideoMuted && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-700">
-              <VideoOff className="w-8 h-8 text-white/50" />
+          {isScreenSharing ? (
+            /* Show Remote User in PiP when local screen is sharing */
+            <div
+              ref={remoteVideoRef}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            /* Show Local Video in PiP normally */
+            <div
+              ref={localVideoRef}
+              className={`w-full h-full object-cover ${isVideoMuted ? "hidden" : ""}`}
+            />
+          )}
+
+          {/* Placeholder for PiP when muted or no video */}
+          {((!isScreenSharing && isVideoMuted) || (isScreenSharing && (remoteUsers.length === 0 || !remoteUsers[0]?.videoTrack))) && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+              <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
+                <VideoOff className="w-6 h-6 text-white/50" />
+              </div>
             </div>
           )}
         </div>
@@ -243,6 +290,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-white/20 hover:bg-white/30"
             }`}
+            title={isAudioMuted ? t("unmuteMic") : t("muteMic")}
           >
             {isAudioMuted ? (
               <MicOff className="w-6 h-6 text-white" />
@@ -259,6 +307,7 @@ export default function VideoCall({ onClose }: VideoCallProps) {
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-white/20 hover:bg-white/30"
             }`}
+            title={isVideoMuted ? t("turnOnVideo") : t("turnOffVideo")}
           >
             {isVideoMuted ? (
               <VideoOff className="w-6 h-6 text-white" />
@@ -267,10 +316,28 @@ export default function VideoCall({ onClose }: VideoCallProps) {
             )}
           </button>
 
+          {/* Toggle Screen Share */}
+          <button
+            onClick={toggleScreenShare}
+            className={`w-14 h-14 rounded-full flex items-center justify-center transition-colors ${
+              isScreenSharing
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-white/20 hover:bg-white/30"
+            }`}
+            title={isScreenSharing ? t("stopSharing") : t("shareScreen")}
+          >
+            {isScreenSharing ? (
+              <MonitorOff className="w-6 h-6 text-white" />
+            ) : (
+              <Monitor className="w-6 h-6 text-white" />
+            )}
+          </button>
+
           {/* End Call */}
           <button
             onClick={handleEndCall}
             className="w-14 h-14 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-colors"
+            title={t("endCall")}
           >
             <PhoneOff className="w-6 h-6 text-white" />
           </button>

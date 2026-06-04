@@ -111,6 +111,22 @@
       "errorPasswordMismatch": "Passwords do not match"
     }
   },
+  "videoCall": {
+    "shareScreen": "Share Screen",
+    "stopSharing": "Stop Sharing",
+    "muteMic": "Mute Microphone",
+    "unmuteMic": "Unmute Microphone",
+    "turnOffVideo": "Turn Off Video",
+    "turnOnVideo": "Turn On Video",
+    "endCall": "End Call",
+    "waitingForParticipant": "Waiting for the other participant to join...",
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "unknown": "Unknown",
+    "connecting": "Connecting...",
+    "participant": "Participant",
+    "cameraOff": "camera off"
+  },
   "teacherHeader": {
     "newStudentRequest": "New Student Request",
     "sessionReminder": "Session Reminder",
