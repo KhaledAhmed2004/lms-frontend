@@ -26,11 +26,14 @@ interface UseAgoraOptions {
   onScreenShareStopped?: () => void; // Called when user stops screen share via browser UI
 }
 
+// Custom type to track updates on remote users
+export type RemoteUser = IAgoraRTCRemoteUser & { _lastUpdate?: number };
+
 interface AgoraState {
   localVideoTrack: ICameraVideoTrack | null;
   localAudioTrack: IMicrophoneAudioTrack | null;
   localScreenTrack: ILocalVideoTrack | null;
-  remoteUsers: IAgoraRTCRemoteUser[];
+  remoteUsers: RemoteUser[];
   callState: CallState;
   isAudioMuted: boolean;
   isVideoMuted: boolean;
@@ -160,28 +163,40 @@ export function useAgora(options: UseAgoraOptions = {}) {
       });
 
       client.on('user-published', async (user, mediaType) => {
-        await client.subscribe(user, mediaType);
-        console.log('Subscribed to remote user:', user.uid, mediaType);
+        try {
+          await client.subscribe(user, mediaType);
+          console.log('Subscribed to remote user:', user.uid, mediaType);
 
-        setState(prev => ({
-          ...prev,
-          remoteUsers: [...prev.remoteUsers.filter(u => u.uid !== user.uid), user],
-        }));
+          if (mediaType === 'video') {
+            const updatedUser = user as RemoteUser;
+            updatedUser._lastUpdate = Date.now();
+            
+            setState(prev => ({
+              ...prev,
+              remoteUsers: [...prev.remoteUsers.filter(u => u.uid !== user.uid), updatedUser],
+            }));
+          }
 
-        if (mediaType === 'audio') {
-          user.audioTrack?.play();
+          if (mediaType === 'audio') {
+            user.audioTrack?.play();
+          }
+
+          options.onUserJoined?.(user);
+        } catch (error) {
+          console.error('Error subscribing to user:', user.uid, error);
         }
-
-        options.onUserJoined?.(user);
       });
 
       client.on('user-unpublished', async (user, mediaType) => {
         console.log('User unpublished:', user.uid, mediaType);
         if (mediaType === 'video') {
+          const updatedUser = user as RemoteUser;
+          updatedUser._lastUpdate = Date.now();
+
           setState(prev => ({
             ...prev,
             remoteUsers: prev.remoteUsers.map(u =>
-              u.uid === user.uid ? user : u
+              u.uid === user.uid ? updatedUser : u
             ),
           }));
         }

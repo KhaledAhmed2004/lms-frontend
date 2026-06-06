@@ -574,7 +574,8 @@ function ApplicantVideoCall({
   onLeave: () => void;
 }) {
   const localVideoRef = useRef<HTMLDivElement>(null);
-  const remoteVideoRef = useRef<HTMLDivElement>(null);
+  const remoteMainVideoRef = useRef<HTMLDivElement>(null);
+  const remotePipVideoRef = useRef<HTMLDivElement>(null);
   const localScreenVideoRef = useRef<HTMLDivElement>(null);
   const [callDuration, setCallDuration] = useState(0);
 
@@ -601,13 +602,21 @@ function ApplicantVideoCall({
   // Play remote video
   useEffect(() => {
     const remoteUser = agora.remoteUsers[0];
-    if (remoteUser?.videoTrack && remoteVideoRef.current) {
-      remoteUser.videoTrack.play(remoteVideoRef.current);
+    const videoTrack = remoteUser?.videoTrack;
+    const element = agora.isScreenSharing ? remotePipVideoRef.current : remoteMainVideoRef.current;
+
+    if (videoTrack && element) {
+      console.log('Playing remote video track:', videoTrack.getTrackId(), 'on element:', element);
+      videoTrack.play(element);
     }
+
     return () => {
-      remoteUser?.videoTrack?.stop();
+      if (videoTrack) {
+        console.log('Stopping remote video track:', videoTrack.getTrackId());
+        videoTrack.stop();
+      }
     };
-  }, [agora.remoteUsers, agora.isScreenSharing]);
+  }, [agora.remoteUsers[0]?._lastUpdate, agora.isScreenSharing]);
 
   // Call duration timer
   useEffect(() => {
@@ -660,7 +669,7 @@ function ApplicantVideoCall({
       <div className="flex-1 relative overflow-hidden">
         {/* Remote Video or Local Screen Share (Main) */}
         <div
-          ref={remoteVideoRef}
+          ref={remoteMainVideoRef}
           className={`absolute inset-0 bg-gray-800 flex items-center justify-center ${
             agora.isScreenSharing ? "hidden" : ""
           }`}
@@ -687,7 +696,7 @@ function ApplicantVideoCall({
         <div className="absolute bottom-24 right-4 w-32 h-44 md:w-48 md:h-64 rounded-xl overflow-hidden bg-gray-700 shadow-lg z-10">
           {agora.isScreenSharing ? (
             /* Show Remote User in PiP when local screen is sharing */
-            <div ref={remoteVideoRef} className="w-full h-full object-cover" />
+            <div ref={remotePipVideoRef} className="w-full h-full object-cover" />
           ) : (
             /* Show Local Video in PiP normally */
             <div
