@@ -339,7 +339,7 @@ const TransactionManagement = () => {
                                 size="sm"
                                 className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                                 onClick={() => handleViewDetails(transaction)}
-                                title="View Details"
+                                title={t('viewDetails')}
                               >
                                 <Eye size={18} />
                               </Button>
@@ -356,7 +356,12 @@ const TransactionManagement = () => {
               {totalPages > 1 && (
                 <div className="flex items-center justify-between pt-6">
                   <p className="text-sm text-gray-500">
-                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, meta?.total || 0)} of {meta?.total || 0} {t('transactions')}
+                    {t('showing', {
+                      start: ((currentPage - 1) * itemsPerPage) + 1,
+                      end: Math.min(currentPage * itemsPerPage, meta?.total || 0),
+                      total: meta?.total || 0,
+                      transactions: t('transactions')
+                    })}
                   </p>
                   <Pagination>
                     <PaginationContent>
@@ -433,7 +438,7 @@ const TransactionManagement = () => {
         <DialogContent className="sm:max-w-md bg-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              Transaction Details
+              {t('transactionDetails')}
             </DialogTitle>
           </DialogHeader>
 
@@ -462,7 +467,7 @@ const TransactionManagement = () => {
               {/* User Info */}
               <div>
                 <p className="text-xs font-medium text-gray-500 mb-2">
-                  User Information
+                  {t('userInfo')}
                 </p>
                 <div className="bg-gray-50 p-3 rounded-lg">
                   <p className="text-sm font-semibold text-gray-900">
@@ -515,7 +520,7 @@ const TransactionManagement = () => {
                     {t('colDescription')}
                   </p>
                   <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg min-h-[60px]">
-                    {selectedTransaction.description || 'No description provided'}
+                    {selectedTransaction.description || t('noDescription')}
                   </p>
                 </div>
 
@@ -523,7 +528,7 @@ const TransactionManagement = () => {
                   <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-100">
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-1">
-                        Sessions
+                        {t('sessions')}
                       </p>
                       <p className="text-sm font-semibold text-gray-900">
                         {selectedTransaction.sessions}
@@ -532,7 +537,7 @@ const TransactionManagement = () => {
                     {selectedTransaction.hours && (
                       <div>
                         <p className="text-xs font-medium text-gray-500 mb-1">
-                          Total Hours
+                          {t('totalHours')}
                         </p>
                         <p className="text-sm font-semibold text-gray-900">
                           {selectedTransaction.hours}h

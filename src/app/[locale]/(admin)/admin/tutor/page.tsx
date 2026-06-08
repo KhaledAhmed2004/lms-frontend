@@ -114,7 +114,7 @@ const TutorManagement = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <p className="text-red-500">Error loading tutors. Please try again.</p>
+        <p className="text-red-500">{t("errorLoading")}</p>
       </div>
     );
   }
@@ -300,17 +300,17 @@ const TutorManagement = () => {
               {confirmAction?.type === "block" ? t("blockTutor") : t("unblockTutor")}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {confirmAction?.type === "block" ? "Are you sure you want to block" : "Are you sure you want to unblock"}{" "}
+              {confirmAction?.type === "block" ? t("blockConfirmTitle") : t("unblockConfirmTitle")}{" "}
               <span className="font-medium text-gray-900">
                 {confirmAction?.name}
               </span>
-              ?
+              {t("confirmQuestion")}
               {confirmAction?.type === "block" &&
-                " They will not be able to access the platform."}
+                ` ${t("blockConfirmDesc")}`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmedAction}
               className={

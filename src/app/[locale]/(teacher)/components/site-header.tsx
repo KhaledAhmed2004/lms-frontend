@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 
 export function SiteHeader() {
   const t = useTranslations("nav");
+  const th = useTranslations("teacherHeader");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
@@ -44,30 +45,30 @@ export function SiteHeader() {
   const notifications = [
     {
       id: 1,
-      title: "New Student Request",
-      message: "Emma Wilson has requested a chemistry tutoring session",
-      time: "5 min ago",
+      title: th("newStudentRequest"),
+      message: th("newStudentRequestMsg"),
+      time: th("fiveMinAgo"),
       unread: true,
     },
     {
       id: 2,
-      title: "Session Reminder",
-      message: "You have a math session with John Smith in 30 minutes",
-      time: "1 hour ago",
+      title: th("sessionReminder"),
+      message: th("sessionReminderMsg"),
+      time: th("oneHourAgo"),
       unread: true,
     },
     {
       id: 3,
-      title: "Payment Received",
-      message: "Payment of $75 has been credited to your account",
-      time: "2 hours ago",
+      title: th("paymentReceived"),
+      message: th("paymentReceivedMsg"),
+      time: th("twoHoursAgo"),
       unread: false,
     },
     {
       id: 4,
-      title: "New Message",
-      message: "Sarah Johnson sent you a message",
-      time: "Yesterday",
+      title: th("newMessage"),
+      message: th("newMessageMsg"),
+      time: th("yesterday"),
       unread: false,
     },
   ];
@@ -86,7 +87,7 @@ export function SiteHeader() {
           </button>
 
           <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[#0B31BD] truncate">
-            Schäfer Tutoring
+            {t("title")}
           </h2>
         </div>
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, Clock, Loader2 } from "lucide-react";
-
+import { Calendar, Clock, Loader2, Video } from "lucide-react";
 import {
   useUpcomingSessions,
   useCompletedSessions,
@@ -11,10 +10,15 @@ import {
 } from "@/hooks/api/use-sessions";
 import { format, differenceInDays, isBefore } from "date-fns";
 import AudioFeedbackModal from "./AudioFeedbackModal";
+import { useVideoCall } from "@/providers/video-call-provider";
+import { useTranslations } from "next-intl";
 
 export default function Session() {
+  const { joinSessionCall } = useVideoCall();
   const [activeTab, setActiveTab] = useState("upcoming");
   const [showAudioFeedbackModal, setShowAudioFeedbackModal] = useState(false);
+  const tStudent = useTranslations("student");
+  const tSession = useTranslations("sessionPage");
   const [selectedSession, setSelectedSession] = useState<SessionType | null>(
     null,
   );
@@ -63,6 +67,25 @@ export default function Session() {
     if (isDeadlinePassed(session)) return;
     setSelectedSession(session);
     setShowAudioFeedbackModal(true);
+  };
+
+  const canJoinSession = (session: SessionType) => {
+    const startTime = new Date(session.startTime).getTime();
+    const now = Date.now();
+    const BUFFER_BEFORE = 10 * 60 * 1000; // 10 minutes before
+    // Can join from 10 mins before until the session ends
+    return now >= startTime - BUFFER_BEFORE && now <= new Date(session.endTime).getTime();
+  };
+
+  const handleJoinSession = (session: SessionType) => {
+    if (session.studentId?._id && session.studentId?.name) {
+      joinSessionCall(
+        session._id,
+        session.studentId._id,
+        session.studentId.name,
+        new Date(session.endTime),
+      );
+    }
   };
 
   const formatSessionDate = (startTime: string) => {
@@ -182,28 +205,45 @@ export default function Session() {
                   </div>
                 </div>
 
-                {/* Feedback Button (completed tab only) */}
-                {activeTab === "completed" && (
-                  <button
-                    onClick={() => handleGiveFeedback(session)}
-                    disabled={
-                      !!session.tutorFeedbackId || isDeadlinePassed(session)
-                    }
-                    className={`sm:ml-4 px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm transition-colors w-full sm:w-auto ${
-                      session.tutorFeedbackId
-                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                {/* Join/Feedback Button */}
+                <div className="flex gap-2 w-full sm:w-auto">
+                  {activeTab === "upcoming" && (
+                    <button
+                      onClick={() => handleJoinSession(session)}
+                      disabled={!canJoinSession(session)}
+                      className={`px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm transition-colors w-full sm:w-auto inline-flex items-center justify-center gap-2 ${
+                        canJoinSession(session)
+                          ? "bg-[#002AC8] text-white hover:bg-blue-700"
+                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      }`}
+                    >
+                      <Video size={16} />
+                      {canJoinSession(session) ? tSession("joinSession") : tSession("notStartedYet")}
+                    </button>
+                  )}
+
+                  {activeTab === "completed" && (
+                    <button
+                      onClick={() => handleGiveFeedback(session)}
+                      disabled={
+                        !!session.tutorFeedbackId || isDeadlinePassed(session)
+                      }
+                      className={`px-3 sm:px-4 py-2 rounded-lg font-medium text-xs sm:text-sm transition-colors w-full sm:w-auto ${
+                        session.tutorFeedbackId
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : isDeadlinePassed(session)
+                            ? "bg-red-100 text-red-500 cursor-not-allowed"
+                            : "bg-[#002AC8] text-white hover:bg-[#3052D2]"
+                      }`}
+                    >
+                      {session.tutorFeedbackId
+                        ? tStudent("feedbackSubmitted")
                         : isDeadlinePassed(session)
-                          ? "bg-red-100 text-red-500 cursor-not-allowed"
-                          : "bg-[#002AC8] text-white hover:bg-[#3052D2]"
-                    }`}
-                  >
-                    {session.tutorFeedbackId
-                      ? "Feedback Given"
-                      : isDeadlinePassed(session)
-                        ? "Deadline Passed"
-                        : "Give Feedback"}
-                  </button>
-                )}
+                          ? "Deadline Passed"
+                          : tSession("giveFeedback")}
+                    </button>
+                  )}
+                </div>
               </div>
             ))
           )}

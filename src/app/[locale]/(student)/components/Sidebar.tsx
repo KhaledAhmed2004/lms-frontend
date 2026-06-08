@@ -1,17 +1,19 @@
 "use client";
 
 import { Link, usePathname } from "@/i18n/routing";
-
-const menuItems = [
-  { label: "Sessions", href: "/student/session" },
-  { label: "Messages", href: "/student/messages" },
-  { label: "Resources", href: "/student/resources" },
-  { label: "Subscription", href: "/student/subscription" },
-  { label: "Support", href: "/student/support" },
-];
+import { useTranslations } from "next-intl";
 
 function Sidebar() {
+  const t = useTranslations("nav");
   const pathname = usePathname();
+
+  const menuItems = [
+    { label: t("session"), href: "/student/session" },
+    { label: t("messages"), href: "/student/messages" },
+    { label: t("resources"), href: "/student/resources" },
+    { label: t("subscription"), href: "/student/subscription" },
+    { label: t("support"), href: "/student/support" },
+  ];
 
   return (
     <aside className="w-full md:w-56 lg:w-[328px] h-full bg-white flex flex-col overflow-y-auto">

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { PLAN_DISPLAY_NAMES, PLAN_DETAILS, SubscriptionTier } from '@/hooks/api/use-subscription';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ChangePlanModalProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ interface ChangePlanModalProps {
 }
 
 export function ChangePlanModal({ isOpen, onClose, currentPlan }: ChangePlanModalProps) {
+  const t = useTranslations('changePlanModal');
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionTier>(currentPlan || 'FLEXIBLE');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,9 +49,9 @@ export function ChangePlanModal({ isOpen, onClose, currentPlan }: ChangePlanModa
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Change Your Plan</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
           <DialogDescription>
-            Select a plan that best fits your learning needs.
+            {t('description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -71,14 +73,14 @@ export function ChangePlanModal({ isOpen, onClose, currentPlan }: ChangePlanModa
               >
                 {isCurrent && (
                   <span className="absolute -top-2 -right-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full">
-                    Current
+                    {t('current')}
                   </span>
                 )}
 
                 <h3 className="font-semibold text-lg">{PLAN_DISPLAY_NAMES[plan]}</h3>
                 <div className="mt-1">
                   <span className="text-2xl font-bold">${details.pricePerHour}</span>
-                  <span className="text-gray-500">/hour</span>
+                  <span className="text-gray-500">{t('perHour')}</span>
                 </div>
                 <p className="text-xs text-gray-500 mt-1">{details.commitment}</p>
 
@@ -105,14 +107,14 @@ export function ChangePlanModal({ isOpen, onClose, currentPlan }: ChangePlanModa
 
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('cancel')}
           </Button>
           <Button
             onClick={handleChangePlan}
             disabled={isLoading || selectedPlan === currentPlan}
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {selectedPlan === currentPlan ? 'Current Plan' : 'Change Plan'}
+            {selectedPlan === currentPlan ? t('currentPlan') : t('changePlan')}
           </Button>
         </div>
       </DialogContent>
