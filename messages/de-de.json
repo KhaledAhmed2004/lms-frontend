@@ -1418,5 +1418,22 @@
     "successTitle": "Ihr Feedback wurde erfolgreich eingereicht!",
     "successDesc": "Ihre Bewertung wurde erfolgreich eingereicht",
     "close": "Schließen"
+  },
+  "sessionPage": {
+    "sessionOverview": "Überblick",
+    "upcoming": "Bevorstehend",
+    "completed": "Abgeschlossen",
+    "noUpcomingSessions": "Keine bevorstehenden Sitzungen gefunden",
+    "noCompletedSessions": "Keine Einheiten abgeschlossen",
+    "unknownStudent": "Unbekannter Schüler",
+    "trialSession": "Probestunde",
+    "deadlineMissed": "Frist verpasst",
+    "daysLeft": "{count} Tage verbleibend",
+    "na": "n.v.",
+    "feedbackSubmitted": "Feedback eingereicht",
+    "deadlinePassed": "Frist abgelaufen",
+    "giveFeedback": "Feedback einreichen",
+    "joinSession": "Sitzung beitreten",
+    "notStartedYet": "Noch nicht gestartet"
   }
 }

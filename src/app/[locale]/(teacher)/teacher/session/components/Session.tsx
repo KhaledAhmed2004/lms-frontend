@@ -17,7 +17,6 @@ export default function Session() {
   const { joinSessionCall } = useVideoCall();
   const [activeTab, setActiveTab] = useState("upcoming");
   const [showAudioFeedbackModal, setShowAudioFeedbackModal] = useState(false);
-  const tStudent = useTranslations("student");
   const tSession = useTranslations("sessionPage");
   const [selectedSession, setSelectedSession] = useState<SessionType | null>(
     null,
@@ -109,7 +108,7 @@ export default function Session() {
       <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5 lg:p-6">
         {/* Header */}
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-5 lg:mb-6">
-          Session Overview
+          {tSession("sessionOverview")}
         </h2>
 
         {/* Tabs */}
@@ -122,7 +121,7 @@ export default function Session() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Upcoming ({upcomingSessions.length})
+            {tSession("upcoming")} ({upcomingSessions.length})
           </button>
           <button
             onClick={() => setActiveTab("completed")}
@@ -132,7 +131,7 @@ export default function Session() {
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            Completed ({completedSessions.length})
+            {tSession("completed")} ({completedSessions.length})
           </button>
         </div>
 
@@ -144,7 +143,7 @@ export default function Session() {
             </div>
           ) : sessions.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
-              No {activeTab} sessions found
+              {activeTab === "upcoming" ? tSession("noUpcomingSessions") : tSession("noCompletedSessions")}
             </div>
           ) : (
             sessions.map((session) => (
@@ -156,11 +155,11 @@ export default function Session() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1.5 sm:mb-2 flex-wrap">
                     <h3 className="font-semibold text-sm sm:text-base text-gray-900">
-                      {session.studentId?.name || "Unknown Student"}
+                      {session.studentId?.name || tSession("unknownStudent")}
                     </h3>
                     {session.isTrial && (
                       <span className="text-xs font-semibold text-[#FF8A00] bg-orange-100 px-2 py-0.5 sm:py-1 rounded-3xl">
-                        Trial Session
+                        {tSession("trialSession")}
                       </span>
                     )}
                     {activeTab === "completed" &&
@@ -168,18 +167,18 @@ export default function Session() {
                       session.teacherFeedbackRequired &&
                       (isDeadlinePassed(session) ? (
                         <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-0.5 sm:py-1 rounded-3xl">
-                          Deadline Missed
+                          {tSession("deadlineMissed")}
                         </span>
                       ) : getDaysUntilDeadline(session) <= 3 ? (
                         <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-0.5 sm:py-1 rounded-3xl">
-                          {getDaysUntilDeadline(session)} days left
+                          {tSession("daysLeft", { count: getDaysUntilDeadline(session) })}
                         </span>
                       ) : null)}
                     {activeTab === "completed" &&
                       session.teacherCompletionStatus ===
                         COMPLETION_STATUS.COMPLETED && (
                         <span className="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-0.5 sm:py-1 rounded-3xl">
-                          Completed
+                          {tSession("completed")}
                         </span>
                       )}
                   </div>
@@ -200,7 +199,7 @@ export default function Session() {
                       <span>{formatSessionTime(session.startTime)}</span>
                     </div>
                     <span className="text-[#405ED5] font-medium">
-                      {session.subject || "N/A"}
+                      {session.subject || tSession("na")}
                     </span>
                   </div>
                 </div>
@@ -237,9 +236,9 @@ export default function Session() {
                       }`}
                     >
                       {session.tutorFeedbackId
-                        ? tStudent("feedbackSubmitted")
+                        ? tSession("feedbackSubmitted")
                         : isDeadlinePassed(session)
-                          ? "Deadline Passed"
+                          ? tSession("deadlinePassed")
                           : tSession("giveFeedback")}
                     </button>
                   )}

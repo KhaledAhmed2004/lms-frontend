@@ -1416,5 +1416,22 @@
     "successTitle": "Success!",
     "successDesc": "Your review was submitted Successfully",
     "close": "Close"
+  },
+  "sessionPage": {
+    "sessionOverview": "Session Overview",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "noUpcomingSessions": "No upcoming sessions found",
+    "noCompletedSessions": "No completed sessions found",
+    "unknownStudent": "Unknown Student",
+    "trialSession": "Trial Session",
+    "deadlineMissed": "Deadline Missed",
+    "daysLeft": "{count} days left",
+    "na": "N/A",
+    "feedbackSubmitted": "Feedback Submitted",
+    "deadlinePassed": "Deadline Passed",
+    "giveFeedback": "Give Feedback",
+    "joinSession": "Join Session",
+    "notStartedYet": "Not Started Yet"
   }
 }
