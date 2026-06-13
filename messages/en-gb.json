@@ -1381,5 +1381,27 @@
     "preview": "Preview",
     "choosePhoto": "Choose Photo",
     "savePhoto": "Save Photo"
+  },
+  "requests": {
+    "status": "Status",
+    "action": "Action",
+    "unknown": "Unknown"
+  },
+  "resources": {
+    "studyFinder": "Study Finder",
+    "studyFinderDesc": "All your study resources in one place.",
+    "searchPlaceholder": "What are you looking for?",
+    "subject": "Subject",
+    "grade": "Grade",
+    "materialType": "Material Type",
+    "failedToLoad": "Failed to load resources",
+    "tryAgain": "Please try again later",
+    "noDescription": "No description available",
+    "by": "By:",
+    "view": "View",
+    "noResources": "No resources found",
+    "tryAdjusting": "Try adjusting your search or filters",
+    "previous": "Previous",
+    "next": "Next"
   }
 }

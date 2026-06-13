@@ -419,6 +419,7 @@
 
 import { useState, useEffect, useCallback, FormEvent } from "react";
 import { Search, Loader2, ExternalLink, BookOpen } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Select,
   SelectContent,
@@ -483,6 +484,7 @@ const ResourceCardSkeleton = () => (
 );
 
 export default function Resources() {
+  const t = useTranslations("resources");
   const [searchInput, setSearchInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
@@ -559,11 +561,11 @@ export default function Resources() {
   if (!hasSearched) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 text-center">
-          Study <span className="text-[#0B31BD]">Finder</span>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0B31BD] mb-3 text-center">
+          {t("studyFinder")}
         </h1>
         <p className="text-gray-500 text-sm sm:text-base mb-8 text-center">
-          All your study resources in one place.
+          {t("studyFinderDesc")}
         </p>
 
         <form
@@ -574,7 +576,7 @@ export default function Resources() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="What are you looking for?"
+            placeholder={t("searchPlaceholder")}
             className="flex-1 px-5 py-3.5 text-base text-gray-900 placeholder:text-gray-400 bg-transparent outline-none rounded-l-lg"
           />
           <button
@@ -604,7 +606,7 @@ export default function Resources() {
               setSearchInput(e.target.value);
               setSearchQuery(e.target.value);
             }}
-            placeholder="What are you looking for?"
+            placeholder={t("searchPlaceholder")}
             className="flex-1 px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 bg-transparent outline-none rounded-l-lg"
           />
           {isFetching && !isLoading ? (
@@ -622,7 +624,7 @@ export default function Resources() {
           onClick={handleBackToHome}
           className="text-xl sm:text-2xl font-bold text-[#0B31BD] hover:opacity-80 transition whitespace-nowrap"
         >
-          Study Finder
+          {t("studyFinder")}
         </button>
       </div>
 
@@ -635,10 +637,10 @@ export default function Resources() {
           }
         >
           <SelectTrigger className="h-9 w-[130px] text-xs">
-            <SelectValue placeholder="Subject" />
+            <SelectValue placeholder={t("subject")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-subjects">Subject</SelectItem>
+            <SelectItem value="all-subjects">{t("subject")}</SelectItem>
             {filterOptions?.subjects.map((s) => (
               <SelectItem key={s.id} value={s.id}>
                 {s.label}
@@ -654,10 +656,10 @@ export default function Resources() {
           }
         >
           <SelectTrigger className="h-9 w-[120px] text-xs">
-            <SelectValue placeholder="Grade" />
+            <SelectValue placeholder={t("grade")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-grades">Grade</SelectItem>
+            <SelectItem value="all-grades">{t("grade")}</SelectItem>
             {filterOptions?.grades.map((g) => (
               <SelectItem key={g.id} value={g.id}>
                 {g.label}
@@ -673,10 +675,10 @@ export default function Resources() {
           }
         >
           <SelectTrigger className="h-9 w-[140px] text-xs">
-            <SelectValue placeholder="Material Type" />
+            <SelectValue placeholder={t("materialType")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all-types">Material Type</SelectItem>
+            <SelectItem value="all-types">{t("materialType")}</SelectItem>
             {filterOptions?.types.map((t) => (
               <SelectItem key={t.id} value={t.id}>
                 {t.label}
@@ -689,8 +691,8 @@ export default function Resources() {
       {/* Error state */}
       {isError ? (
         <div className="text-center py-12 bg-red-50 rounded-lg">
-          <p className="text-red-600 mb-2">Failed to load resources</p>
-          <p className="text-sm text-red-500">Please try again later</p>
+          <p className="text-red-600 mb-2">{t("failedToLoad")}</p>
+          <p className="text-sm text-red-500">{t("tryAgain")}</p>
         </div>
       ) : null}
 
@@ -736,12 +738,12 @@ export default function Resources() {
               {/* Card Body */}
               <div className="p-5">
                 <p className="text-xs text-gray-600 mb-4 leading-relaxed line-clamp-3">
-                  {resource.description || "No description available"}
+                  {resource.description || t("noDescription")}
                 </p>
 
                 {resource.author ? (
                   <p className="text-xs text-gray-500 mb-3">
-                    By: <span className="font-medium">{resource.author}</span>
+                    {t("by")} <span className="font-medium">{resource.author}</span>
                   </p>
                 ) : null}
 
@@ -759,7 +761,7 @@ export default function Resources() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 hover:underline"
                   >
-                    View <ExternalLink size={12} />
+                    {t("view")} <ExternalLink size={12} />
                   </a>
                 </div>
               </div>
@@ -772,9 +774,9 @@ export default function Resources() {
       {!isLoading && !isError && resources.length === 0 ? (
         <div className="text-center py-16">
           <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <p className="text-gray-500 mb-1">No resources found</p>
+          <p className="text-gray-500 mb-1">{t("noResources")}</p>
           <p className="text-sm text-gray-400">
-            Try adjusting your search or filters
+            {t("tryAdjusting")}
           </p>
         </div>
       ) : null}
@@ -787,7 +789,7 @@ export default function Resources() {
             disabled={currentPage === 1}
             className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Previous
+            {t("previous")}
           </button>
           <span className="text-sm text-gray-600">
             Page {currentPage} of {pagination.totalPage}
@@ -797,7 +799,7 @@ export default function Resources() {
             disabled={currentPage >= pagination.totalPage}
             className="px-4 py-2 text-sm font-medium text-white bg-[#0B31BD] rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Next
+            {t("next")}
           </button>
         </div>
       ) : null}

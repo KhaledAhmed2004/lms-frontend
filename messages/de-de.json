@@ -1383,5 +1383,27 @@
     "preview": "Vorschau",
     "choosePhoto": "Foto auswählen",
     "savePhoto": "Foto speichern"
+  },
+  "requests": {
+    "status": "Status",
+    "action": "Aktion",
+    "unknown": "Unbekannt"
+  },
+  "resources": {
+    "studyFinder": "Lernmaterial-Suche",
+    "studyFinderDesc": "Alle deine Lernmaterialien an einem Ort.",
+    "searchPlaceholder": "Wonach suchst du?",
+    "subject": "Fach",
+    "grade": "Klasse",
+    "materialType": "Materialart",
+    "failedToLoad": "Ressourcen konnten nicht geladen werden",
+    "tryAgain": "Bitte versuche es später erneut",
+    "noDescription": "Keine Beschreibung verfügbar",
+    "by": "Von:",
+    "view": "Ansehen",
+    "noResources": "Keine Ressourcen gefunden",
+    "tryAdjusting": "Versuche deine Suche oder Filter anzupassen",
+    "previous": "Vorherige",
+    "next": "Nächste"
   }
 }
