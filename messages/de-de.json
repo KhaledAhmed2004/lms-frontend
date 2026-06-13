@@ -1491,5 +1491,18 @@
     "ctaDesc": "Erleben Sie organisierte und transparente Nachhilfe.",
     "ctaTrial": "Probestunde",
     "ctaTutor": "Tutor werden"
+  },
+  "blogPost": {
+    "back": "Zurück",
+    "postNotFound": "Beitrag nicht gefunden",
+    "postNotFoundDesc": "Der gesuchte Blogbeitrag existiert nicht.",
+    "returnToBlog": "Zurück zum Blog",
+    "ctaTitle": "Bereit zu starten?",
+    "ctaDesc": "Vereinbaren Sie eine kostenlose 30-minütige Probestunde mit einem unserer Expertentutoren.",
+    "ctaButton": "Kostenlose Probestunde vereinbaren",
+    "relatedArticles": "Verwandte Beiträge",
+    "tableOfContents": "INHALTSVERZEICHNIS",
+    "articleStats": "Statistiken zum Artikel",
+    "mockup": "Mockup"
   }
 }

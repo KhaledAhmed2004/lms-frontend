@@ -1489,5 +1489,18 @@
     "ctaDesc": "Experience organised and transparent tutoring.",
     "ctaTrial": "Trial Session",
     "ctaTutor": "Become a Tutor"
+  },
+  "blogPost": {
+    "back": "Back",
+    "postNotFound": "Post Not Found",
+    "postNotFoundDesc": "The blog post you're looking for doesn't exist.",
+    "returnToBlog": "Return to Blog",
+    "ctaTitle": "Ready to Start Learning?",
+    "ctaDesc": "Book a free 30-minute trial session with one of our expert tutors.",
+    "ctaButton": "Book Free Trial",
+    "relatedArticles": "Related Articles",
+    "tableOfContents": "TABLE OF CONTENTS",
+    "articleStats": "Article Stats",
+    "mockup": "Mockup"
   }
 }
