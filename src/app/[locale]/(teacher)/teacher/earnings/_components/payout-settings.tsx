@@ -80,7 +80,7 @@ export default function PayoutSettings() {
             className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 h-10 rounded-lg font-medium"
           >
             <Edit className="w-4 h-4 mr-2" />
-            Edit
+            {t("edit")}
           </Button>
         </div>
         <hr className="my-6" />
@@ -142,7 +142,7 @@ export default function PayoutSettings() {
                 value={editFormData.iban}
                 onChange={(e) => handleInputChange("iban", e.target.value)}
                 className="h-10 border-gray-300 rounded-lg"
-                placeholder="DE89 3704 0044 0532 0130 00"
+                placeholder={t("ibanPlaceholder")}
               />
             </div>
           </div>
@@ -154,7 +154,7 @@ export default function PayoutSettings() {
               className="px-6 h-10 font-medium bg-transparent"
               disabled={updatePayoutMutation.isPending}
             >
-              Cancel
+              {t("cancel")}
             </Button>
             <Button
               type="button"
@@ -165,10 +165,10 @@ export default function PayoutSettings() {
               {updatePayoutMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Saving...
+                  {t("saving")}
                 </>
               ) : (
-                "Save Changes"
+                t("saveChanges")
               )}
             </Button>
           </DialogFooter>

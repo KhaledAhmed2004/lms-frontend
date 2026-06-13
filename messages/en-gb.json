@@ -368,7 +368,7 @@
   "applicationDetails": {
     "selectedSuccess": "Selected for interview",
     "selectFailed": "Failed to select for interview",
-    "approvedAsTutor": "Application approved \u2013 user is now a tutor",
+    "approvedAsTutor": "Application approved – user is now a tutor",
     "approveFailed": "Approval failed",
     "enterRejectionReason": "Enter rejection reason:",
     "rejectedSuccess": "Application rejected",
@@ -939,7 +939,18 @@
     "colStatus": "Status",
     "colAction": "Action",
     "download": "Download",
-    "noHistory": "No earnings history found"
+    "noHistory": "No earnings history found",
+    "errorLoadDetails": "Failed to load earnings details",
+    "earningsHistory": "Earnings History",
+    "badges": "Badges",
+    "edit": "Edit",
+    "ibanPlaceholder": "DE89 3704 0044 0532 0130 00",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "saveChanges": "Save changes",
+    "currencySymbol": "€",
+    "percentSymbol": "%",
+    "locale": "en-GB"
   },
   "contact": {
     "contactDetails": "Contact Details",
@@ -1341,5 +1352,34 @@
     "contentHere": "content here...",
     "lastUpdated": "Last updated:",
     "save": "Save"
+  },
+  "notifications": {
+    "mockup": "Mockup",
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "emptyTitle": "No notifications",
+    "emptyMessage": "You are up to date! No new notifications."
+  },
+  "tutorProfile": {
+    "loading": "Loading...",
+    "tutor": "Tutor",
+    "tutorWithSubjects": "Tutor ({subjects})",
+    "personalInformation": "Personal Information",
+    "editProfile": "Edit Profile",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "fullName": "Full Name",
+    "dateOfBirth": "Date of Birth",
+    "email": "Email Address",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "street": "Street",
+    "houseNumber": "House Number",
+    "zipCode": "ZIP Code",
+    "changeProfilePicture": "Change Profile Picture",
+    "preview": "Preview",
+    "choosePhoto": "Choose Photo",
+    "savePhoto": "Save Photo"
   }
 }

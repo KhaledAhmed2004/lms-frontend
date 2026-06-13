@@ -35,7 +35,7 @@ export default function EarningsHistory() {
       const detail = await fetchEarningsDetail(id);
       generateEarningsReceipt(detail);
     } catch {
-      toast.error("Failed to load earnings details");
+      toast.error(t("errorLoadDetails"));
     } finally {
       setDownloadingId(null);
     }
@@ -45,7 +45,7 @@ export default function EarningsHistory() {
     <div className="rounded-lg border border-gray-200 bg-white">
       <div className="flex items-center justify-between p-4 sm:p-5 lg:p-6 pb-0">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-          Earnings History
+          {t("earningsHistory")}
         </h2>
       </div>
 
