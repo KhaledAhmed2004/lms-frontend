@@ -10,6 +10,7 @@ import {
   useSubmitTutorFeedback,
   FEEDBACK_TYPE,
 } from "@/hooks/api/use-tutor-feedback";
+import { useTranslations } from "next-intl";
 
 type FeedbackStep = "audio" | "text" | "success";
 
@@ -22,6 +23,7 @@ export default function AudioFeedbackModal({
   onClose: () => void;
   session: SessionType | null;
 }) {
+  const t = useTranslations("audioFeedbackModal");
   const [currentStep, setCurrentStep] = useState<FeedbackStep>("audio");
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -109,9 +111,7 @@ export default function AudioFeedbackModal({
       intervalRef.current = interval;
     } catch (error: any) {
       console.error("Microphone access denied:", error);
-      setMicError(
-        "Microphone access denied. Please allow microphone access and try again.",
-      );
+      setMicError(t("micAccessDenied"));
     }
   };
 
@@ -137,7 +137,7 @@ export default function AudioFeedbackModal({
 
     const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
     if (audioBlob.size === 0) {
-      setMicError("No audio recorded. Please try again.");
+      setMicError(t("noAudioRecorded"));
       return;
     }
 
@@ -219,13 +219,13 @@ export default function AudioFeedbackModal({
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md bg-white border-0 p-0">
         <VisuallyHidden>
-          <DialogTitle>Feedback Modal</DialogTitle>
+          <DialogTitle>{t("feedbackModal")}</DialogTitle>
         </VisuallyHidden>
         {/* Audio Step */}
         {currentStep === "audio" && (
           <div className="space-y-4 sm:space-y-5 lg:space-y-6 py-5 sm:py-6 lg:py-8 px-4 sm:px-5 lg:px-6 text-center">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Share Your Feedback
+              {t("shareFeedback")}
             </h2>
 
             {starRating}
@@ -259,7 +259,7 @@ export default function AudioFeedbackModal({
               onClick={handleSkipAudio}
               className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm underline"
             >
-              Skip Audio Feedback
+              {t("skipAudio")}
             </button>
 
             {/* Buttons */}
@@ -268,7 +268,7 @@ export default function AudioFeedbackModal({
                 onClick={handleClose}
                 className="flex-1 px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-50 transition"
               >
-                Cancel
+                {t("cancel")}
               </button>
               <button
                 onClick={stopRecording}
@@ -284,7 +284,7 @@ export default function AudioFeedbackModal({
                 {submitFeedback.isPending && (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 )}
-                Submit
+                {t("submit")}
               </button>
             </div>
           </div>
@@ -294,7 +294,7 @@ export default function AudioFeedbackModal({
         {currentStep === "text" && (
           <div className="space-y-4 sm:space-y-5 lg:space-y-6 py-5 sm:py-6 lg:py-8 px-4 sm:px-5 lg:px-6">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 text-center">
-              Share Your Feedback
+              {t("shareFeedback")}
             </h2>
 
             {starRating}
@@ -303,7 +303,7 @@ export default function AudioFeedbackModal({
             <textarea
               value={feedbackText}
               onChange={(e) => setFeedbackText(e.target.value)}
-              placeholder="Type your feedback here..."
+              placeholder={t("typeFeedback")}
               rows={4}
               className="w-full p-2.5 sm:p-3 border-2 border-gray-300 rounded-lg text-sm focus:outline-none focus:border-blue-600 transition"
             />
@@ -314,7 +314,7 @@ export default function AudioFeedbackModal({
                 onClick={handleClose}
                 className="flex-1 px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-50 transition"
               >
-                Cancel
+                {t("cancel")}
               </button>
               <button
                 onClick={handleSubmitText}
@@ -334,7 +334,7 @@ export default function AudioFeedbackModal({
                 {submitFeedback.isPending && (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 )}
-                Submit
+                {t("submit")}
               </button>
             </div>
           </div>
@@ -351,10 +351,10 @@ export default function AudioFeedbackModal({
 
             <div>
               <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 sm:mb-2">
-                Success!
+                {t("successTitle")}
               </h3>
               <p className="text-sm sm:text-base text-gray-600">
-                Your review was submitted Successfully
+                {t("successDesc")}
               </p>
             </div>
 
@@ -362,7 +362,7 @@ export default function AudioFeedbackModal({
               onClick={handleClose}
               className="w-full px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 lg:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm sm:text-base transition"
             >
-              Close
+              {t("close")}
             </button>
           </div>
         )}

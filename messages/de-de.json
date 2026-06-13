@@ -1405,5 +1405,18 @@
     "tryAdjusting": "Versuche deine Suche oder Filter anzupassen",
     "previous": "Vorherige",
     "next": "Nächste"
+  },
+  "audioFeedbackModal": {
+    "micAccessDenied": "Mikrofonzugriff abgelehnt. Bitte zulassen und erneut versuchen.",
+    "noAudioRecorded": "Keine Aufnahme erkannt. Bitte nochmal versuchen.",
+    "feedbackModal": "Feedback-Dialog",
+    "shareFeedback": "Feedback teilen",
+    "skipAudio": "Audio überspringen",
+    "cancel": "Abbrechen",
+    "submit": "Einreichen",
+    "typeFeedback": "Geben Sie hier Ihr Feedback ein...",
+    "successTitle": "Ihr Feedback wurde erfolgreich eingereicht!",
+    "successDesc": "Ihre Bewertung wurde erfolgreich eingereicht",
+    "close": "Schließen"
   }
 }

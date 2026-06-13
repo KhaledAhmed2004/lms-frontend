@@ -1403,5 +1403,18 @@
     "tryAdjusting": "Try adjusting your search or filters",
     "previous": "Previous",
     "next": "Next"
+  },
+  "audioFeedbackModal": {
+    "micAccessDenied": "Microphone access denied. Please allow microphone access and try again.",
+    "noAudioRecorded": "No audio recorded. Please try again.",
+    "feedbackModal": "Feedback Modal",
+    "shareFeedback": "Share Your Feedback",
+    "skipAudio": "Skip Audio Feedback",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "typeFeedback": "Type your feedback here...",
+    "successTitle": "Success!",
+    "successDesc": "Your review was submitted Successfully",
+    "close": "Close"
   }
 }
