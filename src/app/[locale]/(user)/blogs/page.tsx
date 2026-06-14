@@ -1,13 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { platformMetadata, postsData } from "./components/AllPost";
+import { getPlatformMetadata, getPostsData } from "./components/AllPost";
 import FeaturedPostCard from "./components/FeaturedPostCard";
 import Header from "./components/Header";
 import PopularPosts from "./components/PopularPosts";
 import PostSection from "./components/PostSection";
+import { useTranslations } from "next-intl";
 
 export default function Blogs() {
+  const t = useTranslations("allPost");
+  const platformMetadata = useMemo(() => getPlatformMetadata(t), [t]);
+  const postsData = useMemo(() => getPostsData(t), [t]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedTag, setSelectedTag] = useState("");

@@ -2,15 +2,17 @@
 
 import { ArrowLeft, Calendar, Clock, Eye } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { postsData } from "../components/AllPost";
+import { getPostsData } from "../components/AllPost";
 import PostSection from "../components/PostSection";
 import { useTranslations } from "next-intl";
 
 export default function BlogPostDetails() {
   const t = useTranslations("blogPost");
+  const tAll = useTranslations("allPost");
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
+  const postsData = getPostsData(tAll);
 
   const post = postsData.find((p) => p.slug === slug);
 
