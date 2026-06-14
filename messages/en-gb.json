@@ -1576,6 +1576,7 @@
     "cta_applyTutor": "Apply as Tutor",
     "status_published": "Published",
     "status_draft": "Draft",
-    "status_scheduled": "Scheduled"
+    "status_scheduled": "Scheduled",
+    "all": "All"
   }
 }

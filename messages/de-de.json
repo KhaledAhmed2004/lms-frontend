@@ -1578,6 +1578,7 @@
     "cta_applyTutor": "Als Tutor bewerben",
     "status_published": "Veröffentlicht",
     "status_draft": "Entwurf",
-    "status_scheduled": "Geplant"
+    "status_scheduled": "Geplant",
+    "all": "Alle"
   }
 }
