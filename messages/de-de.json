@@ -1779,5 +1779,28 @@
     "about": "/about",
     "contact": "/contact",
     "careers": "/careers"
+  },
+  "homePage": {
+    "successRate": "Erfolgsquote",
+    "learningMaterials": "Lernmaterialien",
+    "satisfaction": "Zufriedenheit",
+    "howItWorks": "So funktioniert es",
+    "defineNeeds": "Definieren Sie Ihre Lernbedürfnisse – wir finden den passenden Tutor für Sie.",
+    "step1": "1.",
+    "sendRequest": "Senden Sie Ihre Anfrage",
+    "tellSubject": "Teilen Sie uns das Fach und Ihre Verfügbarkeit mit.",
+    "step2": "2.",
+    "meetTutor": "Lernen Sie Ihren Tutor kennen",
+    "connectTutor": "Wir verbinden Sie mit einem Tutor, der zu Ihren Zielen passt.",
+    "step3": "3.",
+    "startLearning": "Beginnen Sie mit dem Lernen",
+    "improveGrades": "Verbessern Sie Ihre Noten und gewinnen Sie Selbstvertrauen.",
+    "ourApproach": "Unser Ansatz",
+    "approachDesc": "Wir vermitteln Ihnen einen Tutor, der zuhört, Ihre Ziele versteht und sich Ihrem Lernstil anpasst. Mit einem individuellen Lernplan verbessern sich Noten schneller und das Selbstvertrauen wächst mit jeder Stunde."
+  },
+  "freeTrialNav": {
+    "companyName": "Schäfer Tutoring",
+    "loggingOut": "Abmelden...",
+    "logout": "Abmelden"
   }
 }

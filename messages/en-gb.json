@@ -1777,5 +1777,28 @@
     "about": "/about",
     "contact": "/contact",
     "careers": "/careers"
+  },
+  "homePage": {
+    "successRate": "Success rate",
+    "learningMaterials": "Learning materials",
+    "satisfaction": "Satisfaction",
+    "howItWorks": "How it works",
+    "defineNeeds": "Define your learning needs - we will find the right tutor for you.",
+    "step1": "1.",
+    "sendRequest": "Send your request",
+    "tellSubject": "Let us know the subject and your availability.",
+    "step2": "2.",
+    "meetTutor": "Get to know your tutor",
+    "connectTutor": "We connect you with a tutor who fits your goals.",
+    "step3": "3.",
+    "startLearning": "Start learning",
+    "improveGrades": "Improve your grades and gain self-confidence.",
+    "ourApproach": "Our approach",
+    "approachDesc": "We match you with a tutor who listens, understands your goals, and adapts to your learning style. With a personalized learning plan, grades improve faster and self-confidence grows with every lesson."
+  },
+  "freeTrialNav": {
+    "companyName": "Schäfer Tutoring",
+    "loggingOut": "Logging out...",
+    "logout": "Logout"
   }
 }
