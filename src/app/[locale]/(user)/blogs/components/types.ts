@@ -18,8 +18,8 @@ export type BlogPost = {
   slug: string;
   seoTitle: string;
   seoDescription: string;
-  cta: "Book Free Trial" | "Apply as Tutor";
-  status: "Published" | "Draft" | "Scheduled";
+  cta: string;
+  status: string;
   content_sections?: ContentSection[];
   image_url?: string;
   author_avatar_url?: string;
