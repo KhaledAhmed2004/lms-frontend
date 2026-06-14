@@ -1642,5 +1642,19 @@
     "careers": "Karriere",
     "contact": "Kontakt",
     "copyright": "@ 2025-2026 Schäfer Tutoring. Alle Rechte vorbehalten."
+  },
+  "approach": {
+    "studentLearning": "Schüler lernt mit Tutor",
+    "personal": "Persönlic",
+    "individual": "individuell",
+    "findTutor": "Tutor finden"
+  },
+  "banner": {
+    "title": "Finde den Online-Nachhilfelehrer, der zu dir passt",
+    "subtitle": "Sag uns, was du brauchst – wir finden den perfekten Nachhilfelehrer für dich.",
+    "selectSubject": "Fach auswählen",
+    "bookTrial": "Probestunde vereinbaren",
+    "noSubjects": "Keine Fächer verfügbar",
+    "girlStudentAlt": "Mädchen als Schülerin"
   }
 }

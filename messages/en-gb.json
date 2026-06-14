@@ -1640,5 +1640,19 @@
     "careers": "Careers",
     "contact": "Contact",
     "copyright": "@ 2025-2026 Schäfer Tutoring. All rights reserved."
+  },
+  "approach": {
+    "studentLearning": "Student learning with tutor",
+    "personal": "Personal",
+    "individual": "individual",
+    "findTutor": "Find a tutor"
+  },
+  "banner": {
+    "title": "Find the online tutor that suits you",
+    "subtitle": "Tell us what you need - we will find the perfect tutor for you.",
+    "selectSubject": "Select subject",
+    "bookTrial": "Book a trial session",
+    "noSubjects": "No subjects available",
+    "girlStudentAlt": "Girl as student"
   }
 }
