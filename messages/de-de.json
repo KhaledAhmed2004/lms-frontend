@@ -1692,5 +1692,22 @@
     "improveGrades": "Noten verbessern, Selbstvertrauen stärken.",
     "ourApproach": "Unser Ansatz",
     "approachDesc": "Wir vermitteln Ihnen einen Tutor, der zuhört, Ihre Ziele versteht und sich Ihrem Lernstil anpasst. Mit einem personalisierten Lernplan verbessern sich Ihre Noten schneller und das Selbstvertrauen wächst mit jeder Unterrichtsstunde."
+  },
+  "howItWorks": {
+    "class1": "bg-white pt-16 lg:py-20",
+    "class2": "text-center mb-12 pb-5",
+    "class3": "text-4xl sm:text-5xl font-bold text-[#0B31BD] mb-2.5",
+    "class4": "text-[#061651] text-base sm:text-lg"
+  },
+  "pricingSection": {
+    "title": "Preise",
+    "subtitle": "Unsere Pläne sind flexibel, gerecht und genau auf Ihre aktuelle Situation zugeschnitten.",
+    "pricePerHour": "Preis pro Stunde",
+    "scheduling": "Terminplanung",
+    "sessions": "Einheiten",
+    "duration": "Laufzeit",
+    "suitableFor": "Geeignet für",
+    "tryForFree": "Kostenlos testen",
+    "recommendedFor": "Empfohlen für"
   }
 }

@@ -1690,5 +1690,22 @@
     "improveGrades": "Improve grades, boost self-confidence.",
     "ourApproach": "Our approach",
     "approachDesc": "We match you with a tutor who listens, understands your goals, and adapts to your learning style. With a personalized learning plan, your grades improve faster and your self-confidence grows with every lesson."
+  },
+  "howItWorks": {
+    "class1": "bg-white pt-16 lg:py-20",
+    "class2": "text-center mb-12 pb-5",
+    "class3": "text-4xl sm:text-5xl font-bold text-[#0B31BD] mb-2.5",
+    "class4": "text-[#061651] text-base sm:text-lg"
+  },
+  "pricingSection": {
+    "title": "Pricing",
+    "subtitle": "Our plans are flexible, fair, and tailored exactly to your current situation.",
+    "pricePerHour": "Price per hour",
+    "scheduling": "Scheduling",
+    "sessions": "Sessions",
+    "duration": "Duration",
+    "suitableFor": "Suitable for",
+    "tryForFree": "Try for free",
+    "recommendedFor": "Recommended for"
   }
 }
