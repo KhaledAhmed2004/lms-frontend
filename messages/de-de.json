@@ -1709,5 +1709,21 @@
     "suitableFor": "Geeignet für",
     "tryForFree": "Kostenlos testen",
     "recommendedFor": "Empfohlen für"
+  },
+  "testimonial": {
+    "title": "Was unsere Schüler sagen",
+    "subtitle": "Erfahren Sie von unserer Lern-Community, wie ihre Erfahrungen sind.",
+    "role1": "12. Klasse, Gymnasium",
+    "text1": "Meine Mathenoten verbesserten sich in nur drei Monaten von einer 4 auf eine 2. Mein Tutor erklärte die Inhalte so, dass ich sie endlich verstand.",
+    "role2": "10. Klasse, Realschule",
+    "text2": "Ich hatte jahrelang Probleme mit Englisch. Jetzt macht mir das Fach Spaß und ich traue mich, im Unterricht zu sprechen.",
+    "role3": "Abiturvorbereitung",
+    "text3": "Die flexible Terminplanung passte perfekt zu meinem vollen Terminkalender. Ich konnte die Sitzungen um meine übrigen Verpflichtungen herum planen.",
+    "role4": "11. Klasse, Gymnasium",
+    "text4": "Physik war mein schlechtestes Fach, bis ich hier begann. Die Geduld und klaren Erklärungen meines Tutors haben alles verändert.",
+    "role5": "9. Klasse, Gesamtschule",
+    "text5": "Ich freue mich, dass mein Tutor sich meinem Lernstil anpasst. Die Online-Sitzungen sind bequem, und die Plattform einfach zu bedienen.",
+    "role6": "8. Klasse, Gymnasium",
+    "text6": "Chemie war verwirrend, jetzt finde ich es spannend! Mein Tutor erklärt komplexe Themen in einfache, verständliche Schritte."
   }
 }

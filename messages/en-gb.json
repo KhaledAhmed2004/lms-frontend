@@ -1707,5 +1707,21 @@
     "suitableFor": "Suitable for",
     "tryForFree": "Try for free",
     "recommendedFor": "Recommended for"
+  },
+  "testimonial": {
+    "title": "What our students say",
+    "subtitle": "Hear from our learning community about their experiences.",
+    "role1": "12th Grade, High School",
+    "text1": "My math grades improved from a D to a B in just three months. My tutor explained the content in a way that I finally understood it.",
+    "role2": "10th Grade, Middle School",
+    "text2": "I struggled with English for years. Now I enjoy the subject and dare to speak in class.",
+    "role3": "Abitur Preparation",
+    "text3": "The flexible scheduling fit perfectly with my busy schedule. I was able to plan the sessions around my other commitments.",
+    "role4": "11th Grade, High School",
+    "text4": "Physics was my worst subject until I started here. My tutor's patience and clear explanations changed everything.",
+    "role5": "9th Grade, Comprehensive School",
+    "text5": "I am glad that my tutor adapts to my learning style. The online sessions are convenient, and the platform is easy to use.",
+    "role6": "8th Grade, High School",
+    "text6": "Chemistry was confusing, now I find it exciting! My tutor explains complex topics in simple, understandable steps."
   }
 }
