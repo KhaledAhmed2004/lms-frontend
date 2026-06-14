@@ -1826,5 +1826,39 @@
     "submitted": "Submitted",
     "openChat": "Open tutor chat",
     "loginToView": "Login anytime to view status."
+  },
+  "trialProgress": {
+    "tutorRequest": "Tutor request",
+    "trialLesson": "Trial lesson",
+    "startLearning": "Start learning"
+  },
+  "tutorChat": {
+    "messageFailed": "Message could not be sent",
+    "proposalRejected": "Proposal rejected",
+    "noMessages": "No messages yet. Start now!",
+    "tutor": "Tutor",
+    "image": "Image",
+    "document": "Document",
+    "enterMessage": "Enter message...",
+    "send": "Send",
+    "attachFile": "Attach file (max. 3)",
+    "foundTutor": "We have found the perfect tutor for you.",
+    "startConversation": "Start the conversation and arrange your trial lesson.",
+    "proposal": "Proposal",
+    "changeRequestRecorded": "(In the info window) Change request for the appointment recorded. Please discuss this with your tutor."
+  },
+  "formNavigation": {
+    "back": "Back",
+    "sending": "Sending...",
+    "arrangeTrial": "Arrange trial lesson",
+    "next": "Next"
+  },
+  "goalsDocuments": {
+    "learningGoalsOptional": "Learning goals (Optional)",
+    "enterLearningGoals": "Please enter your learning goals",
+    "documentsOptional": "Documents (Optional)",
+    "dragFiles": "Drag files here or click to select",
+    "fileTypes": "png, jpg, pdf up to 10MB",
+    "fileSelected": "File selected:"
   }
 }

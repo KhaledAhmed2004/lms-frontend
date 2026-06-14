@@ -1828,5 +1828,39 @@
     "submitted": "Eingereicht",
     "openChat": "Tutor-Chat öffnen",
     "loginToView": "Jederzeit anmelden, um Status einzusehen."
+  },
+  "trialProgress": {
+    "tutorRequest": "Tutorenanfrage",
+    "trialLesson": "Probestunde",
+    "startLearning": "Mit dem Lernen starten"
+  },
+  "tutorChat": {
+    "messageFailed": "Nachricht konnte nicht gesendet werden",
+    "proposalRejected": "Vorschlag abgelehnt",
+    "noMessages": "Noch keine Nachrichten. Starte jetzt!",
+    "tutor": "Tutor",
+    "image": "Bild",
+    "document": "Dokument",
+    "enterMessage": "Nachricht eingeben...",
+    "send": "Senden",
+    "attachFile": "Datei anhängen (max. 3)",
+    "foundTutor": "Wir haben den perfekten Tutor für dich gefunden.",
+    "startConversation": "Starten Sie die Unterhaltung und vereinbaren Sie Ihre Probestunde.",
+    "proposal": "Vorschlag",
+    "changeRequestRecorded": "(Im Info-Fenster) Änderungswunsch für den Termin aufgenommen. Bitte bespreche dies mit deinem Tutor."
+  },
+  "formNavigation": {
+    "back": "Zurück",
+    "sending": "Wird gesendet...",
+    "arrangeTrial": "Probestunde vereinbaren",
+    "next": "Weiter"
+  },
+  "goalsDocuments": {
+    "learningGoalsOptional": "Lernziele (Optional)",
+    "enterLearningGoals": "Bitte geben Sie Ihre Lernziele ein",
+    "documentsOptional": "Dokumente (Optional)",
+    "dragFiles": "Dateien hier ziehen oder klicken zum Auswählen",
+    "fileTypes": "png, jpg, pdf bis 10MB",
+    "fileSelected": "Datei ausgewählt:"
   }
 }
