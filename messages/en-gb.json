@@ -1558,5 +1558,24 @@
     "post6_author_role": "Mathematics Tutor",
     "post6_date": "Jan 20, 2026",
     "post6_read_time": "5 min read"
+  },
+  "blogsPage": {
+    "featured": "Featured",
+    "read": "Read",
+    "blogTitle": "SCHÄFER TUTORING BLOG",
+    "learningMaterials": "Learning Materials and Study Hints",
+    "expertAdvice": "Expert advice from our tutors to help students achieve their goals.",
+    "searchPlaceholder": "Search articles, topics, subjects...",
+    "popularPosts": "📌 Popular Posts",
+    "views": "views",
+    "readyToImprove": "Ready to improve your grades?",
+    "bookFreeTrialDesc": "Book a free trial session with one of our experienced tutors.",
+    "bookFreeTrial": "Book Free Trial",
+    "noPosts": "No posts found. Try adjusting your filters.",
+    "cta_bookTrial": "Book Free Trial",
+    "cta_applyTutor": "Apply as Tutor",
+    "status_published": "Published",
+    "status_draft": "Draft",
+    "status_scheduled": "Scheduled"
   }
 }

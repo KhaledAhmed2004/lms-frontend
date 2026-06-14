@@ -1560,5 +1560,24 @@
     "post6_author_role": "Mathematiklehrer",
     "post6_date": "20. Jan. 2026",
     "post6_read_time": "5 Min. Lesedauer"
+  },
+  "blogsPage": {
+    "featured": "Empfohlen",
+    "read": "Lesen",
+    "blogTitle": "SCHÄFER TUTORING BLOG",
+    "learningMaterials": "Lernmaterialien und Studienhinweise",
+    "expertAdvice": "Fachkundige Ratschläge unserer Tutoren, um Schüler beim Erreichen ihrer Ziele zu unterstützen.",
+    "searchPlaceholder": "Suche Artikel, Themen, Fächer...",
+    "popularPosts": "📌 Beliebte Beiträge",
+    "views": "Aufrufe",
+    "readyToImprove": "Bereit, deine Noten zu verbessern?",
+    "bookFreeTrialDesc": "Buche eine kostenlose Probestunde bei einem unserer erfahrenen Tutoren.",
+    "bookFreeTrial": "Kostenlose Probestunde buchen",
+    "noPosts": "Keine Beiträge gefunden. Versuchen Sie, Ihre Filter anzupassen.",
+    "cta_bookTrial": "Kostenlose Probestunde buchen",
+    "cta_applyTutor": "Als Tutor bewerben",
+    "status_published": "Veröffentlicht",
+    "status_draft": "Entwurf",
+    "status_scheduled": "Geplant"
   }
 }
