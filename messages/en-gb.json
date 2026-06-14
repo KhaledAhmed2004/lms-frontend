@@ -1654,5 +1654,23 @@
     "bookTrial": "Book a trial session",
     "noSubjects": "No subjects available",
     "girlStudentAlt": "Girl as student"
+  },
+  "faqSection": {
+    "q1": "How does online tutoring work?",
+    "a1": "All lessons take place on an integrated online meeting platform. Tutor and student work together in a secure digital space, using interactive whiteboards to write, draw, and share assignments. The lessons are live and tailored individually to the student's learning goals.",
+    "q2": "Which subjects and grade levels are offered?",
+    "a2": "Numerous school subjects are offered from 1st to 13th grade. These include Mathematics, English, German, Sciences, Languages, and more.",
+    "q3": "How are tutors selected?",
+    "a3": "All tutors go through a structured two-stage selection process. Qualifications, teaching experience, and pedagogical skills are tested. Only applicants with clear communication and individual support are accepted.",
+    "q4": "Can sessions be rescheduled or cancelled?",
+    "a4": "Sessions can be rescheduled or cancelled free of charge up to 10 minutes before the start.",
+    "q5": "How long does a typical lesson last?",
+    "a5": "A standard lesson lasts 60 minutes. This duration has proven to be effective for continuous learning success.",
+    "q6": "What equipment is needed?",
+    "a6": "Only basic equipment is required: laptop, tablet, or smartphone; stable internet connection; microphone; optionally a camera. No additional software installation is required.",
+    "q7": "Can the tutor be changed if necessary?",
+    "a7": "A change of tutor is possible at any time if the collaboration is not optimal. In such cases, an alternative tutor will be recommended.",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about our online tutoring."
   }
 }

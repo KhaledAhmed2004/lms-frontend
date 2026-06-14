@@ -1656,5 +1656,23 @@
     "bookTrial": "Probestunde vereinbaren",
     "noSubjects": "Keine Fächer verfügbar",
     "girlStudentAlt": "Mädchen als Schülerin"
+  },
+  "faqSection": {
+    "q1": "Wie läuft die Online-Nachhilfe ab?",
+    "a1": "Alle Unterrichtsstunden finden auf einer integrierten Online-Meeting-Plattform statt. Tutor und Schüler arbeiten in einem sicheren digitalen Raum zusammen, nutzen interaktive Whiteboards zum Schreiben, Zeichnen und Teilen von Aufgaben. Der Unterricht erfolgt live und ist individuell auf die Lernziele des Schülers abgestimmt.",
+    "q2": "Welche Fächer und Klassenstufen werden angeboten?",
+    "a2": "Es werden zahlreiche Schulfächer von der 1. bis zur 13. Klasse angeboten. Dazu gehören Mathematik, Englisch, Deutsch, Naturwissenschaften, Sprachen und mehr.",
+    "q3": "Wie werden Nachhilfelehrer ausgewählt?",
+    "a3": "Alle Nachhilfelehrer durchlaufen einen strukturierten zweistufigen Auswahlprozess. Qualifikationen, Unterrichtserfahrung und pädagogische Fähigkeiten werden geprüft. Nur Bewerber mit klarer Kommunikation und individueller Förderung werden akzeptiert.",
+    "q4": "Können Sitzungen verschoben oder abgesagt werden?",
+    "a4": "Sitzungen können bis zu 10 Minuten vor Beginn kostenlos verschoben oder abgesagt werden.",
+    "q5": "Wie lange dauert eine typische Unterrichtsstunde?",
+    "a5": "Eine Standardstunde dauert 60 Minuten. Diese Dauer hat sich als effektiv für kontinuierlichen Lernerfolg erwiesen.",
+    "q6": "Welche Ausstattung wird benötigt?",
+    "a6": "Es wird nur grundlegende Ausstattung benötigt: Laptop, Tablet oder Smartphone; stabile Internetverbindung; Mikrofon; optional eine Kamera. Eine zusätzliche Softwareinstallation ist nicht erforderlich.",
+    "q7": "Kann der Nachhilfelehrer bei Bedarf gewechselt werden?",
+    "a7": "Ein Tutorwechsel ist jederzeit möglich, wenn die Zusammenarbeit nicht optimal ist. In solchen Fällen wird ein alternativer Tutor empfohlen.",
+    "title": "Häufig gestellte Fragen",
+    "subtitle": "Alles, was Sie über unsere Online-Nachhilfe wissen müssen."
   }
 }
