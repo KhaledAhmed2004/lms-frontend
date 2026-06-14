@@ -1674,5 +1674,23 @@
     "a7": "Ein Tutorwechsel ist jederzeit möglich, wenn die Zusammenarbeit nicht optimal ist. In solchen Fällen wird ein alternativer Tutor empfohlen.",
     "title": "Häufig gestellte Fragen",
     "subtitle": "Alles, was Sie über unsere Online-Nachhilfe wissen müssen."
+  },
+  "funcard": {
+    "successRate": "Erfolgsrate",
+    "learningMaterials": "Lernmaterialien",
+    "customerSatisfaction": "Kundenzufriedenheit",
+    "howItWorks": "So funktioniert es",
+    "stateNeeds": "Lernbedarf angeben – wir suchen den richtigen Tutor.",
+    "step1": "1.",
+    "submitRequest": "Anfrage absenden",
+    "enterSubject": "Geben Sie das Fach und Ihre Verfügbarkeit an.",
+    "step2": "2.",
+    "meetTutor": "Lernen Sie Ihren Tutor kennen",
+    "connectTutor": "Wir verbinden Sie mit einem passenden Tutor, basierend auf Ihren Zielen.",
+    "step3": "3.",
+    "startLearning": "Beginnen Sie mit dem Lernen",
+    "improveGrades": "Noten verbessern, Selbstvertrauen stärken.",
+    "ourApproach": "Unser Ansatz",
+    "approachDesc": "Wir vermitteln Ihnen einen Tutor, der zuhört, Ihre Ziele versteht und sich Ihrem Lernstil anpasst. Mit einem personalisierten Lernplan verbessern sich Ihre Noten schneller und das Selbstvertrauen wächst mit jeder Unterrichtsstunde."
   }
 }

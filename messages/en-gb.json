@@ -1672,5 +1672,23 @@
     "a7": "A change of tutor is possible at any time if the collaboration is not optimal. In such cases, an alternative tutor will be recommended.",
     "title": "Frequently Asked Questions",
     "subtitle": "Everything you need to know about our online tutoring."
+  },
+  "funcard": {
+    "successRate": "Success rate",
+    "learningMaterials": "Learning materials",
+    "customerSatisfaction": "Customer satisfaction",
+    "howItWorks": "How it works",
+    "stateNeeds": "State your learning needs - we will find the right tutor.",
+    "step1": "1.",
+    "submitRequest": "Submit request",
+    "enterSubject": "Enter the subject and your availability.",
+    "step2": "2.",
+    "meetTutor": "Get to know your tutor",
+    "connectTutor": "We connect you with a suitable tutor based on your goals.",
+    "step3": "3.",
+    "startLearning": "Start learning",
+    "improveGrades": "Improve grades, boost self-confidence.",
+    "ourApproach": "Our approach",
+    "approachDesc": "We match you with a tutor who listens, understands your goals, and adapts to your learning style. With a personalized learning plan, your grades improve faster and your self-confidence grows with every lesson."
   }
 }
