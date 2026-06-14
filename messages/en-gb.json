@@ -1800,5 +1800,31 @@
     "companyName": "Schäfer Tutoring",
     "loggingOut": "Logging out...",
     "logout": "Logout"
+  },
+  "requestStatus": {
+    "loading": "Your request is loading...",
+    "notFoundTitle": "No trial request found",
+    "notFoundDesc": "You have not submitted a request for a trial lesson yet.",
+    "requestTrial": "Request trial lesson",
+    "sentTitle": "Your request has been sent, we are now looking for a suitable tutor.",
+    "sentDesc": "You will be notified as soon as we have found a tutor.",
+    "foundTitle": "We have found your tutor!",
+    "foundDesc": "Arrange a suitable appointment with the tutor.",
+    "expiredTitle": "Request expired.",
+    "expiredDesc": "Please submit a new trial lesson request.",
+    "cancelledTitle": "Request cancelled.",
+    "cancelledDesc": "You can submit a new trial lesson request at any time.",
+    "processing": "Your request is being processed...",
+    "trialLesson": "Trial lesson",
+    "overview": "Request overview",
+    "name": "Name",
+    "schoolType": "School type",
+    "subject": "Subject",
+    "gradeLevel": "Grade level",
+    "learningGoals": "Learning goals",
+    "dash": "–",
+    "submitted": "Submitted",
+    "openChat": "Open tutor chat",
+    "loginToView": "Login anytime to view status."
   }
 }

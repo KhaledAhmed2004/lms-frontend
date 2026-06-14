@@ -1802,5 +1802,31 @@
     "companyName": "Schäfer Tutoring",
     "loggingOut": "Abmelden...",
     "logout": "Abmelden"
+  },
+  "requestStatus": {
+    "loading": "Ihre Anfrage wird geladen...",
+    "notFoundTitle": "Keine Probeanfrage gefunden",
+    "notFoundDesc": "Sie haben noch keine Anfrage für eine Probestunde eingereicht.",
+    "requestTrial": "Probestunde anfragen",
+    "sentTitle": "Ihre Anfrage wurde gesendet, wir suchen nun einen passenden Tutor.",
+    "sentDesc": "Sie werden benachrichtigt, sobald wir einen Tutor gefunden haben.",
+    "foundTitle": "Wir haben deinen Tutor gefunden!",
+    "foundDesc": "Vereinbaren Sie ein passenden Termin mit dem Tutor.",
+    "expiredTitle": "Anfrage abgelaufen.",
+    "expiredDesc": "Bitte reichen Sie eine neue Probestunden-Anfrage ein.",
+    "cancelledTitle": "Anfrage storniert.",
+    "cancelledDesc": "Sie können jederzeit eine neue Probestunden-Anfrage stellen.",
+    "processing": "Ihre Anfrage wird bearbeitet...",
+    "trialLesson": "Probestunde",
+    "overview": "Anfrageübersicht",
+    "name": "Name",
+    "schoolType": "Schulform",
+    "subject": "Fach",
+    "gradeLevel": "Klassenstufe",
+    "learningGoals": "Lernziele",
+    "dash": "–",
+    "submitted": "Eingereicht",
+    "openChat": "Tutor-Chat öffnen",
+    "loginToView": "Jederzeit anmelden, um Status einzusehen."
   }
 }
