@@ -1759,5 +1759,25 @@
     "duration": "Dauer",
     "recommendedFor": "Empfohlen für",
     "tryForFree": "Kostenlos testen"
+  },
+  "tutorsSection": {
+    "title": "Unsere Tutoren",
+    "selectionProcess": "Jeder Tutor durchläuft einen zweistufigen Auswahlprozess.",
+    "motivateListenSupport": "Wir stellen sicher, dass sie nicht nur unterrichten – sie motivieren, hören zu und unterstützen jeden Schüler individuell."
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "becomeTutor": "Tutor werden",
+    "login": "Anmelden",
+    "language": "Sprache",
+    "loggingOut": "Abmeldung läuft...",
+    "logout": "Abmelden",
+    "companyName": "Schäfer Tutoring",
+    "openMenu": "Menü öffnen"
+  },
+  "layoutUrls": {
+    "about": "/about",
+    "contact": "/contact",
+    "careers": "/careers"
   }
 }

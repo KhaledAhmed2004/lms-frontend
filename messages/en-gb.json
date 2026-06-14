@@ -1757,5 +1757,25 @@
     "duration": "Duration",
     "recommendedFor": "Recommended for",
     "tryForFree": "Try for free"
+  },
+  "tutorsSection": {
+    "title": "Our tutors",
+    "selectionProcess": "Every tutor goes through a two-stage selection process.",
+    "motivateListenSupport": "We ensure that they don't just teach – they motivate, listen, and support every student individually."
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "becomeTutor": "Become a tutor",
+    "login": "Login",
+    "language": "Language",
+    "loggingOut": "Logging out...",
+    "logout": "Logout",
+    "companyName": "Schäfer Tutoring",
+    "openMenu": "Open menu"
+  },
+  "layoutUrls": {
+    "about": "/about",
+    "contact": "/contact",
+    "careers": "/careers"
   }
 }
