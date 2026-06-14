@@ -1622,5 +1622,25 @@
     "rate19": "19,00 €/h",
     "close": "Schließen",
     "applyNow": "Jetzt bewerben"
+  },
+  "legalPage": {
+    "notAvailable": "Nicht verfügbar",
+    "lastUpdated": "Zuletzt aktualisiert:"
+  },
+  "footer": {
+    "companyName": "Schäfer Tutoring",
+    "legal": "Rechtliches",
+    "privacyPolicy": "Datenschutzerklärung",
+    "studentTerms": "AGB Schüler",
+    "tutorTerms": "AGB Tutoren",
+    "cancellationPolicy": "Widerrufsbelehrung",
+    "imprint": "Impressum",
+    "cookiePolicy": "Cookie-Richtlinie",
+    "aboutCompany": "Über das Unternehmen",
+    "aboutUs": "Über uns",
+    "blog": "Blog",
+    "careers": "Karriere",
+    "contact": "Kontakt",
+    "copyright": "@ 2025-2026 Schäfer Tutoring. Alle Rechte vorbehalten."
   }
 }
