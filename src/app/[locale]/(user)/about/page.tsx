@@ -1,96 +1,60 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-/* ──────────────────────────── data ──────────────────────────── */
-
-
-const commitments = [
-  {
-    title: "FAIR PRICING",
-    description:
-      "Clear monthly structure starting from €25/hour. No hidden fees. Cancel anytime.",
-  },
-  {
-    title: "PERSONAL SUPPORT",
-    description:
-      "Individual tutoring focused on long-term development. Clear structure instead of random sessions.",
-  },
-  {
-    title: "DIGITAL ORGANISATION",
-    description:
-      "Automated scheduling, digital invoicing and organised communication.",
-  },
-  {
-    title: "PERFORMANCE-BASED TUTOR LEVELS",
-    description:
-      "Tutors are paid transparently and progress through performance-based levels.",
-  },
-];
-
-const audiences = [
-  {
-    title: "For Students",
-    items: [
-      "Long-term academic support",
-      "Clear learning structure",
-      "Flexible online scheduling",
-    ],
-  },
-  {
-    title: "For Parents",
-    items: [
-      "Transparent pricing model",
-      "Clear cancellation terms",
-      "Reliable communication",
-    ],
-  },
-  {
-    title: "For Tutors",
-    items: [
-      "Transparent compensation system",
-      "Performance-based level progression",
-      "Organised scheduling",
-    ],
-  },
-];
 /* ──────────────────────────── page ──────────────────────────── */
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const t = await getTranslations("aboutPage");
+
+  const commitments = [
+    { title: t("commitment0Title"), description: t("commitment0Desc") },
+    { title: t("commitment1Title"), description: t("commitment1Desc") },
+    { title: t("commitment2Title"), description: t("commitment2Desc") },
+    { title: t("commitment3Title"), description: t("commitment3Desc") },
+  ];
+
+  const audiences = [
+    {
+      title: t("audience0Title"),
+      items: [t("audience0Item0"), t("audience0Item1"), t("audience0Item2")],
+    },
+    {
+      title: t("audience1Title"),
+      items: [t("audience1Item0"), t("audience1Item1"), t("audience1Item2")],
+    },
+    {
+      title: t("audience2Title"),
+      items: [t("audience2Item0"), t("audience2Item1"), t("audience2Item2")],
+    },
+  ];
+
   return (
     <div>
       {/* ── Hero ── */}
       <section className="bg-[#0B31BD] py-24 px-4 text-center text-white">
         <p className="text-sm font-semibold uppercase tracking-widest text-blue-200 mb-4">
-          About Us
+          {t("heroLabel")}
         </p>
         <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-          Tutoring reimagined.
+          {t("heroTitle")}
           <br />
-          Structure meets care.
+          {t("heroSubtitle")}
         </h1>
         <p className="max-w-2xl mx-auto text-blue-100 text-lg">
-          Sch&auml;fer Tutoring stands for digital organisation, transparent
-          pricing, and personal support that actually makes a difference.
+          {t("heroDesc")}
         </p>
       </section>
 
       {/* ── Our Mission ── */}
       <section className="py-20 px-4 text-center">
         <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-3">
-          Our Mission
+          {t("missionLabel")}
         </p>
         <h2 className="text-3xl md:text-4xl font-bold text-[#0B31BD] mb-10">
-          Why we built Schäfer Tutoring
+          {t("missionTitle")}
         </h2>
         <div className="max-w-3xl mx-auto space-y-6 text-gray-600 leading-relaxed">
-          <p>
-            Many tutoring platforms have become expensive for families and
-            complicated for teachers. Prices are high. Teacher pay is often
-            unclear. Processes lack transparency. We chose a different approach.
-            Schäfer Tutoring was built to create a structured system where
-            students and tutors can focus actually matters: learning and
-            teaching. No hidden fees. No inflated commissions. Just organised,
-            fair tutoring.
-          </p>
+          <p>{t("missionBody")}</p>
         </div>
       </section>
 
@@ -108,48 +72,31 @@ export default function AboutPage() {
 
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-2">
-              The Founder
+              {t("founderLabel")}
             </p>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Simon Sch&auml;fer
+              {t("founderName")}
             </h2>
             <div className="space-y-4 text-gray-600 leading-relaxed">
-              <p>
-                Simon studied Industrial Engineering and worked in
-                digitalisation and process automation before founding
-                Sch&auml;fer Tutoring.
-              </p>
+              <p>{t("founderBio1")}</p>
 
-              <p>
-                Before founding Sch&auml;fer Tutoring, Simon tutored for four
-                years — three years at a tutoring agency and one year through
-                his own small company. During his time at the agency, regular
-                conversations with fellow tutors and students revealed recurring
-                structural problems: high prices for families, low and often
-                unclear pay for tutors, and little transparency in how the
-                system operated. Eventually, he decided it was time to take
-                responsibility and build a better alternative himself.
-              </p>
+              <p>{t("founderBio2")}</p>
 
-              <p>
-                Sch&auml;fer Tutoring was built differently. The goal was not to
-                create another marketplace, but a reliable infrastructure that:
-              </p>
+              <p>{t("founderBio3")}</p>
 
               <ul className="list-disc pl-6 space-y-2">
-                <li>keeps pricing transparent</li>
-                <li>pays tutors fairly</li>
-                <li>ensures structured organisation</li>
+                <li>{t("founderBullet1")}</li>
+                <li>{t("founderBullet2")}</li>
+                <li>{t("founderBullet3")}</li>
               </ul>
             </div>
 
             <blockquote className="mt-8 border-l-4 border-[#0B31BD] pl-5 py-3 bg-white rounded-r-lg">
               <p className="font-semibold italic text-gray-900">
-                &ldquo;Tutoring works best when structure and fairness come
-                first.&rdquo;
+                {t("quoteText")}
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                &mdash; Simon Sch&auml;fer, Founder
+                {t("quoteAuthor")}
               </p>
             </blockquote>
           </div>
@@ -159,10 +106,10 @@ export default function AboutPage() {
       {/* ── Quality Commitment ── */}
       <section className="bg-gray-50 py-20 px-4 text-center">
         <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-3">
-          Standards
+          {t("standardsLabel")}
         </p>
         <h2 className="text-3xl md:text-4xl font-bold text-[#0B31BD] mb-14">
-          Our quality commitment.
+          {t("standardsTitle")}
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
           {commitments.map((c) => (
@@ -180,10 +127,10 @@ export default function AboutPage() {
       {/* ── Who we serve ── */}
       <section className="py-20 px-4 text-center">
         <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-3">
-          Who We Serve
+          {t("whoLabel")}
         </p>
         <h2 className="text-3xl md:text-4xl font-bold text-[#0B31BD] mb-14">
-          Who we&apos;re here for.
+          {t("whoTitle")}
         </h2>
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
           {audiences.map((a) => (
@@ -206,59 +153,51 @@ export default function AboutPage() {
       </section>
 
       {/* ── Our Vision ── */}
-      {/* ── Our Vision ── */}
       <section className="bg-gray-50 py-20 px-4 text-center">
         <p className="text-sm font-semibold uppercase tracking-widest text-[#0B31BD] mb-3">
-          Our Vision
+          {t("visionLabel")}
         </p>
         <h2 className="text-3xl md:text-4xl font-bold text-[#0B31BD] mb-10">
-          Where we&apos;re headed.
+          {t("visionTitle")}
         </h2>
 
         <div className="max-w-3xl mx-auto text-gray-600 leading-relaxed space-y-6">
-          <p>
-            Sch&auml;fer Tutoring aims to build a tutoring solution that can be
-            used by as many students as possible.
-          </p>
+          <p>{t("visionP1")}</p>
 
-          <p>Our goal is to create a platform that is:</p>
+          <p>{t("visionP2")}</p>
 
           {/* Centered block but left-aligned bullet text */}
           <ul className="list-disc pl-6 space-y-2 inline-block text-left mx-auto">
-            <li>simple enough for anyone to use</li>
-            <li>fair enough for tutors to stay long-term</li>
-            <li>affordable enough for families</li>
-            <li>structured enough to scale sustainably</li>
+            <li>{t("visionBullet0")}</li>
+            <li>{t("visionBullet1")}</li>
+            <li>{t("visionBullet2")}</li>
+            <li>{t("visionBullet3")}</li>
           </ul>
 
-          <p>
-            We are building not just a platform, but a system designed for broad
-            adoption — accessible, and built around the real needs of students
-            and teachers.
-          </p>
+          <p>{t("visionP3")}</p>
         </div>
       </section>
 
       {/* ── CTA ── */}
       <section className="bg-[#0B31BD] py-20 px-4 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-          Learn. Teach. Grow together.
+          {t("ctaTitle")}
         </h2>
         <p className="text-blue-100 mb-10 max-w-xl mx-auto">
-          Experience organised and transparent tutoring.
+          {t("ctaDesc")}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             href="/free-trial-student"
             className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-white text-[#0B31BD] font-medium hover:bg-gray-100 transition-colors"
           >
-            Trial Session
+            {t("ctaTrial")}
           </Link>
           <Link
             href="/free-trial-teacher"
             className="inline-flex items-center justify-center px-8 py-3 rounded-lg border-2 border-white text-white font-medium hover:bg-white/10 transition-colors"
           >
-            Become a Tutor
+            {t("ctaTutor")}
           </Link>
         </div>
       </section>

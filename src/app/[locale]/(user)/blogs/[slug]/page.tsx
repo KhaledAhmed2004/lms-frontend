@@ -2,13 +2,17 @@
 
 import { ArrowLeft, Calendar, Clock, Eye } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { postsData } from "../components/AllPost";
+import { getPostsData } from "../components/AllPost";
 import PostSection from "../components/PostSection";
+import { useTranslations } from "next-intl";
 
 export default function BlogPostDetails() {
+  const t = useTranslations("blogPost");
+  const tAll = useTranslations("allPost");
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
+  const postsData = getPostsData(tAll);
 
   const post = postsData.find((p) => p.slug === slug);
 
@@ -21,20 +25,20 @@ export default function BlogPostDetails() {
             className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-8"
           >
             <ArrowLeft className="w-5 h-5" />
-            Back
+            {t("back")}
           </button>
           <div className="text-center py-12">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Post Not Found
+              {t("postNotFound")}
             </h1>
             <p className="text-gray-600 mb-6">
-              The blog post you&aposre looking for doesn&apost exist.
+              {t("postNotFoundDesc")}
             </p>
             <button
               onClick={() => router.push("/user/blogs")}
               className="text-blue-600 hover:text-blue-700 font-semibold"
             >
-              Return to Blog
+              {t("returnToBlog")}
             </button>
           </div>
         </div>
@@ -140,14 +144,13 @@ export default function BlogPostDetails() {
             {/* CTA Section */}
             <div className="bg-linear-to-r from-blue-600 to-blue-700 rounded-lg p-8  text-white mb-12 flex items-center justify-between">
               <div className="flex flex-col items-start">
-                <h3 className="text-xl font-bold ">Ready to Start Learning?</h3>
+                <h3 className="text-xl font-bold ">{t("ctaTitle")}</h3>
                 <p className="text-sm text-blue-100 ">
-                  Book a free 30-minute trial session with one of our expert
-                  tutors.
+                  {t("ctaDesc")}
                 </p>
               </div>
               <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-blue-50 transition-colors transform hover:scale-105">
-                {post.cta || "Book Free Trial"}
+                {post.cta || t("ctaButton")}
               </button>
             </div>
 
@@ -155,7 +158,7 @@ export default function BlogPostDetails() {
             {relatedPosts.length > 0 && (
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                  Related Articles
+                  {t("relatedArticles")}
                 </h3>
                 <div className="flex flex-wrap gap-4">
                   {relatedPosts.map((relatedPost) => (
@@ -172,7 +175,7 @@ export default function BlogPostDetails() {
           <div className="lg:col-span-1">
             <div className="sticky top-8 bg-white rounded-lg p-6 border border-gray-200">
               <h4 className="font-bold text-gray-900 mb-4">
-                TABLE OF CONTENTS
+                {t("tableOfContents")}
               </h4>
               <nav className="space-y-3">
                 {tableOfContents.map((item, index) => (
@@ -190,7 +193,7 @@ export default function BlogPostDetails() {
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center gap-2 mb-2">
                   <Eye className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm text-gray-600">Article Stats</span>
+                  <span className="text-sm text-gray-600">{t("articleStats")}</span>
                 </div>
                 <p className="text-2xl font-bold text-gray-900">
                   {post.views.toLocaleString()}

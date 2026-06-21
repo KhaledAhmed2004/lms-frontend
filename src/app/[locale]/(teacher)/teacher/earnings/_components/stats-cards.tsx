@@ -45,7 +45,7 @@ export default function StatsCards() {
           <>
             <div className="text-3xl font-bold text-gray-900">
               {formatNumber(stats?.earnings?.currentMonth || 0)}{" "}
-              <span className="text-lg text-gray-500">€</span>
+              <span className="text-lg text-gray-500">{t("currencySymbol")}</span>
             </div>
             <p className="text-sm text-gray-500 mt-3">
               {t("total", { amount: formatNumber(stats?.earnings?.totalEarnings || 0) })}
@@ -68,7 +68,7 @@ export default function StatsCards() {
           <>
             <div className="text-3xl font-bold text-gray-900">
               {stats?.trialStats?.conversionRate || 0}{" "}
-              <span className="text-lg text-gray-500">%</span>
+              <span className="text-lg text-gray-500">{t("percentSymbol")}</span>
             </div>
             <p className="text-sm text-gray-500 mt-3">
               {t("converted", { a: stats?.trialStats?.convertedTrials || 0, b: stats?.trialStats?.totalTrials || 0 })}

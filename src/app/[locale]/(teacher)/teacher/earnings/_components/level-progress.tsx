@@ -19,7 +19,7 @@ export default function LevelProgress() {
           <Skeleton className="h-10 w-24" />
         ) : (
           <div className="flex items-center gap-2 bg-[#002AC8] text-white px-4 py-2 rounded-lg">
-            <Image width={24} height={24} src="/badge-wt.svg" alt="Badge" />
+            <Image width={24} height={24} src="/badge-wt.svg" alt={t("badges")} />
             <span className="font-semibold">
               {t("level", { n: stats.level?.current || 1 })}
             </span>
@@ -47,7 +47,7 @@ export default function LevelProgress() {
               />
             </div>
             <div className="bg-[#FFF4E6] border border-[#FFB256] rounded-lg p-3 flex items-start gap-2 mt-5">
-              <Image width={24} height={24} src="/badge-yl.svg" alt="Badge" />
+              <Image width={24} height={24} src="/badge-yl.svg" alt={t("badges")} />
               <p className="text-sm text-amber-800">
                 {t("earningsWillGrow", { rate: stats.nextLevel.hourlyRate, n: stats.nextLevel.level })}
               </p>
@@ -55,7 +55,7 @@ export default function LevelProgress() {
           </>
         ) : (
           <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
-            <Image width={24} height={24} src="/badge-wt.svg" alt="Badge" />
+            <Image width={24} height={24} src="/badge-wt.svg" alt={t("badges")} />
             <p className="text-sm text-green-800">
               {t("maxLevel")}
             </p>

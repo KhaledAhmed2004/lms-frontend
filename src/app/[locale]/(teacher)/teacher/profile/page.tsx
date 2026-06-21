@@ -5,9 +5,11 @@ import { Edit, Check, X, Camera, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useProfile } from "@/hooks/api/use-auth";
+import { useTranslations } from "next-intl";
 
 export default function ProfilePage() {
   const { data: profile, isLoading } = useProfile();
+  const t = useTranslations("tutorProfile");
 
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
@@ -84,10 +86,10 @@ export default function ProfilePage() {
       !profile?.tutorProfile?.subjects ||
       profile.tutorProfile.subjects.length === 0
     ) {
-      return "Tutor";
+      return t("tutor");
     }
     const subjectNames = profile.tutorProfile.subjects.map((s) => s.name);
-    return `Tutor (${subjectNames.join(", ")})`;
+    return t("tutorWithSubjects", { subjects: subjectNames.join(", ") });
   };
 
   const handleEditClick = () => {
@@ -185,7 +187,7 @@ export default function ProfilePage() {
             {/* Name & Role */}
             <div className="flex-1 text-center sm:text-left sm:pt-2 lg:pt-4">
               <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
-                {formData.name || "Loading..."}
+                {formData.name || t("loading")}
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600 mt-1">
                 {getSubjectsString()}
@@ -197,7 +199,7 @@ export default function ProfilePage() {
           <div className="border-t border-gray-200 pt-6 sm:pt-7 lg:pt-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 mb-6 sm:mb-7 lg:mb-8">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
-                Personal Information
+                {t("personalInformation")}
               </h2>
               {!isEditing ? (
                 <Button
@@ -205,7 +207,7 @@ export default function ProfilePage() {
                   className="bg-orange-500 hover:bg-orange-600 text-white font-medium h-9 sm:h-10 text-sm sm:text-base w-full sm:w-auto"
                 >
                   <Edit className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                  Edit Profile
+                  {t("editProfile")}
                 </Button>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
@@ -215,14 +217,14 @@ export default function ProfilePage() {
                     className="h-9 sm:h-10 text-sm sm:text-base order-2 sm:order-1"
                   >
                     <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                    Cancel
+                    {t("cancel")}
                   </Button>
                   <Button
                     onClick={handleSave}
                     className="bg-blue-600 hover:bg-blue-700 h-9 sm:h-10 text-sm sm:text-base order-1 sm:order-2"
                   >
                     <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                    Save Changes
+                    {t("saveChanges")}
                   </Button>
                 </div>
               )}
@@ -231,16 +233,16 @@ export default function ProfilePage() {
             {/* View / Edit Mode */}
             {!isEditing ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 text-gray-700">
-                <InfoRow label="Full Name" value={formData.name} />
-                <InfoRow label="Date of Birth" value={formData.dateOfBirth} />
-                <InfoRow label="Email Address" value={formData.email} />
-                <InfoRow label="Phone Number" value={formData.phoneNumber} />
+                <InfoRow label={t("fullName")} value={formData.name} />
+                <InfoRow label={t("dateOfBirth")} value={formData.dateOfBirth} />
+                <InfoRow label={t("email")} value={formData.email} />
+                <InfoRow label={t("phoneNumber")} value={formData.phoneNumber} />
                 <InfoRow
-                  label="Address"
+                  label={t("address")}
                   value={`${formData.street} ${formData.number}`}
                 />
                 <InfoRow
-                  label="City"
+                  label={t("city")}
                   value={`${formData.zip} ${formData.city}`}
                 />
               </div>
@@ -249,7 +251,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      Date of Birth
+                      {t("dateOfBirth")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -261,7 +263,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      Phone Number
+                      {t("phoneNumber")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -275,7 +277,7 @@ export default function ProfilePage() {
 
                 <div>
                   <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                    Email Address
+                    {t("email")}
                   </label>
                   <Input
                     className="h-9 sm:h-10 text-sm sm:text-base"
@@ -288,7 +290,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      Street
+                      {t("street")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -300,7 +302,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      House Number
+                      {t("houseNumber")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -315,7 +317,7 @@ export default function ProfilePage() {
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      ZIP Code
+                      {t("zipCode")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -325,7 +327,7 @@ export default function ProfilePage() {
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">
-                      City
+                      {t("city")}
                     </label>
                     <Input
                       className="h-9 sm:h-10 text-sm sm:text-base"
@@ -347,14 +349,14 @@ export default function ProfilePage() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">
-              Change Profile Picture
+              {t("changeProfilePicture")}
             </h3>
 
             <div className="flex justify-center mb-6 sm:mb-8">
               <div className="relative">
                 <img
                   src={tempPhoto || profilePic}
-                  alt="Preview"
+                  alt={t("preview")}
                   className="w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48 rounded-full object-cover border-4 border-gray-200"
                 />
                 {tempPhoto && (
@@ -381,14 +383,14 @@ export default function ProfilePage() {
                 onClick={() => document.getElementById("photo-upload")?.click()}
               >
                 <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
-                Choose Photo
+                {t("choosePhoto")}
               </Button>
               <Button
                 onClick={handleSavePhoto}
                 disabled={!tempPhoto}
                 className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 h-9 sm:h-10 text-sm sm:text-base"
               >
-                Save Photo
+                {t("savePhoto")}
               </Button>
             </div>
 
@@ -397,7 +399,7 @@ export default function ProfilePage() {
               className="w-full mt-3 sm:mt-4 h-9 sm:h-10 text-sm sm:text-base"
               onClick={handleCancelPhoto}
             >
-              Cancel
+              {t("cancel")}
             </Button>
           </div>
         </div>

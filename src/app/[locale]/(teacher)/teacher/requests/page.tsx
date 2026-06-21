@@ -213,10 +213,10 @@ export default function RequestsPage() {
                         {t("subject")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Status
+                        {t("status")}
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
+                        {t("action")}
                       </th>
                     </tr>
                   </thead>
@@ -328,11 +328,11 @@ export default function RequestsPage() {
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">{t("schoolType")}</p>
-                <p className="text-sm text-gray-900">{selectedRequest?.schoolType || "Unknown"}</p>
+                <p className="text-sm text-gray-900">{selectedRequest?.schoolType || t("unknown")}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-500 mb-1">{t("grade2")}</p>
-                <p className="text-sm text-gray-900">{selectedRequest?.gradeLevel ? t("grade", { level: selectedRequest.gradeLevel }) : "Unknown"}</p>
+                <p className="text-sm text-gray-900">{selectedRequest?.gradeLevel ? t("grade", { level: selectedRequest.gradeLevel }) : t("unknown")}</p>
               </div>
             </div>
 
